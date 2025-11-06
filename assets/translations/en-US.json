@@ -1,0 +1,11 @@
+{
+  "register": {
+    "email_address": "Email Address",
+    "email_description": "You may use this email address to login next time.",
+    "check_your_email": "Check Your Email",
+    "check_email_description": "We just sent you the OTP code at amylau@gmail.com."
+  },
+  "send_otp": "Send OTP",
+  "verify_and_next": "Verify and Next"
+
+}
