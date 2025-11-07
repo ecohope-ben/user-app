@@ -1,11 +1,55 @@
 {
   "register": {
     "email_address": "Email Address",
+    "your_email_address": "Your Email Address",
     "email_description": "You may use this email address to login next time.",
     "check_your_email": "Check Your Email",
-    "check_email_description": "We just sent you the OTP code at amylau@gmail.com."
+    "check_email_description": "We just sent you the OTP code at amylau@gmail.com.",
+    "phone_number": "Phone Number",
+    "phone_description": "We  will send you a SMS for the OTP code.",
+    "verify_phone_number": "Verify Phone Number",
+    "verify_phone_description": "We just sent you a SMS for the OTP code at (852) 1234 5678.",
+    "profile": "Your Profile",
+    "profile_description": "Please fill in the information.",
+    "select_date_of_birth": "Selected Date of Birth"
   },
+  "month": "Month",
+  "date": "Date",
+  "month_to_words": {
+    "1": "January",
+    "2": "February",
+    "3": "March",
+    "4": "April",
+    "5": "May",
+    "6": "June",
+    "7": "July",
+    "8": "August",
+    "9": "September",
+    "10": "October",
+    "11": "November",
+    "12": "December"
+  },
+  "validation": {
+    "email_required": "Email is required",
+    "email_invalid": "The field is not a valid email address",
+
+    "minLength": "The field must be at least {n} characters long",
+    "maxLength": "The field must be at most {n} characters long",
+    "email": "The field is not a valid email address",
+    "phoneNumber": "The field is not a valid phone number",
+    "required": "The field is required",
+    "ip": "The field is not a valid IP address",
+    "ipv6": "The field is not a valid IPv6 address",
+    "url": "The field is not a valid URL address",
+    "user_not_exist": "User not exist",
+    "int": "Please input a Integer",
+    "double": "Please input correct number"
+  },
+  "last_name": "Last Name",
+  "first_name": "First Name",
   "send_otp": "Send OTP",
-  "verify_and_next": "Verify and Next"
+  "verify_and_next": "Verify and Next",
+  "ok": "Confirm",
+  "cancel": "Cancel"
 
 }

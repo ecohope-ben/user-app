@@ -37,7 +37,12 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         // home: const HomePage(),
         theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Color(0xFFF4F9FA),
+              brightness: Brightness.light,
+            ),
             appBarTheme: const AppBarTheme(
+              surfaceTintColor: Colors.transparent,
               backgroundColor: Color(0xFFF4F9FA), // Set your desired color here
               foregroundColor: Colors.white, // Color for icons and text in the app bar
               // You can also set other properties like elevation, iconTheme, etc.

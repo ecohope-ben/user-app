@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:user_app/Pages/register/index.dart';
 import 'package:user_app/main.dart';
+import 'package:user_app/pages/guest/register/index.dart';
+
 
 typedef RouteWidgetBuilder = Widget Function(
     BuildContext context, RouteArguments arguments);

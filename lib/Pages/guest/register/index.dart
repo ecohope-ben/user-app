@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:step_progress/step_progress.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:user_app/Pages/register/steps.dart';
+import 'package:user_app/pages/guest/register/steps/email_verify.dart';
+import 'steps.dart';
 
-import '../../api/registration_api_service.dart';
-import '../../blocs/registration_cubit.dart';
-import '../../models/registration_models.dart';
+import '../../../api/registration_api_service.dart';
+import '../../../blocs/registration_cubit.dart';
+import '../../../models/registration_models.dart';
+import 'steps/email_input.dart';
 
 class RegisterIndex extends StatefulWidget {
   const RegisterIndex({super.key});
@@ -24,13 +26,21 @@ class _RegisterIndexState extends State<RegisterIndex> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.arrow_back, color: Colors.black),
+        leading: Icon(Icons.close, color: Colors.black),
       ),
       body: BlocProvider(
         create: (context) => RegistrationCubit(
           apiService: context.read<RegistrationApiService>(),
         )..startRegistration(),
-        child: BlocBuilder<RegistrationCubit, RegistrationState>(
+        child: BlocConsumer<RegistrationCubit, RegistrationState>(
+          listener: (context, state){
+            print(state);
+            if(state is RegistrationInProgress && (state.registration.stage == RegistrationStage.phoneInput || state.registration.stage == RegistrationStage.phoneVerification)){
+              print("--stage name: ${state.registration.stage.name}");
+              stepProgressController.setCurrentStep(1);
+            }
+
+          },
           builder: (context, state) {
             return SingleChildScrollView(
               child: Column(
@@ -86,8 +96,9 @@ class _RegisterIndexState extends State<RegisterIndex> {
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 25),
-                    child:  (state is RegistrationInProgress) ? _buildRegisterSection(state.registration.stage) : Container(),
+                    child:  (state is RegistrationInProgress) ? _buildRegisterSection(context, state.registration.stage) : Container(),
                   ),
+
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -112,8 +123,9 @@ class _RegisterIndexState extends State<RegisterIndex> {
     );
   }
 
-  Widget _buildRegisterSection(RegistrationStage stage){
-    return EmailVerificationStep();
+  Widget _buildRegisterSection(BuildContext context, RegistrationStage stage){
+    print("--stage: ${stage.name}");
+    // return CreateProfileStep();
     switch (stage) {
       case RegistrationStage.emailInput:
         return EmailInputStep();

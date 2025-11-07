@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // const Color accentColor = Color(0xFF851B13);
 
 const Color purpleUnderline = Color(0xFF975DFF);
+const Color mainPurple = Color(0xFF975DFF);
 const Color blueTextUnderline = Color(0xFF48F9FF);
 
 

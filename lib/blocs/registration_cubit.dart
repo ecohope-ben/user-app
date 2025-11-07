@@ -70,11 +70,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
       emit(RegistrationLoading());
       print("--start reg");
       final response = await _apiService.startRegistration();
-      print("--reg id");
-      print(response.registration.id);
-      print(response.error.toString());
+      print("--reg id: ${response.registration.id}");
 
       if (response.error != null) {
+        print(response.error.toString());
         emit(RegistrationError(
           message: response.error!.message,
           code: response.error!.code,
@@ -109,39 +108,40 @@ class RegistrationCubit extends Cubit<RegistrationState> {
   }
 
   /// update register（email or phone）
-  Future<void> updateRegistration({
+  Future<bool> updateRegistration({
     String? email,
     String? phone,
   }) async {
     final currentState = state;
-    if (currentState is! RegistrationInProgress) return;
+    if (currentState is! RegistrationInProgress) return false;
 
     try {
-      // emit(RegistrationLoading());
+      emit(RegistrationLoading());
       
-      // final response = await _apiService.updateRegistration(
-      //   registrationId: currentState.registration.id,
-      //   stepToken: currentState.stepToken,
-      //   request: RegistrationUpdateRequest(
-      //     email: email,
-      //     phone: phone,
-      //   ),
-      // );
+      final response = await _apiService.updateRegistration(
+        registrationId: currentState.registration.id,
+        stepToken: currentState.stepToken,
+        request: RegistrationUpdateRequest(
+          email: email,
+          phone: phone,
+        ),
+      );
 
-      // if (response.error != null) {
-      //   emit(RegistrationError(
-      //     message: response.error!.message,
-      //     code: response.error!.code,
-      //     fieldErrors: response.error!.fields,
-      //   ));
-      //   return;
-      // }
-      //
-      // emit(RegistrationInProgress(
-      //   registration: response.registration,
-      //   stepToken: response.registration.tokens.step,
-      //   resumeToken: response.registration.tokens.resume,
-      // ));
+      if (response.error != null) {
+        emit(RegistrationError(
+          message: response.error!.message,
+          code: response.error!.code,
+          fieldErrors: response.error!.fields,
+        ));
+        return false;
+      }
+
+      emit(RegistrationInProgress(
+        registration: response.registration,
+        stepToken: response.registration.tokens.step,
+        resumeToken: response.registration.tokens.resume,
+      ));
+      return true;
     } catch (e) {
       if (e is RegistrationException) {
         emit(RegistrationError(
@@ -153,6 +153,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         emit(RegistrationError(message: e.toString()));
       }
     }
+    return false;
   }
 
   /// Request email OTP
@@ -161,7 +162,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
     if (currentState is! RegistrationInProgress) return;
 
     try {
-      // emit(RegistrationLoading());
+      emit(RegistrationLoading());
       
       final response = await _apiService.requestEmailOtp(
         registrationId: currentState.registration.id,
@@ -176,7 +177,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         ));
         return;
       }
-
+      print("--response");
+      print(response.registration.email.value);
+      print(response.registration.email.otpSentAt);
+      print(response.registration.tokens.step);
       emit(RegistrationInProgress(
         registration: response.registration,
         stepToken: response.registration.tokens.step,
