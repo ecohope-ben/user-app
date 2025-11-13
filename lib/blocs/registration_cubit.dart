@@ -16,6 +16,11 @@ class RegistrationInitial extends RegistrationState {}
 /// loading state
 class RegistrationLoading extends RegistrationState {}
 
+/// loading state
+class RegistrationInProgressLoading extends RegistrationInProgress {
+  const RegistrationInProgressLoading({required super.registration, required super.stepToken});
+}
+
 /// in progress
 class RegistrationInProgress extends RegistrationState {
   final RegistrationSnapshot registration;
@@ -75,7 +80,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
       if (response.error != null) {
         print(response.error.toString());
         emit(RegistrationError(
-          message: response.error!.message,
+          message: response.error!.userMessage ?? "",
           code: response.error!.code,
           fieldErrors: response.error!.fields,
         ));
@@ -108,15 +113,15 @@ class RegistrationCubit extends Cubit<RegistrationState> {
   }
 
   /// update register（email or phone）
-  Future<bool> updateRegistration({
+  Future<void> updateRegistration({
     String? email,
     String? phone,
   }) async {
     final currentState = state;
-    if (currentState is! RegistrationInProgress) return false;
+    if (currentState is! RegistrationInProgress) return;
 
     try {
-      emit(RegistrationLoading());
+      emit(RegistrationInProgressLoading(registration: currentState.registration, stepToken: currentState.stepToken));
       
       final response = await _apiService.updateRegistration(
         registrationId: currentState.registration.id,
@@ -129,11 +134,11 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
       if (response.error != null) {
         emit(RegistrationError(
-          message: response.error!.message,
+          message: response.error!.userMessage ?? "",
           code: response.error!.code,
           fieldErrors: response.error!.fields,
         ));
-        return false;
+        return;
       }
 
       emit(RegistrationInProgress(
@@ -141,7 +146,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         stepToken: response.registration.tokens.step,
         resumeToken: response.registration.tokens.resume,
       ));
-      return true;
+      return;
     } catch (e) {
       if (e is RegistrationException) {
         emit(RegistrationError(
@@ -153,7 +158,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         emit(RegistrationError(message: e.toString()));
       }
     }
-    return false;
+    return;
   }
 
   /// Request email OTP
@@ -162,8 +167,8 @@ class RegistrationCubit extends Cubit<RegistrationState> {
     if (currentState is! RegistrationInProgress) return;
 
     try {
-      emit(RegistrationLoading());
-      
+      emit(RegistrationInProgressLoading(registration: currentState.registration, stepToken: currentState.stepToken));
+
       final response = await _apiService.requestEmailOtp(
         registrationId: currentState.registration.id,
         stepToken: currentState.stepToken,
@@ -171,13 +176,13 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
       if (response.error != null) {
         emit(RegistrationError(
-          message: response.error!.message,
+          message: response.error!.userMessage ?? "",
           code: response.error!.code,
           fieldErrors: response.error!.fields,
         ));
         return;
       }
-      print("--response");
+      print("--requestEmailOtp response");
       print(response.registration.email.value);
       print(response.registration.email.otpSentAt);
       print(response.registration.tokens.step);
@@ -205,8 +210,8 @@ class RegistrationCubit extends Cubit<RegistrationState> {
     if (currentState is! RegistrationInProgress) return;
 
     try {
-      // emit(RegistrationLoading());
-      
+      emit(RegistrationInProgressLoading(registration: currentState.registration, stepToken: currentState.stepToken));
+
       final response = await _apiService.verifyEmailOtp(
         registrationId: currentState.registration.id,
         stepToken: currentState.stepToken,
@@ -215,7 +220,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
       if (response.error != null) {
         emit(RegistrationError(
-          message: response.error!.message,
+          message: response.error!.userMessage ?? "",
           code: response.error!.code,
           fieldErrors: response.error!.fields,
         ));
@@ -255,7 +260,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
       if (response.error != null) {
         emit(RegistrationError(
-          message: response.error!.message,
+          message: response.error!.userMessage ?? "",
           code: response.error!.code,
           fieldErrors: response.error!.fields,
         ));
@@ -296,7 +301,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
       if (response.error != null) {
         emit(RegistrationError(
-          message: response.error!.message,
+          message: response.error!.userMessage ?? "",
           code: response.error!.code,
           fieldErrors: response.error!.fields,
         ));
@@ -332,7 +337,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
       if (response.error != null) {
         emit(RegistrationError(
-          message: response.error!.message,
+          message: response.error!.userMessage ?? "",
           code: response.error!.code,
           fieldErrors: response.error!.fields,
         ));

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/registration_cubit.dart';
+import '../../../../components/register/action_button.dart';
 import '../../../../components/register/text_input.dart';
 import '../widgets.dart';
 class EmailInputStep extends StatefulWidget {
@@ -52,10 +53,10 @@ class _EmailInputStepState extends State<EmailInputStep> {
             if (_formKey.currentState!.validate()) {
               // If validation passes, get the email and update registration
               final email = _emailController.text;
+
               final bloc = context.read<RegistrationCubit>();
-              bool result = await bloc.updateRegistration(email: email);
-              print("--result: $result");
-              if(result) bloc.requestEmailOtp();
+              bloc.updateRegistration(email: email);
+
             }
           })
         ],

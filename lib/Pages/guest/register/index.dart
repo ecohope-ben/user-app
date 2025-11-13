@@ -9,6 +9,7 @@ import '../../../api/registration_api_service.dart';
 import '../../../blocs/registration_cubit.dart';
 import '../../../models/registration_models.dart';
 import 'steps/email_input.dart';
+import 'steps/phone_input.dart';
 
 class RegisterIndex extends StatefulWidget {
   const RegisterIndex({super.key});
@@ -34,12 +35,40 @@ class _RegisterIndexState extends State<RegisterIndex> {
         )..startRegistration(),
         child: BlocConsumer<RegistrationCubit, RegistrationState>(
           listener: (context, state){
-            print(state);
+            print("--state: $state");
+            if(state is RegistrationInProgress){
+              print("--${state.registration.stage.name}");
+            }
             if(state is RegistrationInProgress && (state.registration.stage == RegistrationStage.phoneInput || state.registration.stage == RegistrationStage.phoneVerification)){
               print("--stage name: ${state.registration.stage.name}");
               stepProgressController.setCurrentStep(1);
-            }
+            }else if (state is RegistrationError){
+              final scaffold = ScaffoldMessenger.of(context);
+              scaffold.showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  behavior: SnackBarBehavior.floating,
 
+                ),
+              );
+            }
+          },
+          buildWhen: (previous, current) {
+
+            // if(previous is RegistrationInProgress && current is RegistrationInProgress){
+            //   if(previous.registration.stage == current.registration.stage){
+            //     print("--same stage");
+            //     print(previous);
+            //     print(previous.registration.email.otpSentAt);
+            //     print(current);
+            //     print(current.registration.email.otpSentAt);
+            //     return false;
+            //     // if(current.registration.email.otpSentAt == null){
+            //     //   return true;
+            //     // }else return false;
+            //   }
+              return true;
+            // } else return true;
           },
           builder: (context, state) {
             return SingleChildScrollView(
@@ -96,24 +125,24 @@ class _RegisterIndexState extends State<RegisterIndex> {
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 25),
-                    child:  (state is RegistrationInProgress) ? _buildRegisterSection(context, state.registration.stage) : Container(),
+                    child:  (state is RegistrationInProgress) ? _buildRegisterSection(context, state) : _buildLoading(),
                   ),
 
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: 38,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () => stepProgressController.setCurrentStep(0),
-                        child: const Text('Prev'),
-                      ),
-                      ElevatedButton(
-                        onPressed: stepProgressController.nextStep,
-                        child: const Text('Next'),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   spacing: 38,
+                  //   children: [
+                  //     ElevatedButton(
+                  //       onPressed: () => stepProgressController.setCurrentStep(0),
+                  //       child: const Text('Prev'),
+                  //     ),
+                  //     ElevatedButton(
+                  //       onPressed: stepProgressController.nextStep,
+                  //       child: const Text('Next'),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             );
@@ -123,7 +152,20 @@ class _RegisterIndexState extends State<RegisterIndex> {
     );
   }
 
-  Widget _buildRegisterSection(BuildContext context, RegistrationStage stage){
+  Widget _buildLoading(){
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+  }
+
+  Widget _buildRegisterSection(BuildContext context, RegistrationInProgress state){
+
+    // if(state is RegistrationInProgressLoading){
+    //   return _buildLoading();
+    // }
+
+    RegistrationStage stage = state.registration.stage;
+
     print("--stage: ${stage.name}");
     // return CreateProfileStep();
     switch (stage) {

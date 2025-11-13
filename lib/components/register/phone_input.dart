@@ -2,35 +2,22 @@ import 'package:flutter/material.dart';
 
 import '../../style.dart';
 
-class TextInput extends StatefulWidget {
+class PhoneInput extends StatefulWidget {
   final String title;
   final String? Function(String?)? validator;
   final TextEditingController? controller;
-  const TextInput(this.title, {this.validator, this.controller, super.key});
+  const PhoneInput(this.title, {this.validator, this.controller, super.key});
 
   @override
-  State<TextInput> createState() => _TextInputState();
+  State<PhoneInput> createState() => _PhoneInputState();
 }
 
-class _TextInputState extends State<TextInput> {
-  late final TextEditingController _controller;
-  bool _isExternalController = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // Use provided controller or create a new one
-    _isExternalController = widget.controller != null;
-    _controller = widget.controller ?? TextEditingController();
-  }
+class _PhoneInputState extends State<PhoneInput> {
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void dispose() {
-    // Only dispose if we created the controller ourselves
-    if (!_isExternalController) {
-      _controller.dispose();
-
-    }
+    _controller.dispose();
     super.dispose();
   }
 
@@ -41,10 +28,14 @@ class _TextInputState extends State<TextInput> {
       child: TextFormField(
         controller: _controller,
         validator: widget.validator,
-        style: TextStyle(fontSize: 27),
+        style: TextStyle(fontSize: 30),
+        maxLength: 6,
         decoration: InputDecoration(
           hintText: widget.title,
           hintStyle: TextStyle(fontSize: 27, color: Colors.grey),
+          prefixIcon: Padding(
+              padding: EdgeInsets.only(top: 3, right: 8),
+              child: Text("+852", style: TextStyle( fontSize: 30))),
           border: UnderlineInputBorder(
             borderSide: BorderSide(
               color: Colors.purple,
@@ -69,4 +60,3 @@ class _TextInputState extends State<TextInput> {
     );
   }
 }
-

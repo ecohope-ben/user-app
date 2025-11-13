@@ -101,13 +101,15 @@ class Session {
 class ErrorBody {
   final String code;
   final int httpStatus;
-  final String message;
+  final String? userMessage;
+  final String? debugMessage;
   final Map<String, List<FieldError>>? fields;
 
   const ErrorBody({
     required this.code,
     required this.httpStatus,
-    required this.message,
+    required this.userMessage,
+    required this.debugMessage,
     this.fields,
   });
 

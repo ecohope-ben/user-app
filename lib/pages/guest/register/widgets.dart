@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 
+import '../../../blocs/registration_cubit.dart';
 import '../../../components/register/dob_select.dart';
 import '../../../components/register/text_input.dart';
 import '../../../style.dart';
@@ -91,32 +93,7 @@ class PhoneInput extends StatelessWidget {
     );
   }
 }
-class OTPInput extends StatelessWidget {
-  const OTPInput({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-
-    return OtpTextField(
-      numberOfFields: 6,
-      borderColor: purpleUnderline,
-      focusedBorderColor: Colors.grey,
-
-      enabledBorderColor: purpleUnderline,
-      alignment: Alignment.bottomLeft,
-      showFieldAsBox: false,
-      borderWidth: 2.0,
-      //runs when a code is typed in
-      onCodeChanged: (String code) {
-        //handle validation or checks here if necessary
-      },
-      //runs when every textfield is filled
-      onSubmit: (String verificationCode) {
-
-      },
-    );
-  }
-}
 class DatePicker extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
 
@@ -173,41 +150,6 @@ class DatePicker extends StatelessWidget {
           print('Submitted text: $text');
         },
       ),
-    );
-  }
-}
-class ActionButton extends StatelessWidget {
-  final String title;
-  final VoidCallback? onTap;
-  const ActionButton(this.title, {this.onTap, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(bottom: 12.0, top: 12),
-        child: Container(
-            width: double.infinity,
-            height: 40,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: blueTextUnderline,
-                  width: 3 ,
-                ),
-              ),
-            ),
-            child: TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero
-                ),
-              ),
-              onPressed: onTap,
-              child: Text(title),
-            )
-        )
     );
   }
 }

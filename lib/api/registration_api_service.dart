@@ -2,7 +2,8 @@ import 'package:dio/dio.dart';
 import '../models/registration_models.dart';
 
 class RegistrationApiService {
-  static const String baseUrl = 'http://192.168.50.237:3001';
+  // static const String baseUrl = 'http://192.168.50.237:3001';
+  static const String baseUrl = 'http://172.19.44.17:3001';
 
   final Dio _dio;
 
@@ -52,9 +53,15 @@ class RegistrationApiService {
     required RegistrationUpdateRequest request,
   }) async {
     try {
+
+      print("--update patch");
+
+      Map<String, dynamic> requestMap = request.toJson();
+      requestMap.removeWhere((key, value) => value == null);
+
       final response = await _dio.patch(
         '/auth/registration/$registrationId',
-        data: request.toJson(),
+        data: requestMap,
         options: Options(
           headers: {
             'Authorization': 'Step $stepToken',
@@ -72,6 +79,7 @@ class RegistrationApiService {
     required String registrationId,
     required String stepToken,
   }) async {
+    print("--requestEmailOtp");
     try {
       final response = await _dio.post(
         '/auth/registration/$registrationId/email/request',
@@ -83,6 +91,7 @@ class RegistrationApiService {
       );
       return RegistrationSuccessResponse.fromJson(response.data);
     } on DioException catch (e) {
+      print(e.response);
       throw _handleDioError(e);
     }
   }
@@ -174,19 +183,26 @@ class RegistrationApiService {
 
   /// Handle Dio errors
   Exception _handleDioError(DioException e) {
-    print('Dio Error: ${e.message}');
-    print('Response: ${e.response?.data}');
+    print('--Dio Error: ${e.message}');
+    print('--Response: ${e.response?.data}');
+    print('--Response error: ${e.response?.data["error"]}');
+    if(e.response?.statusCode == 401){
+      print("--401 error");
+    }else if(e.response?.statusCode == 422){
+      print("--422 error");
+    }
     if (e.response?.data != null) {
       try {
-        final errorBody = ErrorBody.fromJson(e.response!.data);
+        final errorBody = ErrorBody.fromJson(e.response!.data["error"]);
         return RegistrationException(
           code: errorBody.code,
-          message: errorBody.message,
+          message: errorBody.userMessage ?? "",
           httpStatus: errorBody.httpStatus,
           fields: errorBody.fields,
         );
-      } catch (parseError) {
+      } catch (parseError, t) {
         print('Error parsing response: $parseError');
+        print(t);
       }
     }
     

@@ -33,7 +33,6 @@ Map<String, dynamic> _$TokensToJson(Tokens instance) => <String, dynamic>{
   'resume': instance.resume,
 };
 
-
 RegistrationSnapshot _$RegistrationSnapshotFromJson(
   Map<String, dynamic> json,
 ) => RegistrationSnapshot(
@@ -85,7 +84,8 @@ Map<String, dynamic> _$SessionToJson(Session instance) => <String, dynamic>{
 ErrorBody _$ErrorBodyFromJson(Map<String, dynamic> json) => ErrorBody(
   code: json['code'] as String,
   httpStatus: (json['http_status'] as num).toInt(),
-  message: json['message'] as String,
+  userMessage: json['user_message'] as String?,
+  debugMessage: json['debug_message'] as String?,
   fields: (json['fields'] as Map<String, dynamic>?)?.map(
     (k, e) => MapEntry(
       k,
@@ -99,7 +99,8 @@ ErrorBody _$ErrorBodyFromJson(Map<String, dynamic> json) => ErrorBody(
 Map<String, dynamic> _$ErrorBodyToJson(ErrorBody instance) => <String, dynamic>{
   'code': instance.code,
   'http_status': instance.httpStatus,
-  'message': instance.message,
+  'user_message': instance.userMessage,
+  'debug_message': instance.debugMessage,
   'fields': instance.fields,
 };
 
