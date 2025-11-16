@@ -194,11 +194,18 @@ class RegistrationApiService {
     if (e.response?.data != null) {
       try {
         final errorBody = ErrorBody.fromJson(e.response!.data["error"]);
+
+        RegistrationSnapshot? registration;
+        if(e.response!.data["registration"] != null){
+          registration = RegistrationSnapshot.fromJson(e.response!.data["registration"]);
+        }
+
         return RegistrationException(
           code: errorBody.code,
           message: errorBody.userMessage ?? "",
           httpStatus: errorBody.httpStatus,
           fields: errorBody.fields,
+          registration: registration
         );
       } catch (parseError, t) {
         print('Error parsing response: $parseError');
@@ -209,7 +216,7 @@ class RegistrationApiService {
     return RegistrationException(
       code: e.type.toString(),
       message: e.message ?? 'Network error occurred',
-      httpStatus: e.response?.statusCode ?? 0,
+      httpStatus: e.response?.statusCode ?? 0
     );
   }
 
@@ -222,12 +229,14 @@ class RegistrationException implements Exception {
   final String code;
   final String message;
   final int httpStatus;
+  final RegistrationSnapshot? registration;
   final Map<String, List<FieldError>>? fields;
 
   const RegistrationException({
     required this.code,
     required this.message,
     required this.httpStatus,
+    this.registration,
     this.fields,
   });
 

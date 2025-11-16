@@ -33,6 +33,18 @@ class RegistrationInProgress extends RegistrationState {
     this.resumeToken,
   });
 
+  RegistrationInProgress copyWith({
+    RegistrationSnapshot? registration,
+    String? stepToken,
+    String? resumeToken,
+  }) {
+    return RegistrationInProgress(
+      registration: registration ?? this.registration,
+      stepToken: stepToken ?? this.stepToken,
+      resumeToken: resumeToken ?? this.resumeToken,
+    );
+  }
+
   @override
   List<Object?> get props => [registration, stepToken, resumeToken];
 }
@@ -49,18 +61,22 @@ class RegistrationCompleted extends RegistrationState {
 
 /// error state
 class RegistrationError extends RegistrationState {
+  final RegistrationSnapshot? registration;
   final String message;
   final String? code;
+  final int? httpCode;
   final Map<String, List<FieldError>>? fieldErrors;
 
   const RegistrationError({
+    this.registration,
     required this.message,
     this.code,
+    this.httpCode,
     this.fieldErrors,
   });
 
   @override
-  List<Object?> get props => [message, code, fieldErrors];
+  List<Object?> get props => [registration, message, code, httpCode, fieldErrors];
 }
 
 
@@ -80,8 +96,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
       if (response.error != null) {
         print(response.error.toString());
         emit(RegistrationError(
+          registration: response.registration,
           message: response.error!.userMessage ?? "",
           code: response.error!.code,
+          httpCode: response.error!.httpStatus,
           fieldErrors: response.error!.fields,
         ));
         return;
@@ -98,8 +116,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         print("--1");
         print(e.message);
         emit(RegistrationError(
+          registration: e.registration,
           message: e.message,
           code: e.code,
+          httpCode: e.httpStatus,
           fieldErrors: e.fields,
         ));
 
@@ -134,8 +154,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
       if (response.error != null) {
         emit(RegistrationError(
+          registration: response.registration,
           message: response.error!.userMessage ?? "",
           code: response.error!.code,
+          httpCode: response.error!.httpStatus,
           fieldErrors: response.error!.fields,
         ));
         return;
@@ -150,8 +172,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
     } catch (e) {
       if (e is RegistrationException) {
         emit(RegistrationError(
+          registration: e.registration,
           message: e.message,
           code: e.code,
+          httpCode: e.httpStatus,
           fieldErrors: e.fields,
         ));
       } else {
@@ -176,8 +200,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
       if (response.error != null) {
         emit(RegistrationError(
+          registration: response.registration,
           message: response.error!.userMessage ?? "",
           code: response.error!.code,
+          httpCode: response.error!.httpStatus,
           fieldErrors: response.error!.fields,
         ));
         return;
@@ -194,8 +220,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
     } catch (e) {
       if (e is RegistrationException) {
         emit(RegistrationError(
+          registration: e.registration,
           message: e.message,
           code: e.code,
+          httpCode: e.httpStatus,
           fieldErrors: e.fields,
         ));
       } else {
@@ -220,8 +248,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
       if (response.error != null) {
         emit(RegistrationError(
+          registration: response.registration,
           message: response.error!.userMessage ?? "",
           code: response.error!.code,
+          httpCode: response.error!.httpStatus,
           fieldErrors: response.error!.fields,
         ));
         return;
@@ -235,8 +265,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
     } catch (e) {
       if (e is RegistrationException) {
         emit(RegistrationError(
+          registration: e.registration,
           message: e.message,
           code: e.code,
+          httpCode: e.httpStatus,
           fieldErrors: e.fields,
         ));
       } else {
@@ -260,8 +292,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
       if (response.error != null) {
         emit(RegistrationError(
+          registration: response.registration,
           message: response.error!.userMessage ?? "",
           code: response.error!.code,
+          httpCode: response.error!.httpStatus,
           fieldErrors: response.error!.fields,
         ));
         return;
@@ -275,8 +309,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
     } catch (e) {
       if (e is RegistrationException) {
         emit(RegistrationError(
+          registration: e.registration,
           message: e.message,
           code: e.code,
+          httpCode: e.httpStatus,
           fieldErrors: e.fields,
         ));
       } else {
@@ -301,8 +337,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
       if (response.error != null) {
         emit(RegistrationError(
+          registration: response.registration,
           message: response.error!.userMessage ?? "",
           code: response.error!.code,
+          httpCode: response.error!.httpStatus,
           fieldErrors: response.error!.fields,
         ));
         return;
@@ -312,8 +350,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
     } catch (e) {
       if (e is RegistrationException) {
         emit(RegistrationError(
+          registration: e.registration,
           message: e.message,
           code: e.code,
+          httpCode: e.httpStatus,
           fieldErrors: e.fields,
         ));
       } else {
@@ -337,8 +377,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
       if (response.error != null) {
         emit(RegistrationError(
+          registration: response.registration,
           message: response.error!.userMessage ?? "",
           code: response.error!.code,
+          httpCode: response.error!.httpStatus,
           fieldErrors: response.error!.fields,
         ));
         return;
@@ -352,8 +394,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
     } catch (e) {
       if (e is RegistrationException) {
         emit(RegistrationError(
+          registration: e.registration,
           message: e.message,
           code: e.code,
+          httpCode: e.httpStatus,
           fieldErrors: e.fields,
         ));
       } else {
@@ -364,5 +408,31 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
   void reset() {
     emit(RegistrationInitial());
+  }
+
+  void update(RegistrationState state) {
+    emit(state);
+  }
+
+  void changeStage(RegistrationStage stage) {
+    if(state is RegistrationInProgress){
+      final currentState = state as RegistrationInProgress;
+
+      // Create a new RegistrationSnapshot with updated stage
+      final updatedRegistration = RegistrationSnapshot(
+        id: currentState.registration.id,
+        tokens: currentState.registration.tokens,
+        stage: stage,
+        email: currentState.registration.email,
+        phone: currentState.registration.phone,
+      );
+
+      // Emit new state with updated registration
+      emit(RegistrationInProgress(
+        registration: updatedRegistration,
+        stepToken: currentState.stepToken,
+        resumeToken: currentState.resumeToken,
+      ));
+    }
   }
 }

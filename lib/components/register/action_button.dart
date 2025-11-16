@@ -50,7 +50,7 @@ class _ActionButtonState extends State<ActionButton> {
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       ),
                     ),
-                  Text(widget.title),
+                  Text(widget.title, style: TextStyle(color: Colors.white)),
                 ],
               ),
             )

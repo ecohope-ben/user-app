@@ -6,25 +6,7 @@ import 'widgets.dart';
 
 
 
-class PhoneVerificationStep extends StatelessWidget {
-  const PhoneVerificationStep({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Image.asset("assets/icon/register_phone.png", width: 180),
-        TitleText(tr("register.verify_phone_number")),
-        SubTitleText(tr("register.verify_phone_description")),
-        // OTPInput(),
-        SizedBox(height: 20),
-        ActionButton(tr("verify_and_next"))
-      ],
-    );
-  }
-}
 
 class CreateProfileStep extends StatelessWidget {
   const CreateProfileStep({super.key});

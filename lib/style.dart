@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 const Color purpleUnderline = Color(0xFF975DFF);
 const Color mainPurple = Color(0xFF975DFF);
 const Color blueTextUnderline = Color(0xFF48F9FF);
+const Color blueRegisterText = Color(0xFF3CA2FF);
 
 
 // final primarySwatch = MaterialColor(accentColor.value, getSwatch(accentColor));

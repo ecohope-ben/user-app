@@ -60,11 +60,7 @@ class _TextInputState extends State<TextInput> {
               color: Colors.purple,
             ),
           ),
-        ),
-        onChanged: (text) {
-          // Perform actions when the text changes
-          print('Current text: $text');
-        }
+        )
       ),
     );
   }

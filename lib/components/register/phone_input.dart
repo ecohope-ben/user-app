@@ -1,19 +1,26 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../style.dart';
 
 class PhoneInput extends StatefulWidget {
-  final String title;
   final String? Function(String?)? validator;
   final TextEditingController? controller;
-  const PhoneInput(this.title, {this.validator, this.controller, super.key});
+
+  const PhoneInput({this.validator, this.controller, super.key});
 
   @override
   State<PhoneInput> createState() => _PhoneInputState();
 }
 
 class _PhoneInputState extends State<PhoneInput> {
-  final TextEditingController _controller = TextEditingController();
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    _controller = widget.controller ?? TextEditingController();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -26,12 +33,12 @@ class _PhoneInputState extends State<PhoneInput> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0, top: 12),
       child: TextFormField(
-        controller: _controller,
-        validator: widget.validator,
+        controller: widget.controller,
         style: TextStyle(fontSize: 30),
-        maxLength: 6,
+        validator: widget.validator,
+        maxLength: 8,
         decoration: InputDecoration(
-          hintText: widget.title,
+          hintText: tr("register.phone_number"),
           hintStyle: TextStyle(fontSize: 27, color: Colors.grey),
           prefixIcon: Padding(
               padding: EdgeInsets.only(top: 3, right: 8),
@@ -51,11 +58,7 @@ class _PhoneInputState extends State<PhoneInput> {
               color: Colors.purple,
             ),
           ),
-        ),
-        onChanged: (text) {
-          // Perform actions when the text changes
-          print('Current text: $text');
-        }
+        )
       ),
     );
   }

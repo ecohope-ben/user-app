@@ -3,21 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/registration_cubit.dart';
+import '../../../../components/register/action_button.dart';
 import '../../../../components/register/otp_input.dart';
 import '../../../../components/register/resend_button.dart';
 import '../../../../models/registration_models.dart';
 import '../../../../style.dart';
 import '../widgets.dart';
 
-class EmailVerificationStep extends StatefulWidget {
-  const EmailVerificationStep({super.key});
+
+class PhoneVerificationStep extends StatefulWidget {
+  const PhoneVerificationStep({super.key});
 
   @override
-  State<EmailVerificationStep> createState() => _EmailVerificationStepState();
+  State<PhoneVerificationStep> createState() => _PhoneVerificationStepState();
 }
 
-class _EmailVerificationStepState extends State<EmailVerificationStep> {
-  String? email;
+class _PhoneVerificationStepState extends State<PhoneVerificationStep> {
+  String? phone;
 
   String? _validateOTP(String? code) {
     if (code == null || code.isEmpty || code == "") {
@@ -34,7 +36,7 @@ class _EmailVerificationStepState extends State<EmailVerificationStep> {
   }
 
   void _submitOTP(String verificationCode){
-    context.read<RegistrationCubit>().verifyEmailOtp(verificationCode);
+    context.read<RegistrationCubit>().verifyPhoneOtp(verificationCode);
   }
 
   @override
@@ -42,16 +44,17 @@ class _EmailVerificationStepState extends State<EmailVerificationStep> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final state = context.read<RegistrationCubit>().state;
-        if(state is RegistrationInProgress && state.registration.email.otpSentAt == null) {
-          email = state.registration.email.value;
-          context.read<RegistrationCubit>().requestEmailOtp();
+        if(state is RegistrationInProgress && state.registration.phone.otpSentAt == null) {
+          phone = state.registration.phone.value;
+          context.read<RegistrationCubit>().requestPhoneOtp();
         }
       }
     });
     super.initState();
   }
+
   void reSendOTP(){
-    context.read<RegistrationCubit>().requestEmailOtp();
+    context.read<RegistrationCubit>().requestPhoneOtp();
   }
 
   @override
@@ -60,9 +63,9 @@ class _EmailVerificationStepState extends State<EmailVerificationStep> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Image.asset("assets/icon/register_email.png", width: 180),
-        TitleText(tr("register.check_your_email")),
-        SubTitleText(tr("register.check_email_description", args: [email ?? ""])),
+        Image.asset("assets/icon/register_phone.png", width: 180),
+        TitleText(tr("register.verify_phone_number")),
+        SubTitleText(tr("register.verify_phone_description", args: [phone ?? ""])),
         OTPInput(validator: _validateOTP, submitOTP: _submitOTP),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -75,9 +78,9 @@ class _EmailVerificationStepState extends State<EmailVerificationStep> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
-                onPressed: () => context.read<RegistrationCubit>().changeStage(RegistrationStage.emailInput),
+                onPressed: () => context.read<RegistrationCubit>().changeStage(RegistrationStage.phoneInput),
 
-                child: Text(tr("register.edit_email", args: [email ?? ""]), style: TextStyle(color: blueRegisterText))
+                child: Text(tr("register.edit_phone", args: [phone ?? ""]), style: TextStyle(color: blueRegisterText))
             ),
           ],
         ),

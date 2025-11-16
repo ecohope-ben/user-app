@@ -46,53 +46,6 @@ class SubTitleText extends StatelessWidget {
 }
 
 
-class PhoneInput extends StatelessWidget {
-  final TextEditingController _controller = TextEditingController();
-
-  PhoneInput({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0, top: 12),
-      child: TextField(
-        controller: _controller,
-        style: TextStyle(fontSize: 30),
-        maxLength: 6,
-        decoration: const InputDecoration(
-          hintText: 'Phone Number',
-          hintStyle: TextStyle(fontSize: 27, color: Colors.grey),
-          prefixIcon: Padding(
-              padding: EdgeInsets.only(top: 3, right: 8),
-              child: Text("+852", style: TextStyle( fontSize: 30))),
-          border: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.purple,
-            ),
-          ),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: purpleUnderline,
-            ),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.purple,
-            ),
-          ),
-        ),
-        onChanged: (text) {
-          // Perform actions when the text changes
-          print('Current text: $text');
-        },
-        onSubmitted: (text) {
-          // Perform actions when the user submits the text (e.g., presses Enter)
-          print('Submitted text: $text');
-        },
-      ),
-    );
-  }
-}
 
 class DatePicker extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
