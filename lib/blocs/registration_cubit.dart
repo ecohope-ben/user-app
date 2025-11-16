@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../api/registration_api_service.dart';
+import '../api/registration_api.dart';
+import '../api/index.dart';
 import '../models/registration_models.dart';
 
 abstract class RegistrationState extends Equatable {
@@ -81,9 +82,9 @@ class RegistrationError extends RegistrationState {
 
 
 class RegistrationCubit extends Cubit<RegistrationState> {
-  final RegistrationApiService _apiService;
+  final RegisterApi _apiService;
 
-  RegistrationCubit({required RegistrationApiService apiService}) : _apiService = apiService, super(RegistrationInitial());
+  RegistrationCubit({RegisterApi? apiService}) : _apiService = Api.instance().register(), super(RegistrationInitial());
 
   /// Start register
   Future<void> startRegistration() async {

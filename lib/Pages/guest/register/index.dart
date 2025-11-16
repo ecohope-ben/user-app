@@ -8,7 +8,7 @@ import 'package:user_app/pages/guest/register/widgets.dart';
 import '../../../components/register/stepper.dart';
 import 'steps.dart';
 
-import '../../../api/registration_api_service.dart';
+import '../../../api/registration_api.dart';
 import '../../../blocs/registration_cubit.dart';
 import '../../../models/registration_models.dart';
 import 'steps/email_input.dart';
@@ -32,9 +32,7 @@ class _RegisterIndexState extends State<RegisterIndex> {
         leading: Icon(Icons.close, color: Colors.black),
       ),
       body: BlocProvider(
-        create: (context) => RegistrationCubit(
-          apiService: context.read<RegistrationApiService>(),
-        )..startRegistration(),
+        create: (context) => RegistrationCubit()..startRegistration(),
         child: BlocConsumer<RegistrationCubit, RegistrationState>(
           listener: (context, state){
             if(state is RegistrationInProgress && (state.registration.stage == RegistrationStage.phoneInput || state.registration.stage == RegistrationStage.phoneVerification)){

@@ -1,38 +1,28 @@
 import 'package:dio/dio.dart';
 import '../models/registration_models.dart';
+import 'index.dart';
 
-class RegistrationApiService {
-  // static const String baseUrl = 'http://192.168.50.237:3001';
-  static const String baseUrl = 'http://172.19.44.17:3001';
+/// Registration API endpoint
+class RegisterApi extends ApiEndpoint {
+  RegisterApi(super.api);
 
-  final Dio _dio;
-
-  RegistrationApiService({Dio? dio}) : _dio = dio ?? Dio(BaseOptions(
-    baseUrl: baseUrl,
-    connectTimeout: const Duration(seconds: 30),
-    receiveTimeout: const Duration(seconds: 30),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  ));
-
-
+  /// Start registration
   Future<RegistrationSuccessResponse> startRegistration() async {
     try {
-      final response = await _dio.post('/auth/registration/start');
+      final response = await http.post('/auth/registration/start');
       return RegistrationSuccessResponse.fromJson(response.data);
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw _handleRegistrationDioError(e);
     }
   }
 
-  /// get register session
+  /// Get register session
   Future<RegistrationSuccessResponse> getRegistrationSession({
     required String registrationId,
     required String stepToken,
   }) async {
     try {
-      final response = await _dio.get(
+      final response = await http.get(
         '/auth/registration/$registrationId/session',
         options: Options(
           headers: {
@@ -42,24 +32,23 @@ class RegistrationApiService {
       );
       return RegistrationSuccessResponse.fromJson(response.data);
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw _handleRegistrationDioError(e);
     }
   }
 
-  /// update register info
+  /// Update register info
   Future<RegistrationSuccessResponse> updateRegistration({
     required String registrationId,
     required String stepToken,
     required RegistrationUpdateRequest request,
   }) async {
     try {
-
       print("--update patch");
 
       Map<String, dynamic> requestMap = request.toJson();
       requestMap.removeWhere((key, value) => value == null);
 
-      final response = await _dio.patch(
+      final response = await http.patch(
         '/auth/registration/$registrationId',
         data: requestMap,
         options: Options(
@@ -70,7 +59,7 @@ class RegistrationApiService {
       );
       return RegistrationSuccessResponse.fromJson(response.data);
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw _handleRegistrationDioError(e);
     }
   }
 
@@ -81,7 +70,7 @@ class RegistrationApiService {
   }) async {
     print("--requestEmailOtp");
     try {
-      final response = await _dio.post(
+      final response = await http.post(
         '/auth/registration/$registrationId/email/request',
         options: Options(
           headers: {
@@ -92,7 +81,7 @@ class RegistrationApiService {
       return RegistrationSuccessResponse.fromJson(response.data);
     } on DioException catch (e) {
       print(e.response);
-      throw _handleDioError(e);
+      throw _handleRegistrationDioError(e);
     }
   }
 
@@ -103,7 +92,7 @@ class RegistrationApiService {
     required String code,
   }) async {
     try {
-      final response = await _dio.post(
+      final response = await http.post(
         '/auth/registration/$registrationId/email/verify',
         data: OtpVerifyRequest(code: code).toJson(),
         options: Options(
@@ -114,7 +103,7 @@ class RegistrationApiService {
       );
       return RegistrationSuccessResponse.fromJson(response.data);
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw _handleRegistrationDioError(e);
     }
   }
 
@@ -124,7 +113,7 @@ class RegistrationApiService {
     required String stepToken,
   }) async {
     try {
-      final response = await _dio.post(
+      final response = await http.post(
         '/auth/registration/$registrationId/phone/request',
         options: Options(
           headers: {
@@ -135,7 +124,7 @@ class RegistrationApiService {
 
       return RegistrationSuccessResponse.fromJson(response.data);
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw _handleRegistrationDioError(e);
     }
   }
 
@@ -146,7 +135,7 @@ class RegistrationApiService {
     required String code,
   }) async {
     try {
-      final response = await _dio.post(
+      final response = await http.post(
         '/auth/registration/$registrationId/phone/verify',
         data: OtpVerifyRequest(code: code).toJson(),
         options: Options(
@@ -157,17 +146,17 @@ class RegistrationApiService {
       );
       return RegistrationCompletedResponse.fromJson(response.data);
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw _handleRegistrationDioError(e);
     }
   }
 
-  /// recover register
+  /// Recover register
   Future<RegistrationSuccessResponse> recoverRegistration({
     required String registrationId,
     required String resumeToken,
   }) async {
     try {
-      final response = await _dio.post(
+      final response = await http.post(
         '/auth/registration/$registrationId/recover',
         options: Options(
           headers: {
@@ -177,12 +166,12 @@ class RegistrationApiService {
       );
       return RegistrationSuccessResponse.fromJson(response.data);
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw _handleRegistrationDioError(e);
     }
   }
 
-  /// Handle Dio errors
-  Exception _handleDioError(DioException e) {
+  /// Handle Dio errors for registration
+  Exception _handleRegistrationDioError(DioException e) {
     print('--Dio Error: ${e.message}');
     print('--Response: ${e.response?.data}');
     print('--Response error: ${e.response?.data["error"]}');
@@ -201,30 +190,27 @@ class RegistrationApiService {
         }
 
         return RegistrationException(
-          code: errorBody.code,
-          message: errorBody.userMessage ?? "",
-          httpStatus: errorBody.httpStatus,
-          fields: errorBody.fields,
-          registration: registration
+            code: errorBody.code,
+            message: errorBody.userMessage ?? "",
+            httpStatus: errorBody.httpStatus,
+            fields: errorBody.fields,
+            registration: registration
         );
       } catch (parseError, t) {
         print('Error parsing response: $parseError');
         print(t);
       }
     }
-    
-    return RegistrationException(
-      code: e.type.toString(),
-      message: e.message ?? 'Network error occurred',
-      httpStatus: e.response?.statusCode ?? 0
-    );
-  }
 
-  void dispose() {
-    _dio.close();
+    return RegistrationException(
+        code: e.type.toString(),
+        message: e.message ?? 'Network error occurred',
+        httpStatus: e.response?.statusCode ?? 0
+    );
   }
 }
 
+/// Registration exception
 class RegistrationException implements Exception {
   final String code;
   final String message;
