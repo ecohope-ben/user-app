@@ -7,11 +7,7 @@ enum Gender {
   @JsonValue('male')
   male,
   @JsonValue('female')
-  female,
-  @JsonValue('non_binary')
-  nonBinary,
-  @JsonValue('prefer_not_to_say')
-  preferNotToSay,
+  female
 }
 
 /// Profile model
@@ -63,7 +59,7 @@ class ProfileEnvelope {
 @JsonSerializable()
 class ProfilePatchRequest {
   final String? name;
-  final Gender? gender;
+  final String? gender;
   @JsonKey(name: 'birth_month')
   final int? birthMonth;
   @JsonKey(name: 'birth_day')
@@ -88,13 +84,15 @@ class ProfileErrorBody {
   final String code;
   @JsonKey(name: 'http_status')
   final int httpStatus;
-  final String message;
+  final String? userMessage;
+  final String? debugMessage;
   final Map<String, List<FieldError>>? fields;
 
   const ProfileErrorBody({
     required this.code,
     required this.httpStatus,
-    required this.message,
+    required this.userMessage,
+    required this.debugMessage,
     this.fields,
   });
 

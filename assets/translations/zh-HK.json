@@ -18,7 +18,13 @@
     "verify_phone_description": "We just sent you a SMS for the OTP code at {}.",
     "profile": "Your Profile",
     "profile_description": "Please fill in the information.",
-    "select_date_of_birth": "Selected Date of Birth"
+    "select_date_of_birth": "Selected Date of Birth",
+    "date_of_birth": "Date of Birth",
+    "confirm_and_login": "Confirm and Login"
+  },
+  "login": {
+    "description": "Please login with your email address with OTP here.",
+    "your_email_address": "Your Email Address"
   },
   "month": "Month",
   "date": "Date",
@@ -55,7 +61,12 @@
   },
   "last_name": "Last Name",
   "first_name": "First Name",
+  "your_name": "Your Name",
   "send_otp": "Send OTP",
+  "male": "Male",
+  "female": "Female",
+  "gender": "Gender",
+  "age": "Age",
   "verify_and_next": "Verify and Next",
   "ok": "Confirm",
   "cancel": "Cancel"

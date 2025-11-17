@@ -5,34 +5,31 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../models/profile_models.dart';
 import '../models/registration_models.dart';
-import 'profile_api.dart';
-import 'registration_api.dart';
+import 'endpoints/profile_api.dart';
+import 'endpoints/registration_api.dart';
 
 
 class Api {
-  static final Api _instance = Api._internal(Dio(), Dio());
+  static final Api _instance = Api._internal(Dio());
   final Dio dio;
-  final Dio retryDio;
 
   static Api instance() => _instance;
 
-  Api._internal(this.dio, this.retryDio) {
+  Api._internal(this.dio) {
 
     if (kDebugMode) {
       dio.interceptors
-          .add(LogInterceptor(requestBody: false, responseBody: false));
+          .add(LogInterceptor(requestBody: true, responseBody: true));
     }
   }
 
   Api setBaseUrl(String baseUrl) {
     dio.options.baseUrl = baseUrl;
-    retryDio.options.baseUrl = baseUrl;
     return this;
   }
 
   Api addInterceptor(Interceptor interceptor) {
     dio.interceptors.add(interceptor);
-    retryDio.interceptors.add(interceptor);
     return this;
   }
 

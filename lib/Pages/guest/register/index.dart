@@ -4,13 +4,10 @@ import 'package:step_progress/step_progress.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_app/pages/guest/register/steps/email_verify.dart';
 import 'package:user_app/pages/guest/register/steps/phone_verify.dart';
-import 'package:user_app/pages/guest/register/widgets.dart';
 import '../../../components/register/stepper.dart';
-import 'steps.dart';
-
-import '../../../api/registration_api.dart';
 import '../../../blocs/registration_cubit.dart';
 import '../../../models/registration_models.dart';
+import 'steps/create_profile.dart';
 import 'steps/email_input.dart';
 import 'steps/phone_input.dart';
 
@@ -52,7 +49,7 @@ class _RegisterIndexState extends State<RegisterIndex> {
                   registration: state.registration!,
                   stepToken: state.registration!.tokens.step
                 ));
-              }else if(state.httpCode == 401){
+              }else if(state.httpCode == 401 || state.httpCode == 404){
                 context.read<RegistrationCubit>().update(RegistrationInitial());
               }
             }
@@ -84,6 +81,7 @@ class _RegisterIndexState extends State<RegisterIndex> {
   }
 
   Widget _buildRegisterSection(BuildContext context, RegistrationState state){
+    // return CreateProfileStep();
 
     if(state is RegistrationInProgress){
       RegistrationStage stage = state.registration.stage;

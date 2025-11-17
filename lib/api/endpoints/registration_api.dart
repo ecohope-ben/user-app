@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import '../models/registration_models.dart';
-import 'index.dart';
+import '../../models/registration_models.dart';
+import '../index.dart';
 
 /// Registration API endpoint
 class RegisterApi extends ApiEndpoint {
@@ -101,6 +101,11 @@ class RegisterApi extends ApiEndpoint {
           },
         ),
       );
+      if(response.data["session"] != null){
+        print("--have session");
+
+      }
+
       return RegistrationSuccessResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw _handleRegistrationDioError(e);

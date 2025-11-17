@@ -188,7 +188,7 @@ class RegistrationUpdateRequest {
   Map<String, dynamic> toJson() => _$RegistrationUpdateRequestToJson(this);
 }
 
-/// OTP 驗證請求
+
 @JsonSerializable()
 class OtpVerifyRequest {
   final String code;

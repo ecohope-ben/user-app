@@ -26,12 +26,7 @@ Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
   'updated_at': instance.updatedAt.toIso8601String(),
 };
 
-const _$GenderEnumMap = {
-  Gender.male: 'male',
-  Gender.female: 'female',
-  Gender.nonBinary: 'non_binary',
-  Gender.preferNotToSay: 'prefer_not_to_say',
-};
+const _$GenderEnumMap = {Gender.male: 'male', Gender.female: 'female'};
 
 ProfileEnvelope _$ProfileEnvelopeFromJson(Map<String, dynamic> json) =>
     ProfileEnvelope(
@@ -44,7 +39,7 @@ Map<String, dynamic> _$ProfileEnvelopeToJson(ProfileEnvelope instance) =>
 ProfilePatchRequest _$ProfilePatchRequestFromJson(Map<String, dynamic> json) =>
     ProfilePatchRequest(
       name: json['name'] as String?,
-      gender: $enumDecodeNullable(_$GenderEnumMap, json['gender']),
+      gender: json['gender'] as String?,
       birthMonth: (json['birth_month'] as num?)?.toInt(),
       birthDay: (json['birth_day'] as num?)?.toInt(),
     );
@@ -53,7 +48,7 @@ Map<String, dynamic> _$ProfilePatchRequestToJson(
   ProfilePatchRequest instance,
 ) => <String, dynamic>{
   'name': instance.name,
-  'gender': _$GenderEnumMap[instance.gender],
+  'gender': instance.gender,
   'birth_month': instance.birthMonth,
   'birth_day': instance.birthDay,
 };
@@ -62,7 +57,8 @@ ProfileErrorBody _$ProfileErrorBodyFromJson(Map<String, dynamic> json) =>
     ProfileErrorBody(
       code: json['code'] as String,
       httpStatus: (json['http_status'] as num).toInt(),
-      message: json['message'] as String,
+      userMessage: json['userMessage'] as String?,
+      debugMessage: json['debugMessage'] as String?,
       fields: (json['fields'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(
           k,
@@ -77,7 +73,8 @@ Map<String, dynamic> _$ProfileErrorBodyToJson(ProfileErrorBody instance) =>
     <String, dynamic>{
       'code': instance.code,
       'http_status': instance.httpStatus,
-      'message': instance.message,
+      'userMessage': instance.userMessage,
+      'debugMessage': instance.debugMessage,
       'fields': instance.fields,
     };
 

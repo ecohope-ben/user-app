@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../api/registration_api.dart';
+import '../api/endpoints/registration_api.dart';
 import '../api/index.dart';
+import '../auth/index.dart';
 import '../models/registration_models.dart';
 
 abstract class RegistrationState extends Equatable {
@@ -263,7 +264,8 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         stepToken: response.registration.tokens.step,
         resumeToken: response.registration.tokens.resume,
       ));
-    } catch (e) {
+    } catch (e, t) {
+      print(t);
       if (e is RegistrationException) {
         emit(RegistrationError(
           registration: e.registration,
@@ -346,6 +348,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         ));
         return;
       }
+      // Save tokens to Auth
+      final auth = Auth.instance();
+      await auth.saveAccessToken(response.session.accessToken);
+      await auth.saveRefreshToken(response.session.refreshToken);
 
       emit(RegistrationCompleted(session: response.session));
     } catch (e) {

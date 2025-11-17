@@ -1,22 +1,20 @@
 import 'package:dio/dio.dart';
-import '../models/profile_models.dart';
-import 'index.dart';
+import '../../models/profile_models.dart';
+import '../index.dart';
 
 class ProfileApi extends ApiEndpoint {
   ProfileApi(super.api);
 
   /// Get current profile
-  Future<ProfileEnvelope> getProfile({
-    required String accessToken,
-  }) async {
+  Future<ProfileEnvelope> getProfile() async {
     try {
       final response = await http.get(
-        '/api/v1/profile',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
+        '/profile',
+        // options: Options(
+        //   headers: {
+        //     'Authorization': 'Bearer $accessToken',
+        //   },
+        // ),
       );
       return ProfileEnvelope.fromJson(response.data);
     } on DioException catch (e) {
@@ -26,18 +24,18 @@ class ProfileApi extends ApiEndpoint {
 
   /// Update profile
   Future<void> updateProfile({
-    required String accessToken,
+    // required String accessToken,
     required ProfilePatchRequest request,
   }) async {
     try {
-      await http.patch(
-        '/api/v1/profile',
+      await http.post(
+        '/onboarding/complete-profile',
         data: request.toJson(),
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
+        // options: Options(
+        //   headers: {
+        //     'Authorization': 'Bearer $accessToken',
+        //   },
+        // ),
       );
     } on DioException catch (e) {
       throw _handleProfileDioError(e);
@@ -54,7 +52,7 @@ class ProfileApi extends ApiEndpoint {
         final errorBody = ProfileErrorBody.fromJson(e.response!.data);
         return ProfileException(
           code: errorBody.code,
-          message: errorBody.message,
+          userMessage: errorBody.userMessage,
           httpStatus: errorBody.httpStatus,
           fields: errorBody.fields,
         );
@@ -65,7 +63,7 @@ class ProfileApi extends ApiEndpoint {
 
     return ProfileException(
       code: 'unknown_error',
-      message: e.message ?? 'An unknown error occurred',
+      userMessage: e.message ?? 'An unknown error occurred',
       httpStatus: e.response?.statusCode ?? 0,
     );
   }
@@ -75,19 +73,21 @@ class ProfileApi extends ApiEndpoint {
 /// Profile exception
 class ProfileException implements Exception {
   final String code;
-  final String message;
+  final String? userMessage;
+  final String? debugMessage;
   final int httpStatus;
   final Map<String, List<FieldError>>? fields;
 
   const ProfileException({
     required this.code,
-    required this.message,
+    this.userMessage,
+    this.debugMessage,
     required this.httpStatus,
     this.fields,
   });
 
   @override
-  String toString() => 'ProfileException: $message (Code: $code, Status: $httpStatus)';
+  String toString() => 'ProfileException: $userMessage (Code: $code, Status: $httpStatus)';
 }
 
 

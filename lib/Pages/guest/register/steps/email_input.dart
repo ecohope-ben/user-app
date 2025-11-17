@@ -48,17 +48,18 @@ class _EmailInputStepState extends State<EmailInputStep> {
           TitleText(tr("register.email_address")),
           SubTitleText(tr("register.email_description")),
           TextInput(tr("register.your_email_address"), validator: _validateEmail, controller: _emailController),
-          ActionButton(tr("send_otp"), onTap: () async {
-            if (_formKey.currentState!.validate()) {
-              // If validation passes, get the email and update registration
-              final email = _emailController.text;
+          ActionButton(
+              tr("send_otp"),
+              showLoading: context.read<RegistrationCubit>().state is RegistrationInProgressLoading,
+              onTap: () async {
+                if (_formKey.currentState!.validate()) {
+                  // If validation passes, get the email and update registration
+                  final email = _emailController.text;
 
-              final bloc = context.read<RegistrationCubit>();
-              bloc.updateRegistration(email: email);
-
-
-            }
-          })
+                  final bloc = context.read<RegistrationCubit>();
+                  bloc.updateRegistration(email: email);
+                }
+              })
         ],
       ),
     );

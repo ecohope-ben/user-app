@@ -67,7 +67,7 @@ class _OTPInputState extends State<OTPInput> {
         SizedBox(height: 20),
         (_errorMessage != null) ? Text(_errorMessage ?? "", style: TextStyle(color: Colors.red)) : Container(),
         SizedBox(height: 20),
-        ActionButton(tr("verify_and_next"), onTap: () => onSubmit(otp))
+        ActionButton(tr("verify_and_next"), onTap: () => onSubmit(otp), showLoading: context.read<RegistrationCubit>().state is RegistrationInProgressLoading)
       ],
     );
   }

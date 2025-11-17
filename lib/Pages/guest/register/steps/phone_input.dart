@@ -50,14 +50,18 @@ class _PhoneInputStepState extends State<PhoneInputStep> {
           SubTitleText(tr("register.phone_description")),
           PhoneInput(controller: _phoneController, validator: hkPhoneValidator),
           SizedBox(height: 20),
-          ActionButton(tr("send_otp"), onTap: () async {
-            if (_formKey.currentState!.validate()) {
-              // If validation passes, get the email and update registration
-              final phone = "+852${_phoneController.text}";
-              final bloc = context.read<RegistrationCubit>();
-              bloc.updateRegistration(phone: phone);
-            }
-          })
+          ActionButton(
+              tr("send_otp"),
+              showLoading: context.read<RegistrationCubit>().state is RegistrationInProgressLoading,
+              onTap: () async {
+                if (_formKey.currentState!.validate()) {
+                  // If validation passes, get the email and update registration
+                  final phone = "+852${_phoneController.text}";
+                  final bloc = context.read<RegistrationCubit>();
+                  bloc.updateRegistration(phone: phone);
+                }
+              }
+          )
         ],
       ),
     );

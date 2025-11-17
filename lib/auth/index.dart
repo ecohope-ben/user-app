@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth {
   static final Auth _instance = Auth._internal(FlutterSecureStorage());
-  // static final Auth _instance = new Auth._internal();
   final FlutterSecureStorage storage;
   String? accessToken;
   String? refreshToken;
@@ -30,13 +29,20 @@ class Auth {
 
 
     accessToken = await storage.read(key: "access_token");
+    refreshToken = await storage.read(key: "refresh_token");
 
     firebaseToken = await storage.read(key: "fcm_token");
   }
 
   Future saveAccessToken(String accessToken) async {
+    print("--save access token");
     this.accessToken = accessToken;
     await storage.write(key: "access_token", value: accessToken);
+  }
+
+  Future saveRefreshToken(String refreshToken) async {
+    this.refreshToken = refreshToken;
+    await storage.write(key: "refresh_token", value: refreshToken);
   }
 
   // static bool loggedIn() => Auth.instance().isLoggedIn;

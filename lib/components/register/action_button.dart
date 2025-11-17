@@ -7,7 +7,8 @@ import '../../style.dart';
 class ActionButton extends StatefulWidget {
   final String title;
   final VoidCallback? onTap;
-  const ActionButton(this.title, {this.onTap, super.key});
+  final bool showLoading;
+  const ActionButton(this.title, {this.showLoading = false, this.onTap, super.key});
 
   @override
   State<ActionButton> createState() => _ActionButtonState();
@@ -41,7 +42,8 @@ class _ActionButtonState extends State<ActionButton> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if(context.read<RegistrationCubit>().state is RegistrationInProgressLoading)
+                  // if(context.read<RegistrationCubit>().state is RegistrationInProgressLoading)
+                  if(widget.showLoading)
                     Container(
                       height: 20.0,
                       width: 20.0,

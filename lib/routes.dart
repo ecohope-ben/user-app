@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:user_app/main.dart';
 import 'package:user_app/pages/guest/register/index.dart';
+import 'package:user_app/pages/home_page.dart';
 
 
 typedef RouteWidgetBuilder = Widget Function(
@@ -8,6 +9,7 @@ typedef RouteWidgetBuilder = Widget Function(
 
 Map<String, WidgetBuilder> routes = {
   "/": (context) => RegisterIndex(),
+  "/home": (context) => HomePage(),
 
 };
 

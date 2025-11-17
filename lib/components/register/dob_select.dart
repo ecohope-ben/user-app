@@ -74,7 +74,7 @@ class _BirthdayOneStepDialogState extends State<_BirthdayOneStepDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              tr("select_date_of_birth"),
+              tr("register.select_date_of_birth"),
               style: TextStyle(color: Colors.white, fontSize: 16),
             ),
             Text(

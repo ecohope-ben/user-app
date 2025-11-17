@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../api/profile_api.dart';
+import '../api/endpoints/profile_api.dart';
 import '../api/index.dart';
 import '../models/profile_models.dart';
 
@@ -17,6 +17,8 @@ class ProfileInitial extends ProfileState {}
 
 /// Loading state
 class ProfileLoading extends ProfileState {}
+
+class ProfileUpdateSuccess extends ProfileState {}
 
 /// Profile loaded state
 class ProfileLoaded extends ProfileState {
@@ -57,27 +59,21 @@ class ProfileError extends ProfileState {
 /// Profile Cubit
 class ProfileCubit extends Cubit<ProfileState> {
   final ProfileApi _apiService;
-  final String _accessToken;
 
   ProfileCubit({
     ProfileApi? apiService,
-    required String accessToken,
-  })  : _apiService = apiService ?? Api.instance().profile()!,
-        _accessToken = accessToken,
-        super(ProfileInitial());
+  })  : _apiService = apiService ?? Api.instance().profile(), super(ProfileInitial());
 
   /// Load profile
   Future<void> loadProfile() async {
     try {
       emit(ProfileLoading());
-      final envelope = await _apiService.getProfile(
-        accessToken: _accessToken,
-      );
+      final envelope = await _apiService.getProfile();
       emit(ProfileLoaded(profile: envelope.profile));
     } catch (e) {
       if (e is ProfileException) {
         emit(ProfileError(
-          message: e.message,
+          message: e.userMessage ?? "",
           code: e.code,
           fieldErrors: e.fields,
         ));
@@ -90,7 +86,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   /// Update profile
   Future<void> updateProfile({
     String? name,
-    Gender? gender,
+    String? gender,
     int? birthMonth,
     int? birthDay,
   }) async {
@@ -105,16 +101,17 @@ class ProfileCubit extends Cubit<ProfileState> {
       );
 
       await _apiService.updateProfile(
-        accessToken: _accessToken,
         request: request,
       );
 
-      // Reload profile after update
-      await loadProfile();
+      emit(ProfileUpdateSuccess());
+
+      // // Reload profile after update
+      // await loadProfile();
     } catch (e) {
       if (e is ProfileException) {
         emit(ProfileError(
-          message: e.message,
+          message: e.userMessage ?? "",
           code: e.code,
           fieldErrors: e.fields,
         ));
