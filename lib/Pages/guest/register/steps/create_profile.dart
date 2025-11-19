@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../blocs/profile_cubit.dart';
 import '../../../../components/register/action_button.dart';
 import '../../../../components/register/profile_input.dart';
-import '../widgets.dart';
+import '../../widgets.dart';
 
 class CreateProfileStep extends StatelessWidget {
   const CreateProfileStep({super.key});

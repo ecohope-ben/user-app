@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../blocs/registration_cubit.dart';
 import '../../../../components/register/action_button.dart';
 import '../../../../components/register/phone_input.dart';
-import '../widgets.dart';
+import '../../widgets.dart';
 
 class PhoneInputStep extends StatefulWidget {
   const PhoneInputStep({super.key});

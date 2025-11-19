@@ -23,8 +23,11 @@
     "confirm_and_login": "Confirm and Login"
   },
   "login": {
-    "description": "Please login with your email address with OTP here.",
-    "your_email_address": "Your Email Address"
+    "email_description": "Please login with your email address with OTP here.",
+    "your_email_address": "Your Email Address",
+    "welcome": "Welcome",
+    "login_with_otp": "Login with OTP",
+    "please_enter_otp": "Please enter OTP code sent to {}."
   },
   "month": "Month",
   "date": "Date",
@@ -69,6 +72,8 @@
   "age": "Age",
   "verify_and_next": "Verify and Next",
   "ok": "Confirm",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "please_contact_at": "Please contact us at ",
+  "if_need_help": "if you need help with your account"
 
 }

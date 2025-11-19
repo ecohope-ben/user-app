@@ -38,7 +38,7 @@ class _ActionButtonState extends State<ActionButton> {
                     borderRadius: BorderRadius.zero
                 ),
               ),
-              onPressed: widget.onTap,
+              onPressed: widget.showLoading ? null : widget.onTap,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

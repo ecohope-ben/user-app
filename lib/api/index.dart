@@ -5,12 +5,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../models/profile_models.dart';
 import '../models/registration_models.dart';
+import 'endpoints/login_api.dart';
 import 'endpoints/profile_api.dart';
 import 'endpoints/registration_api.dart';
 
 
 class Api {
-  static final Api _instance = Api._internal(Dio());
+    static final Api _instance = Api._internal(Dio());
   final Dio dio;
 
   static Api instance() => _instance;
@@ -45,6 +46,7 @@ class Api {
 
 
   RegisterApi register() => getApi<RegisterApi>(() => RegisterApi(this)) as RegisterApi;
+  LoginApi login() => getApi<LoginApi>(() => LoginApi(this)) as LoginApi;
   ProfileApi profile() => getApi<ProfileApi>(() => ProfileApi(this)) as ProfileApi;
 }
 

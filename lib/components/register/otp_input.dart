@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 
 import '../../blocs/registration_cubit.dart';
-import '../../pages/guest/register/widgets.dart';
+import '../../pages/guest/widgets.dart';
 import '../../style.dart';
 import 'action_button.dart';
 
@@ -12,7 +12,8 @@ class OTPInput extends StatefulWidget {
 
   final String? Function(String?)? validator;
   final void Function(String) submitOTP;
-  const OTPInput({this.validator, required this.submitOTP, super.key});
+  final bool showLoading;
+  const OTPInput({this.validator, required this.submitOTP, required this.showLoading, super.key});
 
   @override
   State<OTPInput> createState() => _OTPInputState();
@@ -21,9 +22,18 @@ class OTPInput extends StatefulWidget {
 class _OTPInputState extends State<OTPInput> {
   String otp = "";
   String? _errorMessage;
+  List<TextEditingController?> _controllers = [];
+
+  // Helper method to get full OTP from all controllers
+  String _getFullOtp() {
+    return _controllers
+        .map((controller) => controller?.text ?? '')
+        .join('');
+  }
 
   void onSubmit(String verificationCode){
-
+    print("--otp: $verificationCode");
+    print("--otp: $otp");
     // Validate OTP
     if (widget.validator != null) {
       final error = widget.validator!(verificationCode);
@@ -33,6 +43,7 @@ class _OTPInputState extends State<OTPInput> {
 
       // Only verify if validation passes
       if (error == null) {
+        print("--error is null");
         widget.submitOTP(verificationCode);
       }
     } else {
@@ -58,8 +69,18 @@ class _OTPInputState extends State<OTPInput> {
           borderWidth: 2.0,
           //runs when a code is typed in
           onCodeChanged: (String code) {
+            // Get full OTP from all controllers
+            final fullOtp = _getFullOtp();
+            print("--onOtpChange: $code");
+            print("--fullOtp: $fullOtp");
             //handle validation or checks here if necessary
-            otp = code;
+            setState(() {
+              otp = fullOtp;
+            });
+          },
+          handleControllers: (List<TextEditingController?> controllers){
+            // Store controllers to access their values later
+            _controllers = controllers;
           },
           //runs when every text field is filled
           onSubmit: onSubmit,
@@ -67,7 +88,7 @@ class _OTPInputState extends State<OTPInput> {
         SizedBox(height: 20),
         (_errorMessage != null) ? Text(_errorMessage ?? "", style: TextStyle(color: Colors.red)) : Container(),
         SizedBox(height: 20),
-        ActionButton(tr("verify_and_next"), onTap: () => onSubmit(otp), showLoading: context.read<RegistrationCubit>().state is RegistrationInProgressLoading)
+        ActionButton(tr("verify_and_next"), onTap: () => onSubmit(_getFullOtp()), showLoading: widget.showLoading)
       ],
     );
   }

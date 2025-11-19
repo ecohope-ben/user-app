@@ -14,6 +14,7 @@ Map<int, String> ageGroup = {
   3: "35-44",
   4: "45-54",
   5: "55-64",
+  6: "65+"
 };
 
 class ProfileInput extends StatefulWidget {
@@ -26,6 +27,7 @@ class ProfileInput extends StatefulWidget {
 class _ProfileInputState extends State<ProfileInput> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+
   String? _gender;
   int? _selectedAgeGroup;
   int? _birthMonth;

@@ -209,6 +209,10 @@ class _BirthdayOneStepDialogState extends State<_BirthdayOneStepDialog> {
               'day': selectedDay,
             });
           },
+          style: ButtonStyle(
+            overlayColor: WidgetStateProperty.all<Color>(Colors.transparent),
+            backgroundColor: WidgetStateProperty.all<Color>(Colors.transparent),
+          ),
           child: Text(tr("ok"), style: TextStyle(color: mainPurple, fontWeight: FontWeight.bold)),
         ),
       ],

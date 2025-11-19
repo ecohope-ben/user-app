@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
     Api.instance().setBaseUrl(baseUrl)
         .addInterceptor(AuthorizationInterceptor());
 
-    return MaterialApp(
+    return MaterialApp.router(
       // home: const HomePage(),
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
@@ -54,8 +54,9 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: backgroundColor
       ),
       // Routes are defined in another function
-      routes: routes,
-      onGenerateRoute: onGenerateRoute,
+      routerConfig: router,
+      // routes: routes,
+      // onGenerateRoute: onGenerateRoute,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: Locale("en", "US"),

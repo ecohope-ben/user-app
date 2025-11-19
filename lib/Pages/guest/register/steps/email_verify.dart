@@ -7,7 +7,7 @@ import '../../../../components/register/otp_input.dart';
 import '../../../../components/register/resend_button.dart';
 import '../../../../models/registration_models.dart';
 import '../../../../style.dart';
-import '../widgets.dart';
+import '../../widgets.dart';
 
 class EmailVerificationStep extends StatefulWidget {
   const EmailVerificationStep({super.key});
@@ -50,6 +50,7 @@ class _EmailVerificationStepState extends State<EmailVerificationStep> {
     });
     super.initState();
   }
+
   void reSendOTP(){
     context.read<RegistrationCubit>().requestEmailOtp();
   }
@@ -63,7 +64,7 @@ class _EmailVerificationStepState extends State<EmailVerificationStep> {
         Image.asset("assets/icon/register_email.png", width: 180),
         TitleText(tr("register.check_your_email")),
         SubTitleText(tr("register.check_email_description", args: [email ?? ""])),
-        OTPInput(validator: _validateOTP, submitOTP: _submitOTP),
+        OTPInput(validator: _validateOTP, submitOTP: _submitOTP, showLoading: context.read<RegistrationCubit>().state is RegistrationInProgressLoading),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

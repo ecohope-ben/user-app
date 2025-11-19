@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 
-import '../../../blocs/registration_cubit.dart';
-import '../../../components/register/dob_select.dart';
-import '../../../components/register/text_input.dart';
-import '../../../style.dart';
+import '../../blocs/registration_cubit.dart';
+import '../../components/register/dob_select.dart';
+import '../../components/register/text_input.dart';
+import '../../style.dart';
 
 class TitleText extends StatelessWidget {
   final String title;
-  const TitleText(this.title, {super.key});
+  final double? fontSize;
+  const TitleText(this.title, {this.fontSize, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class TitleText extends StatelessWidget {
       child: Text(
         title,
         style: TextStyle(
-            fontSize: 30,
+            fontSize: fontSize ?? 30,
             fontWeight: FontWeight.bold
         ),
       ),
