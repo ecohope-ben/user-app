@@ -8,6 +8,7 @@ const Color mainPurple = Color(0xFF975DFF);
 const Color backgroundColor = Color(0xFFF4F9FA);
 const Color blueTextUnderline = Color(0xFF48F9FF);
 const Color blueRegisterText = Color(0xFF3CA2FF);
+const Color welcomeWordsBg = Color(0xFF29A862);
 
 
 // final primarySwatch = MaterialColor(accentColor.value, getSwatch(accentColor));

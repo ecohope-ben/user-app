@@ -71,7 +71,11 @@ class _PhoneVerificationStepState extends State<PhoneVerificationStep> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(tr("register.dont_receive_code")),
-            ResendButton(reSendOTP),
+            ResendButton(
+              reSendOTP,
+              cubitType: ResendButtonCubitType.registration,
+              channelType: ResendButtonChannelType.phone,
+            ),
           ],
         ),
         Row(

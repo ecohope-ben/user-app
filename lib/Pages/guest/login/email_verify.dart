@@ -54,6 +54,7 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
   Widget build(BuildContext context) {
     print("--find LoginCubit: ${context.read<LoginCubit>()}");
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: InkWell(
           onTap: () => Navigator.pop(context),
@@ -64,7 +65,6 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
         listener: (context, state) {
           if(state is LoginError){
             if(state.login?.stage == LoginStage.failed){
-
               showForcePopup(
                   context,
                   title: "登入錯誤",
@@ -84,6 +84,8 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
                 behavior: SnackBarBehavior.floating,
               ),
             );
+          }else if(state is LoginCompleted){
+            context.go("/");
           }
 
         },
@@ -104,7 +106,11 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(tr("register.dont_receive_code")),
-                      // ResendButton(sendOTP),
+                      ResendButton(
+                        sendOTP,
+                        cubitType: ResendButtonCubitType.login,
+                        channelType: ResendButtonChannelType.email,
+                      ),
                     ],
                   ),
                   Row(

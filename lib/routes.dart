@@ -3,26 +3,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/pages/guest/login/index.dart';
 import 'package:user_app/pages/guest/register/index.dart';
-import 'package:user_app/pages/home_page.dart';
+import 'package:user_app/pages/home.dart';
+import 'package:user_app/pages/subscription/list.dart';
 
 import 'blocs/login_cubit.dart';
 import 'pages/guest/login/email_verify.dart';
+import 'pages/guest/welcome/get_start.dart';
 
 final router = GoRouter(
   routes: [
     ShellRoute(
         builder: (context, state, child) => BlocProvider(
-          create: (_) => LoginCubit(),              // 這裡建立一次就夠了
-          child: child,                             // 所有子路由都會繼承到
+          create: (_) => LoginCubit(),
+          child: child,
         ),
       routes: [
         GoRoute(
           path: '/login',
           builder: (context, state) => const LoginIndex(),
-          // builder: (context, state) => BlocProvider(
-          //   create: (_) => LoginCubit(),
-          //   child: const LoginIndex(),
-          // ),
         ),
         GoRoute(
           path: '/login/verify',
@@ -42,7 +40,15 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/',
+      builder: (context, state) => IntroPage(),
+    ),
+    GoRoute(
+      path: '/home',
       builder: (context, state) => HomePage(),
+    ),
+    GoRoute(
+      path: '/subscription/list',
+      builder: (context, state) => SubscriptionListPage(),
     ),
 
 

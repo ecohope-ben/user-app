@@ -69,7 +69,11 @@ class _EmailVerificationStepState extends State<EmailVerificationStep> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(tr("register.dont_receive_code")),
-            ResendButton(reSendOTP),
+            ResendButton(
+              reSendOTP,
+              cubitType: ResendButtonCubitType.registration,
+              channelType: ResendButtonChannelType.email,
+            ),
           ],
         ),
         Row(
