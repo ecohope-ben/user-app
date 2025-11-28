@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:user_app/models/profile_models.dart';
 
 class Auth {
   static final Auth _instance = Auth._internal(FlutterSecureStorage());
   final FlutterSecureStorage storage;
   String? accessToken;
   String? refreshToken;
+  Profile? profile;
 
   String? firebaseToken;
 
@@ -30,8 +32,13 @@ class Auth {
 
     accessToken = await storage.read(key: "access_token");
     refreshToken = await storage.read(key: "refresh_token");
-
     firebaseToken = await storage.read(key: "fcm_token");
+
+    // read profile
+    final profileData = await storage.read(key: "profile");
+    if (profileData != null) {
+      profile = Profile.fromJson(jsonDecode(profileData));
+    }
   }
 
   Future saveAccessToken(String accessToken) async {
@@ -43,6 +50,11 @@ class Auth {
   Future saveRefreshToken(String refreshToken) async {
     this.refreshToken = refreshToken;
     await storage.write(key: "refresh_token", value: refreshToken);
+  }
+
+  Future saveProfile(Profile profile) async {
+    this.profile = profile;
+    await storage.write(key: "profile", value: jsonEncode(profile.toJson()));
   }
 
   // static bool loggedIn() => Auth.instance().isLoggedIn;

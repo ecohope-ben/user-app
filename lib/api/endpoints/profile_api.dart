@@ -8,14 +8,7 @@ class ProfileApi extends ApiEndpoint {
   /// Get current profile
   Future<ProfileEnvelope> getProfile() async {
     try {
-      final response = await http.get(
-        '/profile',
-        // options: Options(
-        //   headers: {
-        //     'Authorization': 'Bearer $accessToken',
-        //   },
-        // ),
-      );
+      final response = await http.get('/profile',);
       return ProfileEnvelope.fromJson(response.data);
     } on DioException catch (e) {
       throw _handleProfileDioError(e);
@@ -28,15 +21,7 @@ class ProfileApi extends ApiEndpoint {
     required ProfilePatchRequest request,
   }) async {
     try {
-      await http.post(
-        '/onboarding/complete-profile',
-        data: request.toJson(),
-        // options: Options(
-        //   headers: {
-        //     'Authorization': 'Bearer $accessToken',
-        //   },
-        // ),
-      );
+      await http.post('/onboarding/complete-profile', data: request.toJson());
     } on DioException catch (e) {
       throw _handleProfileDioError(e);
     }

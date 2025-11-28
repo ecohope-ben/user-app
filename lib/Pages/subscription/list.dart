@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:user_app/style.dart';
 
 
 class SubscriptionListPage extends StatelessWidget {
@@ -14,7 +16,7 @@ class SubscriptionListPage extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {},
+          onPressed: () { context.pop(); },
         ),
         title: const Text(
           "Subscriptions",
@@ -33,19 +35,18 @@ class SubscriptionListPage extends StatelessWidget {
           children: [
             const Text(
               "Join a plan to start recycling",
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+              style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
             const SizedBox(height: 4),
             const Text(
               "You can cancel anytime.",
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+              style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
             const SizedBox(height: 24),
 
             // 1. Monthly Plan Card (Purple)
             const SubscriptionCard(
-              themeColor: Color(0xFF9747FF), // 紫色
-              lightColor: Color(0xFFE0C9FF), // 淺紫色 (用於背景圖案區)
+              themeColor: mainPurple,
               imagePath: "assets/widget/subscription_header_monthly.png",
               title: "Monthly Plan",
               originalPrice: "100",
@@ -59,14 +60,11 @@ class SubscriptionListPage extends StatelessWidget {
                 "Personalized recycling records",
               ],
             ),
-
             const SizedBox(height: 20),
 
             // 2. Yearly Plan Card (Blue)
             const SubscriptionCard(
-              themeColor: Color(0xFF2D5BFF), // 藍色
-              lightColor: Color(0xFFCAD5FF), // 淺藍色
-
+              themeColor: Color(0xFF2D5BFF),
               imagePath: "assets/widget/subscription_header_yearly.png",
               title: "Yearly Plan",
               originalPrice: "1300",
@@ -89,7 +87,6 @@ class SubscriptionListPage extends StatelessWidget {
 
 class SubscriptionCard extends StatelessWidget {
   final Color themeColor;
-  final Color lightColor;
   final String imagePath;
   final String title;
   final String originalPrice;
@@ -99,7 +96,6 @@ class SubscriptionCard extends StatelessWidget {
   const SubscriptionCard({
     super.key,
     required this.themeColor,
-    required this.lightColor,
     required this.imagePath,
     required this.title,
     required this.originalPrice,
@@ -187,7 +183,9 @@ class SubscriptionCard extends StatelessWidget {
 
                       // Join now button
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.push("/subscription/signup");
+                        },
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.black,
                           foregroundColor: Colors.white,
@@ -241,22 +239,4 @@ class SubscriptionCard extends StatelessWidget {
       ),
     );
   }
-}
-
-// 自定義剪裁路徑，用於製作 Header 的斜角效果
-class HeaderClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-
-    path.lineTo(size.width * 0.55, 0); // 上方線條畫到 65% 寬度
-
-    path.lineTo(size.width * 0.85, size.height); // 下方線條畫到 55% 寬度 (形成斜角)
-    path.lineTo(0, size.height); // 回到左下角
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

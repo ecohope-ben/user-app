@@ -85,7 +85,8 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
               ),
             );
           }else if(state is LoginCompleted){
-            context.go("/");
+            print("--login complete");
+            context.go("/home");
           }
 
         },

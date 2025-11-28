@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../api/endpoints/profile_api.dart';
 import '../api/index.dart';
+import '../auth/index.dart';
 import '../models/profile_models.dart';
 
 /// Profile state
@@ -69,6 +70,10 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       emit(ProfileLoading());
       final envelope = await _apiService.getProfile();
+
+      // save profile
+      Auth.instance().saveProfile(envelope.profile);
+
       emit(ProfileLoaded(profile: envelope.profile));
     } catch (e) {
       if (e is ProfileException) {

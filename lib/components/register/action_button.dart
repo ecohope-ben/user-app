@@ -42,7 +42,6 @@ class _ActionButtonState extends State<ActionButton> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // if(context.read<RegistrationCubit>().state is RegistrationInProgressLoading)
                   if(widget.showLoading)
                     Container(
                       height: 20.0,

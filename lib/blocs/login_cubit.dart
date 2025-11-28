@@ -91,7 +91,6 @@ class LoginCubit extends Cubit<LoginState> {
         super(LoginInitial());
 
   Future<void> startLogin() async {
-    print("--start Login");
     try {
       emit(LoginLoading());
       final response = await _apiService.startLogin();

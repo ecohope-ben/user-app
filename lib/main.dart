@@ -34,14 +34,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // String baseUrl = "http://192.168.50.237:3001";
-    String baseUrl = "http://172.19.44.17:3001";
+    // String baseUrl = "http://172.19.44.17:3001";
+    String baseUrl = "https://customer-int.eco-hope.org";
     Api.instance().setBaseUrl(baseUrl)
         .addInterceptor(AuthorizationInterceptor());
 
     return MaterialApp.router(
-      // home: const HomePage(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+
           colorScheme: ColorScheme.fromSeed(
             seedColor: backgroundColor,
             brightness: Brightness.light,

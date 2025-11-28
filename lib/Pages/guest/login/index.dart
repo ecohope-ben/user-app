@@ -79,7 +79,8 @@ class _LoginIndexState extends State<LoginIndex>{
                           final result = await bloc.updateEmail(email: email);
 
                           if(mounted && result) {
-                            context.push("/login/verify", extra: context.read<LoginCubit>());
+                            context.push("/login/verify");
+                            // context.push("/login/verify", extra: context.read<LoginCubit>());
                             // context.pushNamedWithBloc("/login/verify", context.read<LoginCubit>());
                           }
                         }

@@ -8,19 +8,12 @@ class IntroPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 定義顏色
-    const Color kBackgroundColor = Color(0xFF1E1E1E); // 深灰背景
-    const Color kAccentCyan = Color(0xFF00E5FF); // 青色/亮藍色
-    const Color kTextColor = Colors.white;
-    const Color kSubTextColor = Colors.white70;
+    const Color kBackgroundColor = Color(0xFF1E1E1E);
 
     return Scaffold(
       backgroundColor: kBackgroundColor,
       body: Stack(
         children: [
-          // 1. 背景圖層 (Background Pattern)
-          // 如果你有幾何圖案的圖片，使用 Image.asset 放在這裡
-          // 這裡我們用一個漸層或 Container 模擬深色背景
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -35,10 +28,7 @@ class IntroPage extends StatelessWidget {
             ),
           ),
 
-          // 為了模擬背景的幾何線條，這裡只是一個簡單的示意
-          // 實際專案中請使用 Image.asset("assets/background_pattern.png")
-
-          // 2. 主要內容 (Main Content)
+          // 2. Main Content
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -51,7 +41,7 @@ class IntroPage extends StatelessWidget {
                   const Spacer(flex: 1),
 
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0.0), // 左右留白
+                    padding: const EdgeInsets.symmetric(horizontal: 0.0),
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: RichText(
@@ -107,7 +97,7 @@ class IntroPage extends StatelessWidget {
 
                   const Spacer(flex: 2),
 
-                  // Get Started 按鈕
+                  // Get Started button
                   Container(
                       width: double.infinity,
                       height: 40,
@@ -123,7 +113,8 @@ class IntroPage extends StatelessWidget {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          context.push("/home");
+                          // context.push("/home");
+                          context.push("/register");
                           print("Get Started Tapped");
                         },
                         child: Text("Get Started", textAlign: TextAlign.center,
@@ -138,7 +129,7 @@ class IntroPage extends StatelessWidget {
 
                   const SizedBox(height: 24),
 
-                  // Login 文字連結
+                  // Login
                   RichText(
                     text: TextSpan(
                       style: const TextStyle(fontSize: 14, color: Colors.white),
@@ -147,13 +138,13 @@ class IntroPage extends StatelessWidget {
                         TextSpan(
                           text: "Login",
                           style: const TextStyle(
-                            color: Colors.blueAccent, // 藍色連結
+                            color: Colors.blueAccent,
                             fontWeight: FontWeight.bold,
                             decoration: TextDecoration.underline,
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              print("Login Tapped");
+                              context.push("/login");
                             },
                         ),
                       ],
@@ -170,7 +161,7 @@ class IntroPage extends StatelessWidget {
                   //     const SizedBox(width: 8),
                   //     _buildDot(isActive: false),
                   //     const SizedBox(width: 8),
-                  //     _buildDot(isActive: true), // 假設這是第三頁
+                  //     _buildDot(isActive: true),
                   //   ],
                   // ),
 

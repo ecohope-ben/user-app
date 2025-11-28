@@ -19,19 +19,13 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
 
   @override
   Widget build(BuildContext context) {
-    // 定義顏色
-    const Color kThemePurple = Color(0xFF9747FF);
-    const Color kCyanAccent = Color(0xFF00E5FF);
 
     return Scaffold(
       body: Stack(
         children: [
-          // 1. 背景層：紫色斜切 Header + 幾何線條模擬
           Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 200, // Header 高度
+            top: 0, left: 0, right: 0,
+            height: 200,
             child: Stack(
               children: [
                 Container(
@@ -46,14 +40,12 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
             ),
           ),
 
-          // 2. 前景內容層 (可捲動)
+          // scrollable content
           SafeArea(
             child: Column(
               children: [
-                // 自定義 AppBar
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8, 10, 8, 0),
-                  // padding: const EdgeInsets.(horizontal: 8.0, vertical: 10),
                   child: Row(
                     children: [
                       IconButton(
@@ -71,7 +63,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 48), // 平衡左邊按鈕寬度，讓標題置中
+                      const SizedBox(width: 48), // let title be center
                     ],
                   ),
                 ),
@@ -88,8 +80,9 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                           width: double.infinity,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
+
                             color: Colors.white,
-                            border: Border.all(color: kThemePurple, width: 1.2),
+                            border: Border.all(color: mainPurple, width: 1.2),
                             // borderRadius: BorderRadius.circular(4),
                           ),
                           child: Column(
@@ -112,7 +105,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                              color: const Color(0xFFFAFAFA),
+                              color: Color(0xFFfafafa),
                               border: Border.all(color: const Color(0xFFC7C7C7))
                           ),
                           child: Column(
