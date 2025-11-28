@@ -7,6 +7,8 @@ import 'package:user_app/routes.dart';
 import 'package:user_app/style.dart';
 import 'api/index.dart';
 import 'api/interceptors/auth.dart';
+import 'api/interceptors/localization.dart';
+import 'api/interceptors/refresh_token_interceptor.dart';
 import 'api/endpoints/registration_api.dart';
 import 'blocs/bloc_observer.dart';
 
@@ -37,7 +39,9 @@ class MyApp extends StatelessWidget {
     // String baseUrl = "http://172.19.44.17:3001";
     String baseUrl = "https://customer-int.eco-hope.org";
     Api.instance().setBaseUrl(baseUrl)
-        .addInterceptor(AuthorizationInterceptor());
+        .addInterceptor(AuthorizationInterceptor())
+        .addInterceptor(ApiLocalizationInterceptor(context))
+        .addInterceptor(RefreshTokenInterceptor());
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,

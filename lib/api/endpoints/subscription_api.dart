@@ -7,11 +7,10 @@ class SubscriptionApi extends ApiEndpoint {
   SubscriptionApi(super.api);
 
   /// List available subscription plans
-  Future<PlanListEnvelope> listPlans({String? acceptLanguage}) async {
+  Future<PlanListEnvelope> listPlans() async {
     try {
       final response = await http.get(
-        '/subscription-plans',
-        options: _languageOptions(acceptLanguage),
+        '/subscription-plans'
       );
       return PlanListEnvelope.fromJson(response.data);
     } on DioException catch (e) {
@@ -21,13 +20,11 @@ class SubscriptionApi extends ApiEndpoint {
 
   /// Get subscription plan detail
   Future<PlanDetail> getPlan({
-    required String planId,
-    String? acceptLanguage,
+    required String planId
   }) async {
     try {
       final response = await http.get(
         '/subscription-plans/$planId',
-        options: _languageOptions(acceptLanguage),
       );
       return PlanDetail.fromJson(response.data);
     } on DioException catch (e) {
@@ -66,13 +63,10 @@ class SubscriptionApi extends ApiEndpoint {
   }
 
   /// List existing subscriptions for authenticated customer
-  Future<SubscriptionListEnvelope> listSubscriptions({
-    String? acceptLanguage,
-  }) async {
+  Future<SubscriptionListEnvelope> listSubscriptions() async {
     try {
       final response = await http.get(
         '/subscriptions',
-        options: _languageOptions(acceptLanguage),
       );
       return SubscriptionListEnvelope.fromJson(response.data);
     } on DioException catch (e) {
@@ -81,14 +75,10 @@ class SubscriptionApi extends ApiEndpoint {
   }
 
   /// Get subscription detail
-  Future<SubscriptionDetail> getSubscriptionDetail({
-    required String subscriptionId,
-    String? acceptLanguage,
-  }) async {
+  Future<SubscriptionDetail> getSubscriptionDetail({required String subscriptionId}) async {
     try {
       final response = await http.get(
-        '/subscriptions/$subscriptionId',
-        options: _languageOptions(acceptLanguage),
+        '/subscriptions/$subscriptionId'
       );
       return SubscriptionDetail.fromJson(response.data);
     } on DioException catch (e) {
@@ -97,14 +87,10 @@ class SubscriptionApi extends ApiEndpoint {
   }
 
   /// Check activation result for subscription
-  Future<ActivateSubscriptionResponse> checkActivation({
-    required String subscriptionId,
-    String? acceptLanguage,
-  }) async {
+  Future<ActivateSubscriptionResponse> checkActivation({required String subscriptionId}) async {
     try {
       final response = await http.post(
-        '/subscriptions/$subscriptionId/activate',
-        options: _languageOptions(acceptLanguage),
+        '/subscriptions/$subscriptionId/activate'
       );
       return ActivateSubscriptionResponse.fromJson(response.data);
     } on DioException catch (e) {
@@ -196,17 +182,6 @@ class SubscriptionApi extends ApiEndpoint {
     } on DioException catch (e) {
       throw _handleSubscriptionDioError(e);
     }
-  }
-
-  Options? _languageOptions(String? acceptLanguage) {
-    if (acceptLanguage == null) {
-      return null;
-    }
-    return Options(
-      headers: {
-        'Accept-Language': acceptLanguage,
-      },
-    );
   }
 
   Map<String, dynamic> _clean(Map<String, dynamic> payload) {

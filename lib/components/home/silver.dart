@@ -14,6 +14,8 @@ class SliverBar extends StatefulWidget {
 }
 
 class _SliverBarState extends State<SliverBar> {
+  String? avatar;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,11 +33,11 @@ class _SliverBarState extends State<SliverBar> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 backgroundColor: Color(0xFF1A103C),
                 radius: 24,
                 child: Text(
-                  "A",
+                  avatar ?? "A",
                   style: TextStyle(color: mainPurple, fontSize: 20),
                 ),
               ),
@@ -69,6 +71,14 @@ class _SliverBarState extends State<SliverBar> {
       builder: (context, state) {
 
         if(state is ProfileLoaded) {
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              setState(() {
+                avatar = state.profile.name[0].toUpperCase();
+              });
+            }
+          });
           return RichText(
             text: TextSpan(
               style: TextStyle(fontSize: 24, color: Colors.black),

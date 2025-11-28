@@ -12,7 +12,7 @@ class PromotionBanner extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF6200EA), Color(0xFFB388FF)], // 紫色漸層
+          colors: [Color(0xFF6200EA), Color(0xFFB388FF)],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),

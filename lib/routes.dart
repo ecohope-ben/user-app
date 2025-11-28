@@ -9,6 +9,7 @@ import 'package:user_app/pages/subscription/signup.dart';
 import 'package:user_app/pages/launch.dart';
 
 import 'blocs/login_cubit.dart';
+import 'models/subscription_models.dart';
 import 'pages/guest/login/email_verify.dart';
 import 'pages/guest/welcome/get_start.dart';
 
@@ -33,7 +34,15 @@ final router = GoRouter(
     ),
     GoRoute(path: '/home', builder: (context, state) => HomePage()),
     GoRoute(path: '/subscription/list', builder: (context, state) => SubscriptionListPage()),
-    GoRoute(path: '/subscription/signup', builder: (context, state) => SubscriptionSignUp()),
+    GoRoute(
+        path: '/subscription/signup',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          final plan = extra['plan'] as PlanListItem;
+          final features = extra['features'] as List<String>;
+          return SubscriptionSignUp(plan: plan, features: features);
+        }
+    ),
   ],
 );
 

@@ -36,6 +36,8 @@ enum DiscountType {
   percentage,
   @JsonValue('fixed_amount')
   fixedAmount,
+  @JsonValue('free_cycles')
+  freeCycles,
 }
 
 /// Discount information for plans

@@ -30,6 +30,7 @@ Map<String, dynamic> _$PlanDiscountToJson(PlanDiscount instance) =>
 const _$DiscountTypeEnumMap = {
   DiscountType.percentage: 'percentage',
   DiscountType.fixedAmount: 'fixed_amount',
+  DiscountType.freeCycles: 'free_cycles',
 };
 
 PlanListItem _$PlanListItemFromJson(Map<String, dynamic> json) => PlanListItem(

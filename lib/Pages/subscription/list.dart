@@ -1,34 +1,143 @@
+import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:user_app/blocs/subscription_cubit.dart';
 import 'package:user_app/style.dart';
 
+import '../../components/subscription/card.dart';
+import '../../models/subscription_models.dart';
 
-class SubscriptionListPage extends StatelessWidget {
+
+class SubscriptionListPage extends StatefulWidget {
   const SubscriptionListPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<SubscriptionListPage> createState() => _SubscriptionListPageState();
+}
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () { context.pop(); },
-        ),
-        title: const Text(
-          "Subscriptions",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: true,
+class _SubscriptionListPageState extends State<SubscriptionListPage> {
+  Map<String, List<String>>? _planFeaturesMap;
+  bool _isLoadingFeatures = false;
+  Locale? _currentLocale;
+
+  @override
+  void initState() {
+    super.initState();
+    // Load features after first frame to get context
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _currentLocale = context.locale;
+        _loadPlanFeatures();
+      }
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload features if locale changed
+    final currentLocale = context.locale;
+    if (_currentLocale != null && _currentLocale != currentLocale) {
+      _currentLocale = currentLocale;
+      _loadPlanFeatures();
+    } else {
+      _currentLocale ??= currentLocale;
+    }
+  }
+
+  /// Get current language code based on locale
+  String _getLanguageCode(BuildContext context) {
+    final locale = context.locale;
+    switch (locale.countryCode) {
+      case 'HK':
+        return 'zh-hk';
+      case 'US':
+      default:
+        return 'en';
+    }
+  }
+
+  Future<void> _loadPlanFeatures() async {
+    if (_isLoadingFeatures) return;
+    
+    setState(() {
+      _isLoadingFeatures = true;
+    });
+
+    try {
+      final String jsonString = await rootBundle.loadString('assets/data/plans.json');
+      final Map<String, dynamic> jsonData = json.decode(jsonString);
+      
+      // Get current language code
+      final languageCode = _getLanguageCode(context);
+      
+      final Map<String, List<String>> featuresMap = {};
+      jsonData.forEach((billingCycle, planData) {
+        if (planData is Map<String, dynamic> && planData['features'] is Map) {
+          final featuresByLang = planData['features'] as Map<String, dynamic>;
+          // Get features for current language, fallback to 'en' if not found
+          if (featuresByLang.containsKey(languageCode) && featuresByLang[languageCode] is List) {
+            featuresMap[billingCycle] = List<String>.from(featuresByLang[languageCode]);
+          } else if (featuresByLang.containsKey('en') && featuresByLang['en'] is List) {
+            // Fallback to English if current language not found
+            featuresMap[billingCycle] = List<String>.from(featuresByLang['en']);
+          }
+        }
+      });
+      
+      setState(() {
+        _planFeaturesMap = featuresMap;
+        _isLoadingFeatures = false;
+      });
+    } catch (e) {
+      // If loading fails, continue without features map (fallback to description)
+      setState(() {
+        _planFeaturesMap = {};
+        _isLoadingFeatures = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => SubscriptionCubit()..loadPlans(),
+      child: BlocBuilder<SubscriptionCubit, SubscriptionState>(
+        builder: (context, state) {
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () {
+                    context.pop();
+                  },
+                ),
+                title: const Text(
+                  "Subscriptions",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                centerTitle: true,
+              ),
+              body: _buildBody(state)
+            );
+         
+        },
       ),
-      body: SingleChildScrollView(
+    );
+  }
+  
+  Widget _buildBody(SubscriptionState state){
+    if (state is SubscriptionPlansLoaded) {
+      return SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,199 +153,32 @@ class SubscriptionListPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // 1. Monthly Plan Card (Purple)
-            const SubscriptionCard(
-              themeColor: mainPurple,
-              imagePath: "assets/widget/subscription_header_monthly.png",
-              title: "Monthly Plan",
-              originalPrice: "100",
-              currentPrice: "0",
-              features: [
-                "1 welcome gift",
-                "1 Free recycle bag",
-                "1 time pick up",
-                "Flexible pick up time and locations",
-                "Live tracking with recycling progress",
-                "Personalized recycling records",
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            // 2. Yearly Plan Card (Blue)
-            const SubscriptionCard(
-              themeColor: Color(0xFF2D5BFF),
-              imagePath: "assets/widget/subscription_header_yearly.png",
-              title: "Yearly Plan",
-              originalPrice: "1300",
-              currentPrice: "1000",
-              features: [
-                "Save up to \$300",
-                "12 times pick up",
-                "Flexible pick up time and locations",
-                "Live tracking with recycling progress",
-                "Personalized recycling records",
-              ],
-            ),
+            // Plan cards
+            ..._buildPlanList(state.plans)
 
           ],
         ),
-      ),
-    );
+      );
+    }else {
+      return Center(child: CircularProgressIndicator());
+    }
   }
-}
+  List<Widget> _buildPlanList(List<PlanListItem> plans){
+    return plans.map((plan) {
 
-class SubscriptionCard extends StatelessWidget {
-  final Color themeColor;
-  final String imagePath;
-  final String title;
-  final String originalPrice;
-  final String currentPrice;
-  final List<String> features;
-
-  const SubscriptionCard({
-    super.key,
-    required this.themeColor,
-    required this.imagePath,
-    required this.title,
-    required this.originalPrice,
-    required this.currentPrice,
-    required this.features,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: themeColor, width: 1), // 外框顏色跟隨主題
-      ),
-      child: Column(
-        children: [
-
-          SizedBox(
-            height: 90,
-            child: Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: AssetImage(imagePath) as ImageProvider,
-                    ),
-                  ),
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // 左側文字資訊
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Subscription",
-                            style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w800),
-                          ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              // originalPrice
-                              Text(
-                                "\$$originalPrice",
-                                style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 16,
-                                  decoration: TextDecoration.lineThrough,
-                                  decorationColor: Colors.white70,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              // 現價
-                              Text(
-                                "\$$currentPrice",
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Text(
-                                " | ",
-                                style: TextStyle(color: Colors.white, fontSize: 20),
-                              ),
-                              Text(
-                                title,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-
-                      // Join now button
-                      TextButton(
-                        onPressed: () {
-                          context.push("/subscription/signup");
-                        },
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero,
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                        ),
-                        child: const Text("Join Now"),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // --- Card Body (Features List) ---
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: features.map((feature) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.check,
-                        color: themeColor,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          feature,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            color: Colors.black87,
-                            height: 1.2,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-      ),
-    );
+      // Get features from plans.json, fallback to description if not found
+      List<String> features;
+      if (_planFeaturesMap != null && _planFeaturesMap!.containsKey(plan.billingCycle.name)) {
+        features = _planFeaturesMap![plan.billingCycle.name]!;
+      } else {
+        // Fallback to parsing description
+        features = plan.description
+            .split('\n')
+            .where((line) => line.trim().isNotEmpty)
+            .toList();
+      }
+      
+      return SubscriptionCard(plan: plan, features: features);
+    }).toList();
   }
 }

@@ -134,21 +134,20 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
       : _api = api ?? Api.instance().subscription(),
         super(const SubscriptionInitial());
 
-  Future<void> loadPlans({String? locale}) async {
+  Future<void> loadPlans() async {
     emit(const SubscriptionLoading('plans'));
     try {
-      final envelope = await _api.listPlans(acceptLanguage: locale);
+      final envelope = await _api.listPlans();
       emit(SubscriptionPlansLoaded(plans: envelope.data));
     } catch (error) {
       _handleError(error);
     }
   }
 
-  Future<void> loadPlanDetail(String planId, {String? locale}) async {
+  Future<void> loadPlanDetail(String planId) async {
     emit(const SubscriptionLoading('plan_detail'));
     try {
-      final plan =
-          await _api.getPlan(planId: planId, acceptLanguage: locale);
+      final plan = await _api.getPlan(planId: planId);
       emit(SubscriptionPlanDetailLoaded(plan: plan));
     } catch (error) {
       _handleError(error);
@@ -176,26 +175,21 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
     }
   }
 
-  Future<void> loadSubscriptions({String? locale}) async {
+  Future<void> loadSubscriptions() async {
     emit(const SubscriptionLoading('subscriptions'));
     try {
-      final envelope =
-          await _api.listSubscriptions(acceptLanguage: locale);
+      final envelope = await _api.listSubscriptions();
       emit(SubscriptionListLoaded(subscriptions: envelope.subscriptions));
     } catch (error) {
       _handleError(error);
     }
   }
 
-  Future<void> loadSubscriptionDetail(
-    String subscriptionId, {
-    String? locale,
-  }) async {
+  Future<void> loadSubscriptionDetail(String subscriptionId) async {
     emit(const SubscriptionLoading('subscription_detail'));
     try {
       final detail = await _api.getSubscriptionDetail(
-        subscriptionId: subscriptionId,
-        acceptLanguage: locale,
+        subscriptionId: subscriptionId
       );
       emit(SubscriptionDetailLoaded(detail: detail));
     } catch (error) {
@@ -203,15 +197,11 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
     }
   }
 
-  Future<void> checkActivation(
-    String subscriptionId, {
-    String? locale,
-  }) async {
+  Future<void> checkActivation(String subscriptionId) async {
     emit(const SubscriptionLoading('activation'));
     try {
       final response = await _api.checkActivation(
-        subscriptionId: subscriptionId,
-        acceptLanguage: locale,
+        subscriptionId: subscriptionId
       );
       emit(SubscriptionActivationChecked(response: response));
     } catch (error) {

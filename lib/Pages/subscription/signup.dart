@@ -1,21 +1,44 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:user_app/components/subscription/features.dart';
 
+import '../../components/subscription/payment_detail_row.dart';
+import '../../models/subscription_models.dart';
 import '../../style.dart';
 
 class SubscriptionSignUp extends StatefulWidget {
-  const SubscriptionSignUp({super.key});
+  final PlanListItem plan;
+  final List<String> features;
+  const SubscriptionSignUp({super.key, required this.plan, required this.features});
 
   @override
   State<SubscriptionSignUp> createState() => _SubscriptionSignUpState();
 }
 
 class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
+  late final Color themeColor;
+  late final String imagePath;
+
   // Dropdown values
   String? selectedRegion = 'Kowloon';
   String? selectedDistrict = 'Lok Fu';
   final TextEditingController addressController = TextEditingController(
       text: "Chinachem Leighton Plaza, 29 Leighton Road...");
+
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.plan.billingCycle == BillingCycle.monthly) {
+      themeColor = mainPurple;
+      imagePath = "assets/widget/subscription_header_monthly.png";
+    } else {
+      themeColor = blueBorder;
+      imagePath = "assets/widget/subscription_header_yearly.png";
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -75,26 +98,19 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // 2.1 權益卡片 (Benefits Card)
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-
                             color: Colors.white,
                             border: Border.all(color: mainPurple, width: 1.2),
                             // borderRadius: BorderRadius.circular(4),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              _BenefitItem(text: "1 welcome gift"),
-                              _BenefitItem(text: "Receive 1 FREE Eco Hope recycle bag"),
-                              _BenefitItem(text: "1 time pick up"),
-                              _BenefitItem(text: "Flexible pick up time and locations"),
-                              _BenefitItem(text: "Live tracking with recycling progress"),
-                              _BenefitItem(text: "Personalized recycling records"),
-                            ],
+                            children: widget.features.map((feature){
+                              return FeaturesListItem(feature, color: themeColor);
+                            }).toList()
                           ),
                         ),
 
@@ -110,9 +126,9 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                           ),
                           child: Column(
                             children: [
-                              _buildDetailRow("Type", "Monthly Plan", isBold: true),
+                              PaymentDetailRow("Type", "Monthly Plan", isBold: true),
                               const SizedBox(height: 8),
-                              _buildDetailRow("Renewing on", "15 Nov 2025", isBold: true),
+                              PaymentDetailRow("Renewing on", "15 Nov 2025", isBold: true),
                               const SizedBox(height: 8),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -297,51 +313,4 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
     );
   }
 
-  // Helper Widget: 詳情列
-  Widget _buildDetailRow(String label, String value, {bool isBold = false}) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 100,
-          child: Text(label, style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w700)),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-              color: Colors.black,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// Helper Widget: tick and words
-class _BenefitItem extends StatelessWidget {
-  final String text;
-  const _BenefitItem({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(Icons.check, color: Color(0xFF9747FF), size: 20),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(fontSize: 15, height: 1.2),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

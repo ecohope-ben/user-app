@@ -119,6 +119,18 @@ class LoginApi extends ApiEndpoint {
     }
   }
 
+  // Refresh session using refresh token
+  // Note: This method should be called with refresh token in Authorization header
+  // The interceptor will handle this automatically
+  Future<Session> refreshSession() async {
+    try {
+      final response = await http.post('/auth/session/refresh');
+      return Session.fromJson(response.data);
+    } on DioException catch (e) {
+      throw _handleLoginDioError(e);
+    }
+  }
+
   Exception _handleLoginDioError(DioException e) {
     print('--Login Dio Error: ${e.message}');
     print('--Login Response: ${e.response?.data}');

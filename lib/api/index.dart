@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'endpoints/entitlement_api.dart';
 import 'endpoints/login_api.dart';
+import 'endpoints/logistics_api.dart';
 import 'endpoints/profile_api.dart';
 import 'endpoints/registration_api.dart';
 import 'endpoints/subscription_api.dart';
@@ -49,8 +50,8 @@ class Api {
   LoginApi login() => getApi<LoginApi>(() => LoginApi(this)) as LoginApi;
   ProfileApi profile() => getApi<ProfileApi>(() => ProfileApi(this)) as ProfileApi;
   SubscriptionApi subscription() => getApi<SubscriptionApi>(() => SubscriptionApi(this)) as SubscriptionApi;
-  EntitlementApi entitlements() =>
-      getApi<EntitlementApi>(() => EntitlementApi(this)) as EntitlementApi;
+  EntitlementApi entitlements() => getApi<EntitlementApi>(() => EntitlementApi(this)) as EntitlementApi;
+  LogisticsApi logistics() => getApi<LogisticsApi>(() => LogisticsApi(this)) as LogisticsApi;
 }
 
 abstract class ApiEndpoint {
