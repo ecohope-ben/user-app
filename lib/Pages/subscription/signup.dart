@@ -1,11 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:user_app/components/subscription/features.dart';
 
+import 'package:flutter_stripe/flutter_stripe.dart';
+import '../../api/index.dart';
+import '../../api/endpoints/subscription_api.dart';
 import '../../components/subscription/payment_detail_row.dart';
+import '../../models/logistics_models.dart';
 import '../../models/subscription_models.dart';
 import '../../style.dart';
+import '../../utils/popUp.dart';
 
 class SubscriptionSignUp extends StatefulWidget {
   final PlanListItem plan;
@@ -20,12 +24,27 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   late final Color themeColor;
   late final String imagePath;
 
-  // Dropdown values
-  String? selectedRegion = 'Kowloon';
-  String? selectedDistrict = 'Lok Fu';
+  // API instances
+  final _logisticsApi = Api.instance().logistics();
+  final _subscriptionApi = Api.instance().subscription();
+
+  // Loading states
+  bool _isLoadingDistricts = true;
+  bool _isLoadingPreview = true;
+  bool _isCreatingSubscription = false;
+  String? _districtsError;
+  String? _previewError;
+
+  // District data
+  List<District> _districts = [];
+  District? _selectedDistrict;
+  SubDistrict? _selectedSubDistrict;
+
+  // Preview data
+  PreviewSubscriptionResponse? _previewData;
+
   final TextEditingController addressController = TextEditingController(
       text: "Chinachem Leighton Plaza, 29 Leighton Road...");
-
 
   @override
   void initState() {
@@ -37,8 +56,244 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
       themeColor = blueBorder;
       imagePath = "assets/widget/subscription_header_yearly.png";
     }
+    _loadData();
   }
 
+  Future<void> _loadData() async {
+    await Future.wait([
+      _loadDistricts(),
+      _loadPreview(),
+    ]);
+  }
+
+  Future<void> _loadDistricts() async {
+    setState(() {
+      _isLoadingDistricts = true;
+      _districtsError = null;
+    });
+
+    try {
+      final envelope = await _logisticsApi.listDistricts();
+      setState(() {
+        _districts = envelope.data;
+        _isLoadingDistricts = false;
+        // Set default selection if available
+        if (_districts.isNotEmpty) {
+          _selectedDistrict = _districts.first;
+          if (_selectedDistrict!.subDistricts.isNotEmpty) {
+            _selectedSubDistrict = _selectedDistrict!.subDistricts.first;
+          }
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingDistricts = false;
+        _districtsError = e.toString();
+      });
+    }
+  }
+
+  Future<void> _loadPreview() async {
+    setState(() {
+      _isLoadingPreview = true;
+      _previewError = null;
+    });
+
+    try {
+      final request = PreviewSubscriptionCreationRequest(
+        planId: widget.plan.id,
+        planVersionId: widget.plan.versionId,
+        discountId: widget.plan.discount?.id,
+      );
+      print("--preview request");
+      print(widget.plan.id);
+      print(widget.plan.versionId);
+      print(widget.plan.discount?.id);
+      final preview = await _subscriptionApi.previewSubscription(request: request);
+      setState(() {
+        _previewData = preview;
+        _isLoadingPreview = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingPreview = false;
+        _previewError = e.toString();
+      });
+    }
+  }
+
+  void _onDistrictChanged(District? district) {
+    setState(() {
+      _selectedDistrict = district;
+      _selectedSubDistrict = district?.subDistricts.isNotEmpty == true
+          ? district!.subDistricts.first
+          : null;
+    });
+  }
+
+  void _onSubDistrictChanged(SubDistrict? subDistrict) {
+    setState(() {
+      _selectedSubDistrict = subDistrict;
+    });
+  }
+
+  String _formatDate(DateTime date) {
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
+  }
+
+  String _formatAmount(int amount, String currency) {
+    final formatted = (amount / 100).toStringAsFixed(2);
+    return '$currency$formatted';
+  }
+
+  String _getBillingCycleText() {
+    return widget.plan.billingCycle == BillingCycle.monthly
+        ? 'Monthly Plan'
+        : 'Yearly Plan';
+  }
+
+  String _getRenewalText() {
+    if (_previewData == null) return 'Loading...';
+    return _formatDate(_previewData!.periodEnd);
+  }
+
+  String _getAmountText() {
+    if (_previewData == null) return 'Loading...';
+    if (!_previewData!.requirePayment) {
+      return '${_formatAmount(_previewData!.amount, _previewData!.currency)} | pay nothing until ${_formatDate(_previewData!.periodEnd)}, then \$${widget.plan.priceDecimal}/Month';
+    }
+    return _formatAmount(_previewData!.amount, _previewData!.currency);
+  }
+
+  String _getAutoRenewText() {
+    final cycle = widget.plan.billingCycle == BillingCycle.monthly ? '1 month' : '1 year';
+    return 'Auto-renews every $cycle, cancel anytime.';
+  }
+
+  Future<void> presentSubscriptionSheet({String? paymentIntentClientSecret, String? setupIntentClientSecret}) async {
+
+    await Stripe.instance.initPaymentSheet(
+      paymentSheetParameters: SetupPaymentSheetParameters(
+        merchantDisplayName: 'My Demo',
+        // This is a PaymentIntent flow for the first subscription invoice:
+        paymentIntentClientSecret: paymentIntentClientSecret,
+        setupIntentClientSecret: setupIntentClientSecret,
+        allowsDelayedPaymentMethods: true, // optional
+      ),
+    );
+
+    // Shows Stripe’s native UI
+    await Stripe.instance.presentPaymentSheet();
+    print("--payment finished");
+  }
+
+  Future<void> _createSubscription() async {
+    // Validate required fields
+    if (_selectedDistrict == null) {
+      await showForcePopup(
+        context,
+        title: '錯誤',
+        message: '請選擇區域 (Region)',
+      );
+      return;
+    }
+
+    if (_selectedSubDistrict == null) {
+      await showForcePopup(
+        context,
+        title: '錯誤',
+        message: '請選擇地區 (District)',
+      );
+      return;
+    }
+
+    final address = addressController.text.trim();
+    if (address.isEmpty) {
+      await showForcePopup(
+        context,
+        title: '錯誤',
+        message: '請輸入地址',
+      );
+      return;
+    }
+
+    if (_previewData == null) {
+      await showForcePopup(
+        context,
+        title: '錯誤',
+        message: '預覽資料尚未載入，請稍候再試',
+      );
+      return;
+    }
+
+    setState(() {
+      _isCreatingSubscription = true;
+    });
+
+    try {
+      final request = CreateSubscriptionRequest(
+        planId: widget.plan.id,
+        planVersionId: widget.plan.versionId,
+        districtId: _selectedDistrict!.id,
+        subDistrictId: _selectedSubDistrict!.id,
+        address: address,
+        discountId: widget.plan.discount?.id,
+        amount: _previewData!.amount,
+        currency: _previewData!.currency,
+      );
+
+      final response = await _subscriptionApi.createSubscription(request: request);
+
+      setState(() {
+        _isCreatingSubscription = false;
+      });
+
+      // Handle success - navigate to payment or show success message
+      // Based on nextAction, you may need to navigate to payment page
+      // For now, show success and navigate back
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('訂閱已建立，訂閱 ID: ${response.subscriptionId}'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+
+        if(response.nextAction == PaymentNextAction.setup){
+          await presentSubscriptionSheet(setupIntentClientSecret: response.clientSecret);
+        }else if(response.nextAction == PaymentNextAction.pay){
+          await presentSubscriptionSheet(paymentIntentClientSecret: response.clientSecret);
+        }
+
+        print("--after payment");
+        _checkSubscriptionStatus();
+
+      }
+    } catch (e) {
+      setState(() {
+        _isCreatingSubscription = false;
+      });
+
+      if (mounted) {
+        String errorMessage = '建立訂閱時發生錯誤';
+        if (e is SubscriptionException) {
+          errorMessage = e.message;
+        } else {
+          errorMessage = e.toString();
+        }
+
+        await showForcePopup(
+          context,
+          title: '錯誤',
+          message: errorMessage,
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,11 +330,11 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                         icon: const Icon(Icons.arrow_back, color: Colors.white),
                         onPressed: () => Navigator.pop(context),
                       ),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          "Monthly Plan",
+                          _getBillingCycleText(),
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -124,39 +379,52 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                               color: Color(0xFFfafafa),
                               border: Border.all(color: const Color(0xFFC7C7C7))
                           ),
-                          child: Column(
-                            children: [
-                              PaymentDetailRow("Type", "Monthly Plan", isBold: true),
-                              const SizedBox(height: 8),
-                              PaymentDetailRow("Renewing on", "15 Nov 2025", isBold: true),
-                              const SizedBox(height: 8),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(
-                                    width: 100,
-                                    child: Text("Amount", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700)),
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: const [
-                                        Text(
-                                          "\$0 | pay nothing until 15 Nov 2025",
-                                          style: TextStyle(fontWeight: FontWeight.bold),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          "Auto-renews every 1 month, cancel anytime.",
-                                          style: TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w600),
+                          child: _isLoadingPreview
+                              ? const Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Center(child: CircularProgressIndicator()),
+                                )
+                              : _previewError != null
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Text(
+                                        'Error loading preview: $_previewError',
+                                        style: const TextStyle(color: Colors.red),
+                                      ),
+                                    )
+                                  : Column(
+                                      children: [
+                                        PaymentDetailRow("Type", _getBillingCycleText(), isBold: true),
+                                        const SizedBox(height: 8),
+                                        PaymentDetailRow("Renewing on", _getRenewalText(), isBold: true),
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const SizedBox(
+                                              width: 100,
+                                              child: Text("Amount", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700)),
+                                            ),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    _getAmountText(),
+                                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                                  ),
+                                                  const SizedBox(height: 4),
+                                                  Text(
+                                                    _getAutoRenewText(),
+                                                    style: const TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w600),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
                         ),
 
                         const SizedBox(height: 15),
@@ -174,60 +442,80 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                         const SizedBox(height: 20),
 
                         // Dropdowns Row
-                        Row(
-                          children: [
-                            // Region Dropdown
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text("Region", style: TextStyle(color: Colors.black54)),
-                                  const SizedBox(height: 6),
-                                  DropdownButtonFormField<String>(
-                                    initialValue: selectedRegion,
-                                    isExpanded: true, menuMaxHeight: 0,
-
-                                    decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.zero
-                                        ),
-                                        contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8)
+                        _isLoadingDistricts
+                            ? const Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: Center(child: CircularProgressIndicator()),
+                              )
+                            : _districtsError != null
+                                ? Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text(
+                                      'Error loading districts: $_districtsError',
+                                      style: const TextStyle(color: Colors.red),
                                     ),
-                                    items: ["Kowloon", "Hong Kong Island", "New Territories"]
-                                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                                        .toList(),
-                                    onChanged: (v) => setState(() => selectedRegion = v),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            // District Dropdown
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text("District", style: TextStyle(color: Colors.black54)),
-                                  const SizedBox(height: 6),
-                                  DropdownButtonFormField<String>(
-                                    initialValue: selectedDistrict,
-                                    isExpanded: true,
-                                    decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.zero,
+                                  )
+                                : Row(
+                                    children: [
+                                      // Region Dropdown (District in API terms)
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Text("Region", style: TextStyle(color: Colors.black54)),
+                                            const SizedBox(height: 6),
+                                            DropdownButtonFormField<District>(
+                                              value: _selectedDistrict,
+                                              isExpanded: true,
+                                              menuMaxHeight: 300,
+                                              decoration: const InputDecoration(
+                                                  border: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.zero
+                                                  ),
+                                                  contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8)
+                                              ),
+                                              items: _districts
+                                                  .map((district) => DropdownMenuItem(
+                                                        value: district,
+                                                        child: Text(district.name),
+                                                      ))
+                                                  .toList(),
+                                              onChanged: _onDistrictChanged,
+                                            ),
+                                          ],
                                         ),
-                                        contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8)
-                                    ),
-                                    items: ["Lok Fu", "Mong Kok", "Tsim Sha Tsui"]
-                                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                                        .toList(),
-                                    onChanged: (v) => setState(() => selectedDistrict = v),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      // Sub-District Dropdown
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Text("District", style: TextStyle(color: Colors.black54)),
+                                            const SizedBox(height: 6),
+                                            DropdownButtonFormField<SubDistrict>(
+                                              value: _selectedSubDistrict,
+                                              isExpanded: true,
+                                              decoration: const InputDecoration(
+                                                  border: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.zero,
+                                                  ),
+                                                  contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8)
+                                              ),
+                                              items: _selectedDistrict?.subDistricts
+                                                      .map((subDistrict) => DropdownMenuItem(
+                                                            value: subDistrict,
+                                                            child: Text(subDistrict.name),
+                                                          ))
+                                                      .toList() ??
+                                                  [],
+                                              onChanged: _onSubDistrictChanged,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
 
                         const SizedBox(height: 16),
 
@@ -263,16 +551,27 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                               ),
                             ),
                             child: TextButton(
-                              onPressed: (){},
-                              child: const Text(
-                                "Confirm and proceed to payment",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
+                              onPressed: _isCreatingSubscription ? null : () {
+                                _createSubscription();
+                              },
+                              child: _isCreatingSubscription
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                      ),
+                                    )
+                                  : const Text(
+                                      "Confirm and proceed to payment",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
                             )
                         ),
 
