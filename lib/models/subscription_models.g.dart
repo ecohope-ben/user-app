@@ -35,7 +35,8 @@ const _$DiscountTypeEnumMap = {
 
 PlanListItem _$PlanListItemFromJson(Map<String, dynamic> json) => PlanListItem(
   id: json['id'] as String,
-  planVersionId: json['plan_version_id'] as String,
+  versionId: json['version_id'] as String,
+  familyId: json['family_id'] as String,
   name: json['name'] as String,
   description: json['description'] as String,
   billingCycle: $enumDecode(_$BillingCycleEnumMap, json['billing_cycle']),
@@ -50,7 +51,8 @@ PlanListItem _$PlanListItemFromJson(Map<String, dynamic> json) => PlanListItem(
 Map<String, dynamic> _$PlanListItemToJson(PlanListItem instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'plan_version_id': instance.planVersionId,
+      'version_id': instance.versionId,
+      'family_id': instance.familyId,
       'name': instance.name,
       'description': instance.description,
       'billing_cycle': _$BillingCycleEnumMap[instance.billingCycle]!,
@@ -67,7 +69,8 @@ const _$BillingCycleEnumMap = {
 
 PlanDetail _$PlanDetailFromJson(Map<String, dynamic> json) => PlanDetail(
   id: json['id'] as String,
-  planVersionId: json['plan_version_id'] as String,
+  versionId: json['version_id'] as String,
+  familyId: json['family_id'] as String,
   name: json['name'] as String,
   description: json['description'] as String,
   billingCycle: $enumDecode(_$BillingCycleEnumMap, json['billing_cycle']),
@@ -82,7 +85,8 @@ PlanDetail _$PlanDetailFromJson(Map<String, dynamic> json) => PlanDetail(
 Map<String, dynamic> _$PlanDetailToJson(PlanDetail instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'plan_version_id': instance.planVersionId,
+      'version_id': instance.versionId,
+      'family_id': instance.familyId,
       'name': instance.name,
       'description': instance.description,
       'billing_cycle': _$BillingCycleEnumMap[instance.billingCycle]!,
@@ -107,6 +111,9 @@ DeliveryAddress _$DeliveryAddressFromJson(Map<String, dynamic> json) =>
       districtId: json['district_id'] as String,
       subDistrictId: json['sub_district_id'] as String,
       address: json['address'] as String,
+      fullAddress: json['full_address'] as String?,
+      districtName: json['district_name'] as String?,
+      subDistrictName: json['sub_district_name'] as String?,
     );
 
 Map<String, dynamic> _$DeliveryAddressToJson(DeliveryAddress instance) =>
@@ -114,6 +121,9 @@ Map<String, dynamic> _$DeliveryAddressToJson(DeliveryAddress instance) =>
       'district_id': instance.districtId,
       'sub_district_id': instance.subDistrictId,
       'address': instance.address,
+      'district_name': instance.districtName,
+      'sub_district_name': instance.subDistrictName,
+      'full_address': instance.fullAddress,
     };
 
 SubscriptionPlanInfo _$SubscriptionPlanInfoFromJson(
@@ -198,6 +208,21 @@ Map<String, dynamic> _$SubscriptionDiscountToJson(
   'discount_type': _$DiscountTypeEnumMap[instance.discountType]!,
   'discount_value': instance.discountValue,
 };
+
+RecyclingProfile _$RecyclingProfileFromJson(Map<String, dynamic> json) =>
+    RecyclingProfile(
+      type: json['type'] as String,
+      initialBagStatus: json['initial_bag_status'] as String,
+      initialBagDeliveryTrackingNo:
+          json['initial_bag_delivery_tracking_no'] as String?,
+    );
+
+Map<String, dynamic> _$RecyclingProfileToJson(RecyclingProfile instance) =>
+    <String, dynamic>{
+      'type': instance.type,
+      'initial_bag_status': instance.initialBagStatus,
+      'initial_bag_delivery_tracking_no': instance.initialBagDeliveryTrackingNo,
+    };
 
 SubscriptionPlanListInfo _$SubscriptionPlanListInfoFromJson(
   Map<String, dynamic> json,
@@ -311,6 +336,11 @@ SubscriptionDetail _$SubscriptionDetailFromJson(Map<String, dynamic> json) =>
           : SubscriptionDiscount.fromJson(
               json['discount'] as Map<String, dynamic>,
             ),
+      recyclingProfile: json['recycling_profile'] == null
+          ? null
+          : RecyclingProfile.fromJson(
+              json['recycling_profile'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$SubscriptionDetailToJson(SubscriptionDetail instance) =>
@@ -328,6 +358,7 @@ Map<String, dynamic> _$SubscriptionDetailToJson(SubscriptionDetail instance) =>
       'scheduled_cancellation': instance.scheduledCancellation?.toJson(),
       'scheduled_plan_change': instance.scheduledPlanChange?.toJson(),
       'discount': instance.discount?.toJson(),
+      'recycling_profile': instance.recyclingProfile?.toJson(),
     };
 
 SubscriptionListEnvelope _$SubscriptionListEnvelopeFromJson(
@@ -349,9 +380,6 @@ PreviewSubscriptionCreationRequest _$PreviewSubscriptionCreationRequestFromJson(
 ) => PreviewSubscriptionCreationRequest(
   planId: json['plan_id'] as String,
   planVersionId: json['plan_version_id'] as String,
-  districtId: json['district_id'] as String,
-  subDistrictId: json['sub_district_id'] as String,
-  address: json['address'] as String,
   discountId: json['discount_id'] as String?,
 );
 
@@ -360,9 +388,6 @@ Map<String, dynamic> _$PreviewSubscriptionCreationRequestToJson(
 ) => <String, dynamic>{
   'plan_id': instance.planId,
   'plan_version_id': instance.planVersionId,
-  'district_id': instance.districtId,
-  'sub_district_id': instance.subDistrictId,
-  'address': instance.address,
   'discount_id': instance.discountId,
 };
 
@@ -372,6 +397,8 @@ PreviewSubscriptionResponse _$PreviewSubscriptionResponseFromJson(
   amount: (json['amount'] as num).toInt(),
   currency: json['currency'] as String,
   requirePayment: json['require_payment'] as bool,
+  periodStart: DateTime.parse(json['period_start'] as String),
+  periodEnd: DateTime.parse(json['period_end'] as String),
 );
 
 Map<String, dynamic> _$PreviewSubscriptionResponseToJson(
@@ -380,6 +407,8 @@ Map<String, dynamic> _$PreviewSubscriptionResponseToJson(
   'amount': instance.amount,
   'currency': instance.currency,
   'require_payment': instance.requirePayment,
+  'period_start': instance.periodStart.toIso8601String(),
+  'period_end': instance.periodEnd.toIso8601String(),
 };
 
 CreateSubscriptionRequest _$CreateSubscriptionRequestFromJson(
@@ -413,7 +442,7 @@ CreateSubscriptionResponse _$CreateSubscriptionResponseFromJson(
 ) => CreateSubscriptionResponse(
   subscriptionId: json['subscription_id'] as String,
   clientSecret: json['client_secret'] as String,
-  nextAction: json['next_action'] as String,
+  nextAction: $enumDecode(_$PaymentNextActionEnumMap, json['next_action']),
 );
 
 Map<String, dynamic> _$CreateSubscriptionResponseToJson(
@@ -421,21 +450,32 @@ Map<String, dynamic> _$CreateSubscriptionResponseToJson(
 ) => <String, dynamic>{
   'subscription_id': instance.subscriptionId,
   'client_secret': instance.clientSecret,
-  'next_action': instance.nextAction,
+  'next_action': _$PaymentNextActionEnumMap[instance.nextAction]!,
+};
+
+const _$PaymentNextActionEnumMap = {
+  PaymentNextAction.pay: 'pay',
+  PaymentNextAction.setup: 'setup',
 };
 
 ActivateSubscriptionResponse _$ActivateSubscriptionResponseFromJson(
   Map<String, dynamic> json,
 ) => ActivateSubscriptionResponse(
   subscriptionId: json['subscription_id'] as String,
-  result: json['result'] as String,
+  result: $enumDecode(_$ActivateSubscriptionResultEnumMap, json['result']),
 );
 
 Map<String, dynamic> _$ActivateSubscriptionResponseToJson(
   ActivateSubscriptionResponse instance,
 ) => <String, dynamic>{
   'subscription_id': instance.subscriptionId,
-  'result': instance.result,
+  'result': _$ActivateSubscriptionResultEnumMap[instance.result]!,
+};
+
+const _$ActivateSubscriptionResultEnumMap = {
+  ActivateSubscriptionResult.activated: 'activated',
+  ActivateSubscriptionResult.pending: 'pending',
+  ActivateSubscriptionResult.failed: 'failed',
 };
 
 UpdateAddressRequest _$UpdateAddressRequestFromJson(

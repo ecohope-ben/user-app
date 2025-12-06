@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:user_app/components/subscription/features.dart';
@@ -32,8 +33,12 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   bool _isLoadingDistricts = true;
   bool _isLoadingPreview = true;
   bool _isCreatingSubscription = false;
+  bool _isCheckingActivation = false;
   String? _districtsError;
   String? _previewError;
+
+  // Timer for polling activation status
+  Timer? _activationCheckTimer;
 
   // District data
   List<District> _districts = [];
@@ -262,15 +267,34 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
             duration: const Duration(seconds: 2),
           ),
         );
-
-        if(response.nextAction == PaymentNextAction.setup){
-          await presentSubscriptionSheet(setupIntentClientSecret: response.clientSecret);
-        }else if(response.nextAction == PaymentNextAction.pay){
-          await presentSubscriptionSheet(paymentIntentClientSecret: response.clientSecret);
+        try {
+          if (response.nextAction == PaymentNextAction.setup) {
+            await presentSubscriptionSheet(setupIntentClientSecret: response.clientSecret);
+          } else if (response.nextAction == PaymentNextAction.pay) {
+            await presentSubscriptionSheet(paymentIntentClientSecret: response.clientSecret);
+          }
+        }on StripeException catch(e){
+          if (e.error.code == FailureCode.Canceled) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('用户取消了付款')),
+            );
+          }else if(e.error.code == FailureCode.Failed){
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('付款失敗')),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('付款失败: ${e.error.localizedMessage}')),
+            );
+          }
+        }catch(e){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('付款錯誤，請稍後再試')),
+          );
         }
 
         print("--after payment");
-        _checkSubscriptionStatus();
+        _checkSubscriptionStatus(response.subscriptionId);
 
       }
     } catch (e) {
@@ -293,6 +317,113 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
         );
       }
     }
+  }
+
+  /// Check subscription activation status by polling checkActivation API every 5 seconds
+  Future<void> _checkSubscriptionStatus(String subscriptionId) async {
+    // Cancel any existing timer
+    _activationCheckTimer?.cancel();
+    
+    setState(() {
+      _isCheckingActivation = true;
+    });
+
+    // Start polling
+    _activationCheckTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+
+      try {
+        final response = await _subscriptionApi.checkActivation(subscriptionId: subscriptionId);
+        print("--check active: ${response.subscriptionId} | ${response.result}");
+        if (!mounted) return;
+
+        if (response.result == ActivateSubscriptionResult.activated) {
+          // Success - stop polling and show success message
+          timer.cancel();
+          setState(() {
+            _isCheckingActivation = false;
+          });
+
+          await showForcePopup(
+            context,
+            title: '成功',
+            message: '訂閱已成功啟動！',
+          );
+
+          // Navigate back or to home page
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        } else if (response.result == ActivateSubscriptionResult.failed) {
+          // Failed - stop polling and show error message
+          timer.cancel();
+          setState(() {
+            _isCheckingActivation = false;
+          });
+
+          await showForcePopup(
+            context,
+            title: '錯誤',
+            message: '訂閱啟動失敗，請聯繫客服',
+          );
+        }
+        // If result is 'pending', continue polling
+      } catch (e) {
+        // On error, continue polling but log the error
+        print('Error checking activation status: $e');
+        // Optionally, you might want to stop after a certain number of retries
+      }
+    });
+
+    // Also check immediately (don't wait for first 5 seconds)
+    try {
+      final response = await _subscriptionApi.checkActivation(subscriptionId: subscriptionId);
+
+      print("--check active2: ${response.subscriptionId} | ${response.result}");
+
+      if (!mounted) return;
+
+      if (response.result == ActivateSubscriptionResult.activated) {
+        _activationCheckTimer?.cancel();
+        setState(() {
+          _isCheckingActivation = false;
+        });
+
+        await showForcePopup(
+          context,
+          title: '成功',
+          message: '訂閱已成功啟動！',
+        );
+
+        if (mounted) {
+          Navigator.pop(context);
+        }
+      } else if (response.result == ActivateSubscriptionResult.failed) {
+        _activationCheckTimer?.cancel();
+        setState(() {
+          _isCheckingActivation = false;
+        });
+
+        await showForcePopup(
+          context,
+          title: '錯誤',
+          message: '訂閱啟動失敗，請聯繫客服',
+        );
+      }
+    } catch (e) {
+      // If immediate check fails, continue with polling
+      print('Error on immediate activation check: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    _activationCheckTimer?.cancel();
+    addressController.dispose();
+    super.dispose();
   }
 
   @override

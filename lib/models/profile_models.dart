@@ -65,11 +65,15 @@ class ProfilePatchRequest {
   @JsonKey(name: 'birth_day')
   final int? birthDay;
 
+  @JsonKey(name: 'age_group')
+  final String? ageGroup;
+
   const ProfilePatchRequest({
     this.name,
     this.gender,
     this.birthMonth,
     this.birthDay,
+    this.ageGroup
   });
 
   factory ProfilePatchRequest.fromJson(Map<String, dynamic> json) =>

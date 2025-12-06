@@ -8,13 +8,13 @@ import 'action_button.dart';
 import 'date_picker.dart';
 import 'text_input.dart';
 
-Map<int, String> ageGroup = {
-  1: "18-24",
-  2: "25-34",
-  3: "35-44",
-  4: "45-54",
-  5: "55-64",
-  6: "65+"
+Map<String, String> ageGroup = {
+  "18_24": "18-24",
+  "25_34": "25-34",
+  "35_44": "35-44",
+  "45_54": "45-54",
+  "55_64": "55-64",
+  "65_plus": "65+"
 };
 
 class ProfileInput extends StatefulWidget {
@@ -29,7 +29,7 @@ class _ProfileInputState extends State<ProfileInput> {
   final _nameController = TextEditingController();
 
   String? _gender;
-  int? _selectedAgeGroup;
+  String? _selectedAgeGroup;
   int? _birthMonth;
   int? _birthDay;
 
@@ -38,7 +38,8 @@ class _ProfileInputState extends State<ProfileInput> {
       name: _nameController.text,
       gender: _gender,
       birthMonth: _birthMonth,
-      birthDay: _birthDay
+      birthDay: _birthDay,
+      ageGroup: _selectedAgeGroup
     );
   }
 
@@ -84,7 +85,7 @@ class _ProfileInputState extends State<ProfileInput> {
               SizedBox(width: 20),
               Expanded(
                   flex: 1,
-                  child: _dropdown<int>(
+                  child: _dropdown<String>(
                     tr("age"),
                     value: _selectedAgeGroup,
                     items: ageGroup.entries.map((entry) => DropdownMenuItem(
@@ -92,7 +93,7 @@ class _ProfileInputState extends State<ProfileInput> {
                               child: Text(entry.value),
                             )).toList(),
                     validator: (value) {
-                      if (value == null || value == 0) {
+                      if (value == null || value == "") {
                         return tr("validation.required");
                       }
                       return null;

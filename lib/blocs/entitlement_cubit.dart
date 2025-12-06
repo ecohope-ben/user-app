@@ -56,7 +56,8 @@ class EntitlementCubit extends Cubit<EntitlementState> {
     try {
       final envelope = await _api.listEntitlements();
       emit(EntitlementLoaded(entitlements: envelope.data));
-    } catch (error) {
+    } catch (error, t) {
+      print(t);
       if (error is EntitlementException) {
         emit(EntitlementError(
           message: error.message,

@@ -73,9 +73,17 @@ class SubscriptionListLoaded extends SubscriptionState {
   List<Object?> get props => [subscriptions];
 }
 
+class SubscriptionDetailAndListLoaded extends SubscriptionState {
+  final SubscriptionDetail detail;
+  final List<SubscriptionListItem> subscriptions;
+  const SubscriptionDetailAndListLoaded({required this.detail, required this.subscriptions});
+
+  @override
+  List<Object?> get props => [detail];
+}
+
 class SubscriptionDetailLoaded extends SubscriptionState {
   final SubscriptionDetail detail;
-
   const SubscriptionDetailLoaded({required this.detail});
 
   @override
@@ -170,6 +178,25 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
     try {
       final response = await _api.createSubscription(request: request);
       emit(SubscriptionCreationSuccess(response: response));
+    } catch (error) {
+      _handleError(error);
+    }
+  }
+
+  Future<void> getCurrentSubscription() async {
+    emit(const SubscriptionLoading('subscriptions'));
+    try {
+      final envelope = await _api.listSubscriptions();
+      if (envelope.subscriptions.isNotEmpty) {
+        final firstSubscriptionId = envelope.subscriptions.first.id;
+        final detail = await _api.getSubscriptionDetail(
+            subscriptionId: firstSubscriptionId
+        );
+        emit(SubscriptionDetailAndListLoaded(detail: detail, subscriptions: envelope.subscriptions));
+      }else{
+        emit(SubscriptionListLoaded(subscriptions: envelope.subscriptions));
+      }
+
     } catch (error) {
       _handleError(error);
     }

@@ -74,6 +74,9 @@
   "ok": "Confirm",
   "cancel": "Cancel",
   "please_contact_at": "Please contact us at ",
-  "if_need_help": "if you need help with your account"
-
+  "if_need_help": "if you need help with your account",
+  "subscription": {
+    "monthly": "Monthly Plan",
+    "yearly": "Yearly Plan"
+  }
 }

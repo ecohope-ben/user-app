@@ -94,6 +94,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     String? gender,
     int? birthMonth,
     int? birthDay,
+    String? ageGroup
   }) async {
     try {
       emit(ProfileLoading());
@@ -103,6 +104,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         gender: gender,
         birthMonth: birthMonth,
         birthDay: birthDay,
+        ageGroup: ageGroup
       );
 
       await _apiService.updateProfile(

@@ -20,12 +20,12 @@ class _SliverBarState extends State<SliverBar> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 60, 20, 30),
-      decoration: BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: AssetImage('assets/widget/home_bg.png') as ImageProvider,
-          )
-      ),
+      // decoration: BoxDecoration(
+      //     image: DecorationImage(
+      //       fit: BoxFit.cover,
+      //       image: AssetImage('assets/widget/home_bg.png') as ImageProvider,
+      //     )
+      // ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -34,11 +34,11 @@ class _SliverBarState extends State<SliverBar> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CircleAvatar(
-                backgroundColor: Color(0xFF1A103C),
+                backgroundColor: Colors.white,
                 radius: 24,
                 child: Text(
                   avatar ?? "A",
-                  style: TextStyle(color: mainPurple, fontSize: 20),
+                  style: TextStyle(color: Color(0xFF509667), fontSize: 20),
                 ),
               ),
               Container(
@@ -81,7 +81,7 @@ class _SliverBarState extends State<SliverBar> {
           });
           return RichText(
             text: TextSpan(
-              style: TextStyle(fontSize: 24, color: Colors.black),
+              style: TextStyle(fontSize: 24, color: Colors.white),
               children: [
                 TextSpan(text: "Hello, "),
                 TextSpan(
@@ -122,7 +122,7 @@ class _SliverBarState extends State<SliverBar> {
   Widget _buildSubscription() {
     return BlocBuilder<SubscriptionCubit, SubscriptionState>(
       builder: (context, state) {
-        if (state is SubscriptionListLoaded) {
+        if (state is SubscriptionDetailAndListLoaded) {
           return _buildStatItem(
               state.subscriptions.isNotEmpty ? state.subscriptions.first.plan.billingCycle.name : "No subscription", "Subscriptions");
         }
@@ -137,12 +137,12 @@ class _SliverBarState extends State<SliverBar> {
       children: [
         Text(
           value,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white ),
         ),
         const SizedBox(height: 4),
         Text(
           label,
-          style: TextStyle(fontSize: 13, color: Colors.black),
+          style: TextStyle(fontSize: 13, color: Colors.white),
         ),
       ],
     );

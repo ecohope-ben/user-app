@@ -72,8 +72,10 @@ class PlanDiscount {
 @JsonSerializable(explicitToJson: true)
 class PlanListItem {
   final String id;
-  @JsonKey(name: 'plan_version_id')
-  final String planVersionId;
+  @JsonKey(name: 'version_id')
+  final String versionId;
+  @JsonKey(name: 'family_id')
+  final String familyId;
   final String name;
   final String description;
   @JsonKey(name: 'billing_cycle')
@@ -86,7 +88,8 @@ class PlanListItem {
 
   const PlanListItem({
     required this.id,
-    required this.planVersionId,
+    required this.versionId,
+    required this.familyId,
     required this.name,
     required this.description,
     required this.billingCycle,
@@ -106,8 +109,10 @@ class PlanListItem {
 @JsonSerializable(explicitToJson: true)
 class PlanDetail {
   final String id;
-  @JsonKey(name: 'plan_version_id')
-  final String planVersionId;
+  @JsonKey(name: 'version_id')
+  final String versionId;
+  @JsonKey(name: 'family_id')
+  final String familyId;
   final String name;
   final String description;
   @JsonKey(name: 'billing_cycle')
@@ -120,7 +125,8 @@ class PlanDetail {
 
   const PlanDetail({
     required this.id,
-    required this.planVersionId,
+    required this.versionId,
+    required this.familyId,
     required this.name,
     required this.description,
     required this.billingCycle,
@@ -158,10 +164,22 @@ class DeliveryAddress {
   final String subDistrictId;
   final String address;
 
+  @JsonKey(name: 'district_name')
+  final String? districtName;
+
+  @JsonKey(name: 'sub_district_name')
+  final String? subDistrictName;
+
+  @JsonKey(name: 'full_address')
+  final String? fullAddress;
+
   const DeliveryAddress({
     required this.districtId,
     required this.subDistrictId,
     required this.address,
+    required this.fullAddress,
+    required this.districtName,
+    required this.subDistrictName
   });
 
   factory DeliveryAddress.fromJson(Map<String, dynamic> json) =>
@@ -280,6 +298,27 @@ class SubscriptionDiscount {
   Map<String, dynamic> toJson() => _$SubscriptionDiscountToJson(this);
 }
 
+/// Recycling profile information for subscription
+@JsonSerializable()
+class RecyclingProfile {
+  final String type;
+  @JsonKey(name: 'initial_bag_status')
+  final String initialBagStatus;
+  @JsonKey(name: 'initial_bag_delivery_tracking_no')
+  final String? initialBagDeliveryTrackingNo;
+
+  const RecyclingProfile({
+    required this.type,
+    required this.initialBagStatus,
+    required this.initialBagDeliveryTrackingNo,
+  });
+
+  factory RecyclingProfile.fromJson(Map<String, dynamic> json) =>
+      _$RecyclingProfileFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RecyclingProfileToJson(this);
+}
+
 /// Plan info shown in subscription list (without pricing)
 @JsonSerializable()
 class SubscriptionPlanListInfo {
@@ -367,6 +406,8 @@ class SubscriptionDetail {
   @JsonKey(name: 'scheduled_plan_change')
   final ScheduledPlanChange? scheduledPlanChange;
   final SubscriptionDiscount? discount;
+  @JsonKey(name: 'recycling_profile')
+  final RecyclingProfile? recyclingProfile;
 
   const SubscriptionDetail({
     required this.id,
@@ -381,6 +422,7 @@ class SubscriptionDetail {
     required this.scheduledCancellation,
     required this.scheduledPlanChange,
     required this.discount,
+    this.recyclingProfile,
   });
 
   factory SubscriptionDetail.fromJson(Map<String, dynamic> json) =>
@@ -409,20 +451,17 @@ class PreviewSubscriptionCreationRequest {
   final String planId;
   @JsonKey(name: 'plan_version_id')
   final String planVersionId;
-  @JsonKey(name: 'district_id')
-  final String districtId;
-  @JsonKey(name: 'sub_district_id')
-  final String subDistrictId;
-  final String address;
+  // @JsonKey(name: 'district_id')
+  // final String districtId;
+  // @JsonKey(name: 'sub_district_id')
+  // final String subDistrictId;
+  // final String address;
   @JsonKey(name: 'discount_id')
   final String? discountId;
 
   const PreviewSubscriptionCreationRequest({
     required this.planId,
     required this.planVersionId,
-    required this.districtId,
-    required this.subDistrictId,
-    required this.address,
     this.discountId,
   });
 
@@ -442,10 +481,18 @@ class PreviewSubscriptionResponse {
   @JsonKey(name: 'require_payment')
   final bool requirePayment;
 
+  @JsonKey(name: 'period_start')
+  final DateTime periodStart;
+
+  @JsonKey(name: 'period_end')
+  final DateTime periodEnd;
+
   const PreviewSubscriptionResponse({
     required this.amount,
     required this.currency,
     required this.requirePayment,
+    required this.periodStart,
+    required this.periodEnd,
   });
 
   factory PreviewSubscriptionResponse.fromJson(Map<String, dynamic> json) =>
@@ -487,7 +534,12 @@ class CreateSubscriptionRequest {
 
   Map<String, dynamic> toJson() => _$CreateSubscriptionRequestToJson(this);
 }
-
+enum PaymentNextAction {
+  @JsonValue('pay')
+  pay,
+  @JsonValue('setup')
+  setup,
+}
 /// Response after creating subscription
 @JsonSerializable()
 class CreateSubscriptionResponse {
@@ -496,7 +548,7 @@ class CreateSubscriptionResponse {
   @JsonKey(name: 'client_secret')
   final String clientSecret;
   @JsonKey(name: 'next_action')
-  final String nextAction;
+  final PaymentNextAction nextAction;
 
   const CreateSubscriptionResponse({
     required this.subscriptionId,
@@ -510,12 +562,21 @@ class CreateSubscriptionResponse {
   Map<String, dynamic> toJson() => _$CreateSubscriptionResponseToJson(this);
 }
 
+enum ActivateSubscriptionResult{
+  @JsonValue('activated')
+  activated,
+  @JsonValue('pending')
+  pending,
+  @JsonValue('failed')
+  failed
+}
+
 /// Activate subscription response
 @JsonSerializable()
 class ActivateSubscriptionResponse {
   @JsonKey(name: 'subscription_id')
   final String subscriptionId;
-  final String result;
+  final ActivateSubscriptionResult result;
 
   const ActivateSubscriptionResponse({
     required this.subscriptionId,

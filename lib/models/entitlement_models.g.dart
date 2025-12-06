@@ -9,7 +9,6 @@ part of 'entitlement_models.dart';
 EntitlementListItem _$EntitlementListItemFromJson(Map<String, dynamic> json) =>
     EntitlementListItem(
       id: json['id'] as String,
-      customerId: json['customer_id'] as String,
       entitlementType: $enumDecode(
         _$EntitlementTypeEnumMap,
         json['entitlement_type'],
@@ -35,7 +34,6 @@ Map<String, dynamic> _$EntitlementListItemToJson(
   EntitlementListItem instance,
 ) => <String, dynamic>{
   'id': instance.id,
-  'customer_id': instance.customerId,
   'entitlement_type': _$EntitlementTypeEnumMap[instance.entitlementType]!,
   'quota_limit': instance.quotaLimit,
   'quota_used': instance.quotaUsed,

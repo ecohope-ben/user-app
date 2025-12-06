@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../routes.dart';
 import '../style.dart';
 
 Future<void> showForcePopup(
@@ -34,8 +36,9 @@ Future<void> showForcePopup(
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(ctx).pop();
-              onConfirm?.call();
+              printRouteStack(context);
+              context.pop(context);
+              (onConfirm == null) ? context.pop(context) : onConfirm.call();
             },
             style: ButtonStyle(
               overlayColor: WidgetStateProperty.all<Color>(Colors.transparent),

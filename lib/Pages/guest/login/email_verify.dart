@@ -71,7 +71,10 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
                   message: state.message,
                   confirmText: tr("ok"),
                   onConfirm: (){
-                    context.go("/login");
+                    print("--login error click");
+
+                    printRouteStack(context);
+                    context.pop(context);
                     // context.pushNamed
                     // context.pushNamedWithBloc("/", context.read<LoginCubit>()..startLogin());
                   }

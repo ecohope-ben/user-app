@@ -42,6 +42,7 @@ ProfilePatchRequest _$ProfilePatchRequestFromJson(Map<String, dynamic> json) =>
       gender: json['gender'] as String?,
       birthMonth: (json['birth_month'] as num?)?.toInt(),
       birthDay: (json['birth_day'] as num?)?.toInt(),
+      ageGroup: json['age_group'] as String?,
     );
 
 Map<String, dynamic> _$ProfilePatchRequestToJson(
@@ -51,6 +52,7 @@ Map<String, dynamic> _$ProfilePatchRequestToJson(
   'gender': instance.gender,
   'birth_month': instance.birthMonth,
   'birth_day': instance.birthDay,
+  'age_group': instance.ageGroup,
 };
 
 ProfileErrorBody _$ProfileErrorBodyFromJson(Map<String, dynamic> json) =>

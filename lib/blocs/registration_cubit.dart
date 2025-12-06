@@ -352,6 +352,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
       final auth = Auth.instance();
       await auth.saveAccessToken(response.session.accessToken);
       await auth.saveRefreshToken(response.session.refreshToken);
+      await auth.saveSessionId(response.session.id);
 
       emit(RegistrationCompleted(session: response.session));
     } catch (e) {

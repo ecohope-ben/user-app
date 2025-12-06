@@ -3,12 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/components/home/promotion_banner.dart';
 import 'package:user_app/components/home/recycle_info_card.dart';
+import 'package:user_app/components/register/action_button.dart';
 import 'package:user_app/routes.dart';
 
 import '../blocs/entitlement_cubit.dart';
 import '../blocs/login_cubit.dart';
 import '../blocs/profile_cubit.dart';
 import '../blocs/subscription_cubit.dart';
+import '../blocs/subscription_plan_cubit.dart';
+import '../components/home/order_card.dart';
 import '../components/home/silver.dart';
 import '../style.dart';
 
@@ -21,7 +24,7 @@ class HomePage extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => ProfileCubit()..loadProfile()),
         BlocProvider(create: (_) => EntitlementCubit()..loadEntitlements()),
-        BlocProvider(create: (_) => SubscriptionCubit()..loadSubscriptions()),
+        BlocProvider(create: (_) => SubscriptionCubit()..getCurrentSubscription()),
       ],
       child: const _HomeView(),
     );
@@ -49,7 +52,7 @@ class _HomeView extends StatelessWidget {
         onRetry: () {
           context.read<ProfileCubit>().loadProfile();
           context.read<EntitlementCubit>().loadEntitlements();
-          context.read<SubscriptionCubit>().loadSubscriptions();
+          context.read<SubscriptionCubit>().getCurrentSubscription();
         },
       );
     }
@@ -57,7 +60,7 @@ class _HomeView extends StatelessWidget {
     final bool isReady =
         profileState is ProfileLoaded &&
         entitlementState is EntitlementLoaded &&
-        subscriptionState is SubscriptionListLoaded;
+        subscriptionState is SubscriptionDetailAndListLoaded;
 
     if (!isReady) {
       return const _HomeSkeleton();
@@ -72,12 +75,17 @@ class _HomeView extends StatelessWidget {
     SubscriptionState subscriptionState,
   ) {
     if (profileState is ProfileError) {
+      print("--ProfileError");
       return profileState.message;
     }
     if (entitlementState is EntitlementError) {
+
+      print("--EntitlementError");
       return entitlementState.message;
     }
     if (subscriptionState is SubscriptionError) {
+
+      print("--SubscriptionError");
       return subscriptionState.message;
     }
     return null;
@@ -94,6 +102,12 @@ class _HomeContent extends StatelessWidget {
         top: false,
         child: Stack(
           children: [
+            Positioned.fill(
+              child: Image.asset(
+                "assets/img/home_page_bg.png",
+                fit: BoxFit.cover,
+              ),
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -102,8 +116,23 @@ class _HomeContent extends StatelessWidget {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        PromotionBanner(
-                          () => context.push("/subscription/list"),
+                        
+                        BlocBuilder<SubscriptionCubit, SubscriptionState>(
+                          builder: (context, state) {
+                            if(state is SubscriptionDetailAndListLoaded){
+                              // return ScheduleRecycleOrderCard(state.detail);
+                              if(state.subscriptions.isNotEmpty){
+                                if(state.detail.recyclingProfile != null && state.detail.recyclingProfile?.initialBagStatus == "delivered"){
+                                  return ScheduleRecycleOrderCard(state.detail);
+                                }else {
+                                  return InitialBagDeliveryCard(state.detail.recyclingProfile?.initialBagDeliveryTrackingNo);
+                                }
+                              }else{
+                                return PromotionBanner(() => context.push("/subscription/list"));
+                              }
+                            }
+                            return Container();
+                          },
                         ),
                         const SizedBox(height: 20),
                         Padding(
@@ -251,13 +280,7 @@ class _HomeErrorView extends StatelessWidget {
                   style: const TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: onRetry,
-                    child: const Text("Retry"),
-                  ),
-                ),
+                ActionButton("Retry", onTap: onRetry)
               ],
             ),
           ),

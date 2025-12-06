@@ -34,8 +34,6 @@ enum EntitlementStatus {
 @JsonSerializable()
 class EntitlementListItem {
   final String id;
-  @JsonKey(name: 'customer_id')
-  final String customerId;
   @JsonKey(name: 'entitlement_type')
   final EntitlementType entitlementType;
   @JsonKey(name: 'quota_limit')
@@ -60,7 +58,6 @@ class EntitlementListItem {
 
   const EntitlementListItem({
     required this.id,
-    required this.customerId,
     required this.entitlementType,
     required this.quotaLimit,
     required this.quotaUsed,

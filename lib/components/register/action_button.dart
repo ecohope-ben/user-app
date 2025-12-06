@@ -8,7 +8,8 @@ class ActionButton extends StatefulWidget {
   final String title;
   final VoidCallback? onTap;
   final bool showLoading;
-  const ActionButton(this.title, {this.showLoading = false, this.onTap, super.key});
+  final bool disable;
+  const ActionButton(this.title, {this.showLoading = false, this.disable = false, this.onTap, super.key});
 
   @override
   State<ActionButton> createState() => _ActionButtonState();
@@ -25,14 +26,14 @@ class _ActionButtonState extends State<ActionButton> {
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: blueTextUnderline,
+                  color: widget.disable ? Colors.white : blueTextUnderline,
                   width: 3 ,
                 ),
               ),
             ),
             child: TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: Colors.black,
+                backgroundColor: widget.disable ? Colors.black26 : Colors.black,
                 foregroundColor: Colors.white,
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero

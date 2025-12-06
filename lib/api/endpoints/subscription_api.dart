@@ -39,7 +39,7 @@ class SubscriptionApi extends ApiEndpoint {
     try {
       final response = await http.post(
         '/subscriptions/preview',
-        data: _clean(request.toJson()),
+        data: request.toJson(),
       );
       return PreviewSubscriptionResponse.fromJson(response.data);
     } on DioException catch (e) {

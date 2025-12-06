@@ -49,6 +49,18 @@ class _LoginIndexState extends State<LoginIndex>{
           if(state is LoginInProgress){
             if(state.login.stage == LoginStage.emailVerification){
             }
+          }else if(state is LoginError){
+            print("--login error index");
+
+            final login = state.login;
+            if(login != null){
+              print("--login error index2");
+              context.read<LoginCubit>().update(LoginInProgress(login: login, stepToken: login.tokens.step));
+            }else {
+              print("--login error index3");
+              context.read<LoginCubit>().reset();
+              context.read<LoginCubit>().startLogin();
+            }
           }
         },
         builder: (context, state) {
@@ -71,7 +83,9 @@ class _LoginIndexState extends State<LoginIndex>{
                       tr("login.login_with_otp"),
                       showLoading: context.read<LoginCubit>().state is LoginLoading || context.read<LoginCubit>().state is LoginInProgressLoading,
                       onTap: () async {
+                        print("--login on tap");
                         if (_formKey.currentState!.validate()) {
+                          print("--login on tap2");
                           // If validation passes, get the email and update registration
                           final email = _emailController.text;
 
@@ -80,6 +94,11 @@ class _LoginIndexState extends State<LoginIndex>{
 
                           if(mounted && result) {
                             context.push("/login/verify");
+                            // final result = await context.push("/login/verify");
+                            // if(result is bool && result){
+                            //
+                            // }
+
                             // context.push("/login/verify", extra: context.read<LoginCubit>());
                             // context.pushNamedWithBloc("/login/verify", context.read<LoginCubit>());
                           }

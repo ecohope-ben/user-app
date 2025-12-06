@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:user_app/pages/common/confirm_page.dart';
 import 'package:user_app/pages/guest/login/index.dart';
 import 'package:user_app/pages/guest/register/index.dart';
 import 'package:user_app/pages/home.dart';
+import 'package:user_app/pages/order/order_details.dart';
+import 'package:user_app/pages/order/recycle_order.dart';
 import 'package:user_app/pages/subscription/list.dart';
 import 'package:user_app/pages/subscription/signup.dart';
 import 'package:user_app/pages/launch.dart';
@@ -33,6 +36,8 @@ final router = GoRouter(
         ]
     ),
     GoRoute(path: '/home', builder: (context, state) => HomePage()),
+
+    // Subscription
     GoRoute(path: '/subscription/list', builder: (context, state) => SubscriptionListPage()),
     GoRoute(
         path: '/subscription/signup',
@@ -43,8 +48,27 @@ final router = GoRouter(
           return SubscriptionSignUp(plan: plan, features: features);
         }
     ),
+
+
+    // Order
+    GoRoute(path: '/order/create', builder: (context, state) => SchedulePickUpOrderPage(state.extra as SubscriptionDetail)),
+    GoRoute(path: '/order/details', builder: (context, state) => PickUpOrderDetailsPage(state.extra as String)),
+    GoRoute(path: '/order/confirmation', builder: (context, state) => RecycleOrderConfirmationPage(state.extra as String)),
   ],
 );
+
+// In a widget where you have access to the BuildContext
+void printRouteStack(BuildContext context) {
+  final GoRouter goRouter = GoRouter.of(context);
+  final matches = goRouter.routerDelegate.currentConfiguration.matches;
+
+  print('--- GoRouter Route Stack ---');
+  for (int i = 0; i < matches.length; i++) {
+    final match = matches[i];
+    print('  ${i + 1}: ${match.matchedLocation}');
+  }
+  print('--------------------------');
+}
 
 // builder: (context, state) {
 //   final loginCubit = state.extra as LoginCubit?;

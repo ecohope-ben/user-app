@@ -118,6 +118,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<bool> updateEmail({required String email}) async {
     final currentState = state;
+    print(currentState);
     if (currentState is! LoginInProgress) return false;
 
     try {
@@ -249,6 +250,7 @@ class LoginCubit extends Cubit<LoginState> {
         final auth = Auth.instance();
         await auth.saveAccessToken(session.accessToken);
         await auth.saveRefreshToken(session.refreshToken);
+        await auth.saveSessionId(session.id);
         emit(LoginCompleted(session: session));
         return;
       }
@@ -297,6 +299,11 @@ class LoginCubit extends Cubit<LoginState> {
       _handleException(e);
     }
   }
+
+  void update(LoginInProgress state) {
+    emit(state);
+  }
+
 
   void reset() {
     emit(LoginInitial());

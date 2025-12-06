@@ -8,6 +8,7 @@ import 'endpoints/login_api.dart';
 import 'endpoints/logistics_api.dart';
 import 'endpoints/profile_api.dart';
 import 'endpoints/registration_api.dart';
+import 'endpoints/recycle_api.dart';
 import 'endpoints/subscription_api.dart';
 
 
@@ -52,6 +53,7 @@ class Api {
   SubscriptionApi subscription() => getApi<SubscriptionApi>(() => SubscriptionApi(this)) as SubscriptionApi;
   EntitlementApi entitlements() => getApi<EntitlementApi>(() => EntitlementApi(this)) as EntitlementApi;
   LogisticsApi logistics() => getApi<LogisticsApi>(() => LogisticsApi(this)) as LogisticsApi;
+  RecycleApi recycle() => getApi<RecycleApi>(() => RecycleApi(this)) as RecycleApi;
 }
 
 abstract class ApiEndpoint {

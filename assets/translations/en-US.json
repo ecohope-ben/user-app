@@ -1,11 +1,82 @@
 {
   "register": {
     "email_address": "Email Address",
+    "your_email_address": "Your Email Address",
     "email_description": "You may use this email address to login next time.",
     "check_your_email": "Check Your Email",
-    "check_email_description": "We just sent you the OTP code at amylau@gmail.com."
-  },
-  "send_otp": "Send OTP",
-  "verify_and_next": "Verify and Next"
+    "check_email_description": "We just sent you the OTP code at {}.",
+    "edit_email": "Edit email {}",
+    "edit_phone": "Edit phone {}",
 
+    "dont_receive_code": "Didn’t receive code?",
+    "resend": "Resend",
+    "resend_at": "Resend ({}s)",
+    "phone_number": "Phone Number",
+    "phone_description": "We will send you a SMS for the OTP code.",
+    "invalid_phone_hk": "Please input valid Hong Kong Mobile Phone",
+    "verify_phone_number": "Verify Phone Number",
+    "verify_phone_description": "We just sent you a SMS for the OTP code at {}.",
+    "profile": "Your Profile",
+    "profile_description": "Please fill in the information.",
+    "select_date_of_birth": "Selected Date of Birth",
+    "date_of_birth": "Date of Birth",
+    "confirm_and_login": "Confirm and Login"
+  },
+  "login": {
+    "email_description": "Please login with your email address with OTP here.",
+    "your_email_address": "Your Email Address",
+    "welcome": "Welcome",
+    "login_with_otp": "Login with OTP",
+    "please_enter_otp": "Please enter OTP code sent to {}."
+  },
+  "month": "Month",
+  "date": "Date",
+  "month_to_words": {
+    "1": "January",
+    "2": "February",
+    "3": "March",
+    "4": "April",
+    "5": "May",
+    "6": "June",
+    "7": "July",
+    "8": "August",
+    "9": "September",
+    "10": "October",
+    "11": "November",
+    "12": "December"
+  },
+  "validation": {
+    "email_required": "Email is required",
+    "email_invalid": "The field is not a valid email address",
+    "otp_required": "OTP is required",
+    "otp_incomplete": "OTP is incomplete",
+    "otp_invalid_format": "OTP must be a Integer",
+
+    "minLength": "The field must be at least {n} characters long",
+    "maxLength": "The field must be at most {n} characters long",
+    "email": "The field is not a valid email address",
+    "phoneNumber": "The field is not a valid phone number",
+    "required": "The field is required",
+    "url": "The field is not a valid URL address",
+    "user_not_exist": "User not exist",
+    "int": "Please input a Integer",
+    "double": "Please input correct number"
+  },
+  "last_name": "Last Name",
+  "first_name": "First Name",
+  "your_name": "Your Name",
+  "send_otp": "Send OTP",
+  "male": "Male",
+  "female": "Female",
+  "gender": "Gender",
+  "age": "Age",
+  "verify_and_next": "Verify and Next",
+  "ok": "Confirm",
+  "cancel": "Cancel",
+  "please_contact_at": "Please contact us at ",
+  "if_need_help": "if you need help with your account",
+  "subscription": {
+    "monthly": "Monthly Plan",
+    "yearly": "Yearly Plan"
+  }
 }

@@ -9,6 +9,7 @@ class Auth {
   final FlutterSecureStorage storage;
   String? accessToken;
   String? refreshToken;
+  String? sessionId;
   Profile? profile;
 
   String? firebaseToken;
@@ -32,6 +33,7 @@ class Auth {
 
     accessToken = await storage.read(key: "access_token");
     refreshToken = await storage.read(key: "refresh_token");
+    sessionId = await storage.read(key: "session_id");
     firebaseToken = await storage.read(key: "fcm_token");
 
     // read profile
@@ -50,6 +52,11 @@ class Auth {
   Future saveRefreshToken(String refreshToken) async {
     this.refreshToken = refreshToken;
     await storage.write(key: "refresh_token", value: refreshToken);
+  }
+
+  Future saveSessionId(String sessionId) async {
+    this.sessionId = sessionId;
+    await storage.write(key: "session_id", value: sessionId);
   }
 
   Future saveProfile(Profile profile) async {

@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 // const Color primaryColor = Color(0xFF030024);
 // const Color accentColor = Color(0xFF851B13);
 
+const Color lightPurple = Color(0xFFE1CDFF);
 const Color purpleUnderline = Color(0xFF975DFF);
-const Color mainPurple = Color(0xFF975DFF);
+const Color mainPurple = Color(0xFF422384);
 const Color backgroundColor = Color(0xFFF4F9FA);
 const Color blueTextUnderline = Color(0xFF48F9FF);
 const Color blueRegisterText = Color(0xFF3CA2FF);
 const Color blueBorder = Color(0xFF2D5BFF);
 const Color welcomeWordsBg = Color(0xFF29A862);
+const Color darkGreenWord = Color(0xFF007800);
+const Color lightGreenBg = Color(0xFFECFFD9);
 
 
 // final primarySwatch = MaterialColor(accentColor.value, getSwatch(accentColor));
