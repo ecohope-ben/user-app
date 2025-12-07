@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:user_app/blocs/recycle_order_cubit.dart';
 import 'package:user_app/components/register/action_button.dart';
 
+import '../../models/recycle_models.dart';
 import '../../models/subscription_models.dart';
+import '../../utils/snack.dart';
 
 class InitialBagDeliveryCard extends StatelessWidget {
   final String? trackingNumber;
+
   const InitialBagDeliveryCard(this.trackingNumber, {super.key});
 
-  Widget _buildItem(){
+  Widget _buildItem() {
     String bullet = "\u2022 ";
     return RichText(
       text: TextSpan(
@@ -100,6 +105,7 @@ class InitialBagDeliveryCard extends StatelessWidget {
 
 class ScheduleRecycleOrderCard extends StatelessWidget {
   final SubscriptionDetail subscriptionDetail;
+
   const ScheduleRecycleOrderCard(this.subscriptionDetail, {super.key});
 
   @override
@@ -165,6 +171,110 @@ class ScheduleRecycleOrderCard extends StatelessWidget {
           ),
 
         ],
+      ),
+    );
+  }
+}
+
+class RecycleOrderCard extends StatelessWidget {
+  final RecycleOrderListItem recycleOrder;
+
+  const RecycleOrderCard(this.recycleOrder, {super.key});
+
+  Widget _buildCard(LogisticsOrder? logisticsOrder){
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Header
+          Container(
+            color: const Color(0xFF1A1A1A),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.shopping_bag_outlined,
+                  color: Colors.white,
+                  size: 24,
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Text(
+                    "Pick Up Schedule Confirmed",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Body
+          Row(
+            children: [
+              Expanded(
+                flex: 8,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 18),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Tracking #${logisticsOrder?.trackingNo ?? ""}", style: TextStyle(fontSize: 18)),
+                          const SizedBox(height: 12),
+                          Text("Pick Up on ${recycleOrder.pickupDate} | ${recycleOrder.pickupTime}", style: TextStyle(fontSize: 16)),
+                        ],
+                      ),
+                    ),
+
+                  ],
+                ),
+              ),
+              Expanded(
+                  flex: 2,
+                  child: Icon(Icons.chevron_right)
+              )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+  @override
+  Widget build(BuildContext context) {
+
+    return BlocProvider(
+      create: (context) => RecycleOrderCubit()..loadOrderDetail(recycleOrder.id),
+      child: BlocBuilder<RecycleOrderCubit, RecycleOrderState>(
+        builder: (context, state) {
+          if(state is RecycleOrderDetailLoaded) {
+            return InkWell(
+                onTap: () => context.push("/order/details", extra: recycleOrder.id),
+                child: _buildCard(state.order.logisticsOrder)
+            );
+          }else if (state is RecycleOrderError){
+            return Container();
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/pages/common/confirm_page.dart';
+import 'package:user_app/pages/common/how_it_works.dart';
+import 'package:user_app/pages/common/recycling_guide.dart';
 import 'package:user_app/pages/guest/login/index.dart';
 import 'package:user_app/pages/guest/register/index.dart';
 import 'package:user_app/pages/home.dart';
@@ -20,6 +22,8 @@ final router = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (context, state) => const LaunchPage()),
     GoRoute(path: '/welcome', builder: (context, state) => const IntroPage()),
+    GoRoute(path: '/how_it_works', builder: (context, state) => const HowItWorksPage()),
+    GoRoute(path: '/recycling_guide', builder: (context, state) => const RecyclingGuidePage()),
     GoRoute(path: '/register', builder: (context, state) => RegisterIndex()),
     ShellRoute(
         builder: (context, state, child) => BlocProvider(

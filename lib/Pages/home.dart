@@ -9,10 +9,13 @@ import 'package:user_app/routes.dart';
 import '../blocs/entitlement_cubit.dart';
 import '../blocs/login_cubit.dart';
 import '../blocs/profile_cubit.dart';
+import '../blocs/recycle_order_cubit.dart';
 import '../blocs/subscription_cubit.dart';
 import '../blocs/subscription_plan_cubit.dart';
+import '../components/home/notification_card.dart';
 import '../components/home/order_card.dart';
 import '../components/home/silver.dart';
+import '../models/recycle_models.dart';
 import '../style.dart';
 
 class HomePage extends StatelessWidget {
@@ -25,25 +28,80 @@ class HomePage extends StatelessWidget {
         BlocProvider(create: (_) => ProfileCubit()..loadProfile()),
         BlocProvider(create: (_) => EntitlementCubit()..loadEntitlements()),
         BlocProvider(create: (_) => SubscriptionCubit()..getCurrentSubscription()),
+        BlocProvider(create: (_) => RecycleOrderCubit()..listOrders()),
       ],
-      child: const _HomeView(),
+      child: _HomeView(),
     );
   }
 }
 
-class _HomeView extends StatelessWidget {
+class _HomeView extends StatefulWidget {
   const _HomeView();
+
+  @override
+  State<_HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<_HomeView> {
+  bool _hasInitialData = false;
+  ProfileState? _lastProfileState;
+  EntitlementState? _lastEntitlementState;
+  SubscriptionState? _lastSubscriptionState;
+  RecycleOrderState? _lastRecycleOrderState;
 
   @override
   Widget build(BuildContext context) {
     final profileState = context.watch<ProfileCubit>().state;
     final entitlementState = context.watch<EntitlementCubit>().state;
     final subscriptionState = context.watch<SubscriptionCubit>().state;
+    final recycleOrderState = context.watch<RecycleOrderCubit>().state;
+
+    // Save successful states for refresh
+    if (profileState is ProfileLoaded) {
+      _lastProfileState = profileState;
+    }
+    if (entitlementState is EntitlementLoaded) {
+      _lastEntitlementState = entitlementState;
+    }
+    if (subscriptionState is SubscriptionDetailAndListLoaded ||
+        subscriptionState is SubscriptionListLoaded) {
+      _lastSubscriptionState = subscriptionState;
+    }
+    if (recycleOrderState is RecycleOrderListLoaded) {
+      _lastRecycleOrderState = recycleOrderState;
+    }
+
+    // Check if we have initial data loaded
+    if (!_hasInitialData) {
+      final hasData = profileState is ProfileLoaded &&
+          entitlementState is EntitlementLoaded &&
+          subscriptionState is SubscriptionDetailAndListLoaded &&
+          recycleOrderState is RecycleOrderListLoaded;
+      if (hasData) {
+        _hasInitialData = true;
+      }
+    }
+
+    // Use last successful states if current state is loading and we have previous data
+    final effectiveProfileState = (profileState is ProfileLoading && _lastProfileState != null)
+        ? _lastProfileState!
+        : profileState;
+    final effectiveEntitlementState = (entitlementState is EntitlementLoading && _lastEntitlementState != null)
+        ? _lastEntitlementState!
+        : entitlementState;
+    final effectiveSubscriptionState = (subscriptionState is SubscriptionLoading && _lastSubscriptionState != null)
+        ? _lastSubscriptionState!
+        : subscriptionState;
+
+    final effectiveRecycleOrderState = (recycleOrderState is RecycleOrderLoading && _lastRecycleOrderState != null)
+        ? _lastRecycleOrderState!
+        : recycleOrderState;
 
     final String? errorMessage = _resolveErrorMessage(
-      profileState,
-      entitlementState,
-      subscriptionState,
+      effectiveProfileState,
+      effectiveEntitlementState,
+      effectiveSubscriptionState,
+      effectiveRecycleOrderState,
     );
 
     if (errorMessage != null) {
@@ -53,50 +111,98 @@ class _HomeView extends StatelessWidget {
           context.read<ProfileCubit>().loadProfile();
           context.read<EntitlementCubit>().loadEntitlements();
           context.read<SubscriptionCubit>().getCurrentSubscription();
+          context.read<RecycleOrderCubit>().listOrders();
         },
       );
     }
 
     final bool isReady =
-        profileState is ProfileLoaded &&
-        entitlementState is EntitlementLoaded &&
-        subscriptionState is SubscriptionDetailAndListLoaded;
+        effectiveProfileState is ProfileLoaded &&
+        effectiveEntitlementState is EntitlementLoaded &&
+        effectiveSubscriptionState is SubscriptionDetailAndListLoaded;
+        effectiveRecycleOrderState is RecycleOrderListLoaded;
 
-    if (!isReady) {
+    // Only show skeleton on initial load, not during refresh
+    if (!isReady && !_hasInitialData) {
       return const _HomeSkeleton();
     }
 
-    return const _HomeContent();
+    // If we have initial data but current state is not ready, show last data
+    if (!isReady && _hasInitialData) {
+      return _HomeContent(
+        profileState: _lastProfileState as ProfileLoaded,
+        entitlementState: _lastEntitlementState as EntitlementLoaded,
+        subscriptionState: _lastSubscriptionState as SubscriptionDetailAndListLoaded,
+        recycleOrderState: _lastRecycleOrderState as RecycleOrderListLoaded,
+      );
+    }
+
+    return _HomeContent(
+      profileState: effectiveProfileState as ProfileLoaded,
+      entitlementState: effectiveEntitlementState as EntitlementLoaded,
+      subscriptionState: effectiveSubscriptionState as SubscriptionDetailAndListLoaded,
+      recycleOrderState: effectiveRecycleOrderState as RecycleOrderListLoaded,
+    );
   }
 
   String? _resolveErrorMessage(
     ProfileState profileState,
     EntitlementState entitlementState,
     SubscriptionState subscriptionState,
+    RecycleOrderState recycleOrderState,
   ) {
     if (profileState is ProfileError) {
       print("--ProfileError");
       return profileState.message;
     }
     if (entitlementState is EntitlementError) {
-
       print("--EntitlementError");
       return entitlementState.message;
     }
     if (subscriptionState is SubscriptionError) {
-
       print("--SubscriptionError");
       return subscriptionState.message;
+    }
+    if (recycleOrderState is RecycleOrderError) {
+      print("--RecycleOrderError");
+      return recycleOrderState.message;
     }
     return null;
   }
 }
 
 class _HomeContent extends StatelessWidget {
-  const _HomeContent();
+  final ProfileLoaded profileState;
+  final EntitlementLoaded entitlementState;
+  final SubscriptionDetailAndListLoaded subscriptionState;
+  final RecycleOrderListLoaded recycleOrderState;
+  const _HomeContent({
+    required this.profileState,
+    required this.entitlementState,
+    required this.subscriptionState,
+    required this.recycleOrderState,
+  });
+
+  Future<void> _refreshData(BuildContext context) async {
+    final profileCubit = context.read<ProfileCubit>();
+    final entitlementCubit = context.read<EntitlementCubit>();
+    final subscriptionCubit = context.read<SubscriptionCubit>();
+    final recycleOrderCubit = context.read<RecycleOrderCubit>();
+
+    await Future.wait([
+      profileCubit.loadProfile(),
+      entitlementCubit.loadEntitlements(),
+      subscriptionCubit.getCurrentSubscription(),
+      recycleOrderCubit.listOrders(),
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Use provided states or watch from context
+    // final effectiveSubscriptionState = subscriptionState ?? context.watch<SubscriptionCubit>().state;
+
+    final List<RecycleOrderStatus> availableOrderStatus = [RecycleOrderStatus.completed, RecycleOrderStatus.failed];
     return Scaffold(
       body: SafeArea(
         top: false,
@@ -111,54 +217,68 @@ class _HomeContent extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SliverBar(),
+                SliverBar(
+                  profileState: profileState,
+                  entitlementState: entitlementState,
+                  subscriptionState: subscriptionState,
+                ),
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        
-                        BlocBuilder<SubscriptionCubit, SubscriptionState>(
-                          builder: (context, state) {
-                            if(state is SubscriptionDetailAndListLoaded){
-                              // return ScheduleRecycleOrderCard(state.detail);
-                              if(state.subscriptions.isNotEmpty){
-                                if(state.detail.recyclingProfile != null && state.detail.recyclingProfile?.initialBagStatus == "delivered"){
-                                  return ScheduleRecycleOrderCard(state.detail);
-                                }else {
-                                  return InitialBagDeliveryCard(state.detail.recyclingProfile?.initialBagDeliveryTrackingNo);
+                  child: RefreshIndicator(
+                    onRefresh: () => _refreshData(context),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          NotificationCard(),
+                          BlocBuilder<SubscriptionCubit, SubscriptionState>(
+                            builder: (context, state) {
+                              // Use effective state for display
+                              final displayState = subscriptionState;
+                              if(recycleOrderState.orders.isNotEmpty && !availableOrderStatus.contains(recycleOrderState.orders.first.status)){
+                                return RecycleOrderCard(recycleOrderState.orders.first);
+                              }
+                              // return ScheduleRecycleOrderCard(displayState.detail);
+                              if (displayState.subscriptions.isNotEmpty) {
+                                if (displayState.detail.recyclingProfile != null && displayState.detail.recyclingProfile?.initialBagStatus == "delivered") {
+                                  return ScheduleRecycleOrderCard(displayState.detail);
+                                } else {
+                                  return InitialBagDeliveryCard(displayState.detail.recyclingProfile?.initialBagDeliveryTrackingNo);
                                 }
-                              }else{
+                              } else {
                                 return PromotionBanner(() => context.push("/subscription/list"));
                               }
-                            }
-                            return Container();
-                          },
-                        ),
-                        const SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Column(
-                            children: [
-                              RecycleInfoCard(
-                                title: "How it works?",
-                                description:
-                                    "We provide door to door collection Upcycle Your Way to a Greener Tomorrow!",
-                                imagePath: "assets/widget/how_it_work.png",
-                                icon: Icons.change_circle_outlined,
-                              ),
-                              const SizedBox(height: 16),
-                              RecycleInfoCard(
-                                title: "Recycling Guide",
-                                description:
-                                    "Dos and Don’ts we rely on you to apply the recycling guide properly!",
-                                imagePath: "assets/widget/recycle_guide.png",
-                                icon: Icons.list_alt,
-                              ),
-                            ],
+
+                            },
                           ),
-                        ),
-                        const SizedBox(height: 100),
-                      ],
+                          const SizedBox(height: 20),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Column(
+                              children: [
+                                RecycleInfoCard(
+                                  title: "How it works?",
+                                  description:
+                                      "We provide door to door collection Upcycle Your Way to a Greener Tomorrow!",
+                                  imagePath: "assets/widget/how_it_work.png",
+                                  icon: Icons.change_circle_outlined,
+                                  onTap: () => context.push("/how_it_works"),
+                                ),
+                                const SizedBox(height: 16),
+                                RecycleInfoCard(
+                                  title: "Recycling Guide",
+                                  description:
+                                      "Dos and Don'ts we rely on you to apply the recycling guide properly!",
+                                  imagePath: "assets/widget/recycle_guide.png",
+                                  icon: Icons.list_alt,
+
+                                  onTap: () => context.push("/recycling_guide"),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 100),
+                        ],
+                      ),
                     ),
                   ),
                 ),

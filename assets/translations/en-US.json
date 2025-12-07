@@ -78,5 +78,14 @@
   "subscription": {
     "monthly": "Monthly Plan",
     "yearly": "Yearly Plan"
+  },
+  "order": {
+    "status": {
+      "pending": "Pick Up Schedule Confirmed",
+      "processing": "Pick Up Schedule Confirmed",
+      "pickedUp": "Picked Up by Courier",
+      "completed": "Delivery completed / Delivered Successfully",
+      "failed": "Failed"
+    }
   }
 }

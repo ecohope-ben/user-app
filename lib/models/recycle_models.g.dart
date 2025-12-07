@@ -125,21 +125,21 @@ const _$RecycleOrderStatusEnumMap = {
 
 SfExpressRoute _$SfExpressRouteFromJson(Map<String, dynamic> json) =>
     SfExpressRoute(
-      acceptTime: json['acceptTime'] as String,
-      acceptAddress: json['acceptAddress'] as String,
-      opCode: json['opCode'] as String,
+      acceptTime: json['accept_time'] as String,
+      acceptAddress: json['accept_address'] as String,
+      opCode: json['op_code'] as String,
       remark: json['remark'] as String,
-      secondaryStatusCode: json['secondaryStatusCode'] as String,
-      secondaryStatusName: json['secondaryStatusName'] as String,
+      secondaryStatusCode: json['secondaryStatusCode'] as String?,
+      secondaryStatusName: json['secondaryStatusName'] as String?,
       firstStatusCode: json['firstStatusCode'] as String?,
       firstStatusName: json['firstStatusName'] as String?,
     );
 
 Map<String, dynamic> _$SfExpressRouteToJson(SfExpressRoute instance) =>
     <String, dynamic>{
-      'acceptTime': instance.acceptTime,
-      'acceptAddress': instance.acceptAddress,
-      'opCode': instance.opCode,
+      'accept_time': instance.acceptTime,
+      'accept_address': instance.acceptAddress,
+      'op_code': instance.opCode,
       'remark': instance.remark,
       'secondaryStatusCode': instance.secondaryStatusCode,
       'secondaryStatusName': instance.secondaryStatusName,

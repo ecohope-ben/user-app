@@ -164,17 +164,17 @@ class RecycleOrderListItem {
 /// Single route event from SF Express tracking
 @JsonSerializable()
 class SfExpressRoute {
-  @JsonKey(name: 'acceptTime')
+  @JsonKey(name: 'accept_time')
   final String acceptTime;
-  @JsonKey(name: 'acceptAddress')
+  @JsonKey(name: 'accept_address')
   final String acceptAddress;
-  @JsonKey(name: 'opCode')
+  @JsonKey(name: 'op_code')
   final String opCode;
   final String remark;
   @JsonKey(name: 'secondaryStatusCode')
-  final String secondaryStatusCode;
+  final String? secondaryStatusCode;
   @JsonKey(name: 'secondaryStatusName')
-  final String secondaryStatusName;
+  final String? secondaryStatusName;
   @JsonKey(name: 'firstStatusCode')
   final String? firstStatusCode;
   @JsonKey(name: 'firstStatusName')
