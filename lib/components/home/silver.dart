@@ -7,7 +7,10 @@ import 'package:user_app/blocs/subscription_cubit.dart';
 import '../../style.dart';
 
 class SliverBar extends StatefulWidget {
-  const SliverBar({super.key});
+  final ProfileLoaded profileState;
+  final EntitlementLoaded entitlementState;
+  final SubscriptionDetailAndListLoaded subscriptionState;
+  const SliverBar({super.key, required this.profileState, required this.entitlementState, required this.subscriptionState});
 
   @override
   State<SliverBar> createState() => _SliverBarState();
@@ -17,15 +20,21 @@ class _SliverBarState extends State<SliverBar> {
   String? avatar;
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {
+          avatar = widget.profileState.profile.name[0].toUpperCase();
+        });
+      }
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 60, 20, 30),
-      // decoration: BoxDecoration(
-      //     image: DecorationImage(
-      //       fit: BoxFit.cover,
-      //       image: AssetImage('assets/widget/home_bg.png') as ImageProvider,
-      //     )
-      // ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -37,7 +46,7 @@ class _SliverBarState extends State<SliverBar> {
                 backgroundColor: Colors.white,
                 radius: 24,
                 child: Text(
-                  avatar ?? "A",
+                  avatar ?? "",
                   style: TextStyle(color: Color(0xFF509667), fontSize: 20),
                 ),
               ),
@@ -67,33 +76,17 @@ class _SliverBarState extends State<SliverBar> {
   }
 
   Widget _buildProfile() {
-    return BlocBuilder<ProfileCubit, ProfileState>(
-      builder: (context, state) {
-
-        if(state is ProfileLoaded) {
-
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) {
-              setState(() {
-                avatar = state.profile.name[0].toUpperCase();
-              });
-            }
-          });
-          return RichText(
-            text: TextSpan(
-              style: TextStyle(fontSize: 24, color: Colors.white),
-              children: [
-                TextSpan(text: "Hello, "),
-                TextSpan(
-                  text: state.profile.name,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          );
-        }
-        return Container();
-      },
+    return RichText(
+      text: TextSpan(
+        style: TextStyle(fontSize: 24, color: Colors.white),
+        children: [
+          TextSpan(text: "Hello, "),
+          TextSpan(
+            text: widget.profileState.profile.name,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
     );
   }
 
@@ -109,26 +102,15 @@ class _SliverBarState extends State<SliverBar> {
   }
 
   Widget _buildPickupRemining() {
-    return BlocBuilder<EntitlementCubit, EntitlementState>(
-      builder: (context, state) {
-        if (state is EntitlementLoaded) {
-          return _buildStatItem(state.entitlements.isNotEmpty ? state.entitlements.first.quotaRemaining.toString() : "00", "Pick Up");
-        }
-        return Container();
-      },
-    );
+    final state = widget.entitlementState;
+    return _buildStatItem(state.entitlements.isNotEmpty ? state.entitlements.first.quotaRemaining.toString() : "00", "Pick Up");
+
   }
 
   Widget _buildSubscription() {
-    return BlocBuilder<SubscriptionCubit, SubscriptionState>(
-      builder: (context, state) {
-        if (state is SubscriptionDetailAndListLoaded) {
-          return _buildStatItem(
-              state.subscriptions.isNotEmpty ? state.subscriptions.first.plan.billingCycle.name : "No subscription", "Subscriptions");
-        }
-        return Container();
-      },
-    );
+   final state = widget.subscriptionState;
+    return _buildStatItem(state.subscriptions.isNotEmpty ? state.subscriptions.first.plan.billingCycle.name : "No subscription", "Subscriptions");
+
   }
 
   Widget _buildStatItem(String value, String label) {
