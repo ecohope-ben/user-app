@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../components/common/explore_banner.dart';
+
 class HowItWorksPage extends StatelessWidget {
   const HowItWorksPage({super.key});
 
-  final Color timelineColor = const Color(0xFF56AD82); // timeline
-  final Color bannerColor = const Color(0xFF1F7A66); // banner color
+  final Color timelineColor = const Color(0xFF005D2F); // timeline
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +82,7 @@ class HowItWorksPage extends StatelessWidget {
               const SizedBox(height: 30),
               const Divider(thickness: 1, color: Colors.black12),
               const SizedBox(height: 30),
-              _buildBanner(),
+              ExploreBanner(),
               const SizedBox(height: 20),
             ],
           ),
@@ -90,75 +91,7 @@ class HowItWorksPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBanner(){
-    return
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: bannerColor,
-          borderRadius: BorderRadius.zero,
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [
-              const Color(0xFF1A5E4D),
-              const Color(0xFF2A9D84),
-            ],
-          ),
-        ),
-        child: Row(
-          children: [
-            // Star
-            const Icon(
-              Icons.auto_awesome_outlined,
-              color: Colors.white,
-              size: 36,
-            ),
-            const SizedBox(width: 16),
 
-            const Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Limited Offer, Join Now',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Free Trial available',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Explore
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero,
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-              ),
-              child: const Text('Explore'),
-            ),
-          ],
-        ),
-      );
-  }
 
   Widget _buildTimelineStep({
     required String text,

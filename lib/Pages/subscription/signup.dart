@@ -1,16 +1,20 @@
 import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:user_app/components/subscription/address.dart';
 import 'package:user_app/components/subscription/features.dart';
 
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:user_app/components/subscription/preview.dart';
 import '../../api/index.dart';
 import '../../api/endpoints/subscription_api.dart';
 import '../../components/subscription/payment_detail_row.dart';
 import '../../models/logistics_models.dart';
 import '../../models/subscription_models.dart';
 import '../../style.dart';
-import '../../utils/popUp.dart';
+import '../../utils/pop_up.dart';
+import '../../utils/snack.dart';
 
 class SubscriptionSignUp extends StatefulWidget {
   final PlanListItem plan;
@@ -22,8 +26,6 @@ class SubscriptionSignUp extends StatefulWidget {
 }
 
 class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
-  late final Color themeColor;
-  late final String imagePath;
 
   // API instances
   final _logisticsApi = Api.instance().logistics();
@@ -36,6 +38,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   bool _isCheckingActivation = false;
   String? _districtsError;
   String? _previewError;
+  bool _hasAcceptedTerms = false;
 
   // Timer for polling activation status
   Timer? _activationCheckTimer;
@@ -48,19 +51,11 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   // Preview data
   PreviewSubscriptionResponse? _previewData;
 
-  final TextEditingController addressController = TextEditingController(
-      text: "Chinachem Leighton Plaza, 29 Leighton Road...");
+  final TextEditingController addressController = TextEditingController(text: "");
 
   @override
   void initState() {
     super.initState();
-    if (widget.plan.billingCycle == BillingCycle.monthly) {
-      themeColor = mainPurple;
-      imagePath = "assets/widget/subscription_header_monthly.png";
-    } else {
-      themeColor = blueBorder;
-      imagePath = "assets/widget/subscription_header_yearly.png";
-    }
     _loadData();
   }
 
@@ -83,12 +78,12 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
         _districts = envelope.data;
         _isLoadingDistricts = false;
         // Set default selection if available
-        if (_districts.isNotEmpty) {
-          _selectedDistrict = _districts.first;
-          if (_selectedDistrict!.subDistricts.isNotEmpty) {
-            _selectedSubDistrict = _selectedDistrict!.subDistricts.first;
-          }
-        }
+        // if (_districts.isNotEmpty) {
+        //   _selectedDistrict = _districts.first;
+        //   if (_selectedDistrict!.subDistricts.isNotEmpty) {
+        //     _selectedSubDistrict = _selectedDistrict!.subDistricts.first;
+        //   }
+        // }
       });
     } catch (e) {
       setState(() {
@@ -197,41 +192,32 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   }
 
   Future<void> _createSubscription() async {
+
+
     // Validate required fields
     if (_selectedDistrict == null) {
-      await showForcePopup(
-        context,
-        title: '錯誤',
-        message: '請選擇區域 (Region)',
-      );
+      popSnackBar(context, '請選擇區域 (Region)');
       return;
     }
 
     if (_selectedSubDistrict == null) {
-      await showForcePopup(
-        context,
-        title: '錯誤',
-        message: '請選擇地區 (District)',
-      );
+      popSnackBar(context, '請選擇地區 (District)');
       return;
     }
 
     final address = addressController.text.trim();
     if (address.isEmpty) {
-      await showForcePopup(
-        context,
-        title: '錯誤',
-        message: '請輸入地址',
-      );
+      popSnackBar(context, '請輸入地址');
+      return;
+    }
+
+    if (!_hasAcceptedTerms) {
+      popSnackBar(context, '請先同意條款及私隱政策');
       return;
     }
 
     if (_previewData == null) {
-      await showForcePopup(
-        context,
-        title: '錯誤',
-        message: '預覽資料尚未載入，請稍候再試',
-      );
+      popSnackBar(context, '預覽資料尚未載入，請稍候再試',);
       return;
     }
 
@@ -396,10 +382,11 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
           context,
           title: '成功',
           message: '訂閱已成功啟動！',
+
         );
 
         if (mounted) {
-          Navigator.pop(context);
+          context.replace("/subscription/confirmation");
         }
       } else if (response.result == ActivateSubscriptionResult.failed) {
         _activationCheckTimer?.cancel();
@@ -439,9 +426,16 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: AssetImage("assets/widget/subscription_signup_header.png") as ImageProvider,
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        Color(0xFF294F55),
+                        Color(0xFF294F55),
+                        Color(0xFF294F55),
+                        Color(0xFF376752),
+                        Color(0xFF376752),
+                      ],
                     ),
                   ),
                 ),
@@ -484,20 +478,9 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(color: mainPurple, width: 1.2),
-                            // borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: widget.features.map((feature){
-                              return FeaturesListItem(feature, color: themeColor);
-                            }).toList()
-                          ),
+                        FeatureCard(
+                          features: widget.features,
+                          themColor: listItemGreen,
                         ),
 
                         const SizedBox(height: 15),
@@ -523,39 +506,11 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                                         style: const TextStyle(color: Colors.red),
                                       ),
                                     )
-                                  : Column(
-                                      children: [
-                                        PaymentDetailRow("Type", _getBillingCycleText(), isBold: true),
-                                        const SizedBox(height: 8),
-                                        PaymentDetailRow("Renewing on", _getRenewalText(), isBold: true),
-                                        const SizedBox(height: 8),
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            const SizedBox(
-                                              width: 100,
-                                              child: Text("Amount", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700)),
-                                            ),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    _getAmountText(),
-                                                    style: const TextStyle(fontWeight: FontWeight.bold),
-                                                  ),
-                                                  const SizedBox(height: 4),
-                                                  Text(
-                                                    _getAutoRenewText(),
-                                                    style: const TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w600),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                                  : SubscriptionPreviewCard(
+                                      billingRecycleType: _getBillingCycleText(),
+                                      renewalText: _getRenewalText(),
+                                      amountText: _getAmountText(),
+                                      autoRenewText: _getAutoRenewText())
                         ),
 
                         const SizedBox(height: 15),
@@ -586,66 +541,12 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                                       style: const TextStyle(color: Colors.red),
                                     ),
                                   )
-                                : Row(
-                                    children: [
-                                      // Region Dropdown (District in API terms)
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            const Text("Region", style: TextStyle(color: Colors.black54)),
-                                            const SizedBox(height: 6),
-                                            DropdownButtonFormField<District>(
-                                              value: _selectedDistrict,
-                                              isExpanded: true,
-                                              menuMaxHeight: 300,
-                                              decoration: const InputDecoration(
-                                                  border: OutlineInputBorder(
-                                                      borderRadius: BorderRadius.zero
-                                                  ),
-                                                  contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8)
-                                              ),
-                                              items: _districts
-                                                  .map((district) => DropdownMenuItem(
-                                                        value: district,
-                                                        child: Text(district.name),
-                                                      ))
-                                                  .toList(),
-                                              onChanged: _onDistrictChanged,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(width: 16),
-                                      // Sub-District Dropdown
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            const Text("District", style: TextStyle(color: Colors.black54)),
-                                            const SizedBox(height: 6),
-                                            DropdownButtonFormField<SubDistrict>(
-                                              value: _selectedSubDistrict,
-                                              isExpanded: true,
-                                              decoration: const InputDecoration(
-                                                  border: OutlineInputBorder(
-                                                    borderRadius: BorderRadius.zero,
-                                                  ),
-                                                  contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8)
-                                              ),
-                                              items: _selectedDistrict?.subDistricts
-                                                      .map((subDistrict) => DropdownMenuItem(
-                                                            value: subDistrict,
-                                                            child: Text(subDistrict.name),
-                                                          ))
-                                                      .toList() ??
-                                                  [],
-                                              onChanged: _onSubDistrictChanged,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                : AddressDistrictSelect(
+                                    districts: _districts, 
+                                    selectedDistrict: _selectedDistrict,
+                                    selectedSubDistrict: _selectedSubDistrict,
+                                    onDistrictChanged: _onDistrictChanged,
+                                    onSubDistrictChanged: _onSubDistrictChanged,
                                   ),
 
                         const SizedBox(height: 16),
@@ -682,7 +583,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                               ),
                             ),
                             child: TextButton(
-                              onPressed: _isCreatingSubscription ? null : () {
+                              onPressed: (_isCreatingSubscription) ? null : () {
                                 _createSubscription();
                               },
                               child: _isCreatingSubscription
@@ -710,24 +611,40 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                         const SizedBox(height: 16),
 
                         // T&C
-                        RichText(
-                          text: TextSpan(
-                            style: const TextStyle(color: Colors.black54, fontSize: 14, height: 1.5),
-                            children: [
-                              const TextSpan(text: "By clicking here, you agree to our "),
-                              TextSpan(
-                                text: "terms",
-                                style: const TextStyle(decoration: TextDecoration.underline),
-                                recognizer: TapGestureRecognizer()..onTap = () {},
+                        Row(
+                          children: [
+                            Checkbox(
+                              activeColor: Colors.black,
+                              value: _hasAcceptedTerms,
+                              onChanged: (value) {
+                                setState(() {
+                                  _hasAcceptedTerms = value ?? false;
+                                });
+                              },
+                            ),
+
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  style: const TextStyle(color: Colors.black54, fontSize: 14, height: 1.5),
+                                  children: [
+                                    const TextSpan(text: "By clicking here, you agree to our "),
+                                    TextSpan(
+                                      text: "terms",
+                                      style: const TextStyle(decoration: TextDecoration.underline),
+                                      recognizer: TapGestureRecognizer()..onTap = () {},
+                                    ),
+                                    const TextSpan(text: " and have read and acknowledge our "),
+                                    TextSpan(
+                                      text: "privacy policy.",
+                                      style: const TextStyle(decoration: TextDecoration.underline),
+                                      recognizer: TapGestureRecognizer()..onTap = () {},
+                                    ),
+                                  ],
+                                ),
                               ),
-                              const TextSpan(text: " and have read and acknowledge our "),
-                              TextSpan(
-                                text: "privacy policy.",
-                                style: const TextStyle(decoration: TextDecoration.underline),
-                                recognizer: TapGestureRecognizer()..onTap = () {},
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
 
                         const SizedBox(height: 20),

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../models/registration_models.dart';
 import '../index.dart';
 
@@ -202,8 +203,12 @@ class RegisterApi extends ApiEndpoint {
             registration: registration
         );
       } catch (parseError, t) {
+
         print('Error parsing response: $parseError');
         print(t);
+        return RegistrationException(
+            message: tr("error.network_error"), code: '', httpStatus: 500,
+        );
       }
     }
 

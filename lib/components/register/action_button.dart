@@ -9,7 +9,8 @@ class ActionButton extends StatefulWidget {
   final VoidCallback? onTap;
   final bool showLoading;
   final bool disable;
-  const ActionButton(this.title, {this.showLoading = false, this.disable = false, this.onTap, super.key});
+  final bool needPadding;
+  const ActionButton(this.title, {this.showLoading = false, this.needPadding = true, this.disable = false, this.onTap, super.key});
 
   @override
   State<ActionButton> createState() => _ActionButtonState();
@@ -19,7 +20,7 @@ class _ActionButtonState extends State<ActionButton> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(bottom: 12.0, top: 12),
+        padding: (widget.needPadding) ? const EdgeInsets.only(bottom: 12.0, top: 12) :  const EdgeInsets.all(0),
         child: Container(
             width: double.infinity,
             height: 40,

@@ -11,6 +11,7 @@ const Color blueTextUnderline = Color(0xFF48F9FF);
 const Color blueRegisterText = Color(0xFF3CA2FF);
 const Color blueBorder = Color(0xFF2D5BFF);
 const Color welcomeWordsBg = Color(0xFF29A862);
+const Color listItemGreen = Color(0xFF198967);
 const Color darkGreenWord = Color(0xFF007800);
 const Color lightGreenBg = Color(0xFFECFFD9);
 

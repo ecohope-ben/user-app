@@ -4,6 +4,7 @@ import 'package:step_progress/step_progress.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_app/pages/guest/register/steps/email_verify.dart';
 import 'package:user_app/pages/guest/register/steps/phone_verify.dart';
+import 'package:user_app/utils/snack.dart';
 import '../../../components/register/stepper.dart';
 import '../../../blocs/registration_cubit.dart';
 import '../../../models/registration_models.dart';
@@ -37,13 +38,9 @@ class _RegisterIndexState extends State<RegisterIndex> {
             }else if(state is RegistrationCompleted){
               stepProgressController.setCurrentStep(2);
             }else if (state is RegistrationError){
-              final scaffold = ScaffoldMessenger.of(context);
-              scaffold.showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
+
+              popSnackBar(context, state.message);
+
               if(state.registration != null){
                 context.read<RegistrationCubit>().update(RegistrationInProgress(
                   registration: state.registration!,

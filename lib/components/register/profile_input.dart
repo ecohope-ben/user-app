@@ -3,19 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_app/blocs/profile_cubit.dart';
 
+import '../../constants.dart';
 import '../../style.dart';
 import 'action_button.dart';
 import 'date_picker.dart';
 import 'text_input.dart';
 
-Map<String, String> ageGroup = {
-  "18_24": "18-24",
-  "25_34": "25-34",
-  "35_44": "35-44",
-  "45_54": "45-54",
-  "55_64": "55-64",
-  "65_plus": "65+"
-};
+
 
 class ProfileInput extends StatefulWidget {
   const ProfileInput({super.key});

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../blocs/subscription_cubit.dart';
+import '../../utils/time.dart';
+
 
 class NotificationCard extends StatelessWidget {
-  const NotificationCard({super.key});
+  final SubscriptionDetailAndListLoaded subscriptionState;
+  const NotificationCard(this.subscriptionState, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +30,7 @@ class NotificationCard extends StatelessWidget {
                   Text("Great Job! Thanks for recycling.", style: TextStyle(color: Colors.white))
                 ],
               ),
-              Text("Wait until 20 Nov 2025 for you next recycle.", style: TextStyle(color: Colors.white))
+              Text("Wait until ${convertDateTimeToString(subscriptionState.detail.currentPeriodEnd, "dd MMM y")} for you next recycle.", style: TextStyle(color: Colors.white))
             ],
           )),
           Expanded(flex: 1, child: Icon(Icons.close, color: Colors.white)),

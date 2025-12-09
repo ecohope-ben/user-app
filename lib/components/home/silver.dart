@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:user_app/blocs/entitlement_cubit.dart';
 import 'package:user_app/blocs/profile_cubit.dart';
 import 'package:user_app/blocs/subscription_cubit.dart';
+import 'package:user_app/pages/subscription/manage/list.dart';
+import 'package:user_app/utils/extension.dart';
 
 import '../../style.dart';
 
 class SliverBar extends StatefulWidget {
   final ProfileLoaded profileState;
   final EntitlementLoaded entitlementState;
-  final SubscriptionDetailAndListLoaded subscriptionState;
+  final SubscriptionListLoaded subscriptionState;
   const SliverBar({super.key, required this.profileState, required this.entitlementState, required this.subscriptionState});
 
   @override
@@ -19,12 +22,29 @@ class SliverBar extends StatefulWidget {
 class _SliverBarState extends State<SliverBar> {
   String? avatar;
 
+  String setAvatar(String avatarStr) {
+    try {
+      if(avatarStr.hasEmoji){
+        String? firstEmoji = avatarStr.firstEmoji;
+        if(firstEmoji == null){
+          return "";
+        }else {
+          return firstEmoji;
+        }
+      }else {
+        return avatarStr[0].toUpperCase();
+      }
+    } catch (e) {
+      return avatarStr[0].toUpperCase();
+    }
+  }
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         setState(() {
-          avatar = widget.profileState.profile.name[0].toUpperCase();
+          avatar = setAvatar(widget.profileState.profile.name);
         });
       }
     });
@@ -42,24 +62,26 @@ class _SliverBarState extends State<SliverBar> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 24,
-                child: Text(
-                  avatar ?? "",
-                  style: TextStyle(color: Color(0xFF509667), fontSize: 20),
+              InkWell(
+                onTap: () => context.push("/profile/edit"),
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 24,
+                  child: Text(
+                    avatar ?? "",
+                    style: TextStyle(color: Color(0xFF509667), fontSize: 20),
+                  ),
                 ),
               ),
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.black, width: 1.5),
-                ),
-                child: const Padding(
+              InkWell(
+                onTap: (){
+                  context.push("/settings", extra: widget.subscriptionState);
+                },
+                child: Padding(
                   padding: EdgeInsets.all(4.0),
-                  child: Icon(Icons.question_mark, size: 20),
+                  child: Icon(Icons.settings , size: 25, color: Colors.white,),
                 ),
-              )
+              ),
             ],
           ),
           const SizedBox(height: 20),
@@ -96,37 +118,47 @@ class _SliverBarState extends State<SliverBar> {
       children: [
         _buildPickupRemining(),
         _buildSubscription(),
-        _buildStatItem("00", "Total collections"),
+        _buildStatItem(value: "00", label: "Total collections"),
       ],
     );
   }
 
   Widget _buildPickupRemining() {
     final state = widget.entitlementState;
-    return _buildStatItem(state.entitlements.isNotEmpty ? state.entitlements.first.quotaRemaining.toString() : "00", "Pick Up");
+    return _buildStatItem(
+        value: state.entitlements.isNotEmpty ? state.entitlements.first.quotaRemaining.toString() : "00",
+        label: "Pick Up"
+    );
 
   }
 
   Widget _buildSubscription() {
    final state = widget.subscriptionState;
-    return _buildStatItem(state.subscriptions.isNotEmpty ? state.subscriptions.first.plan.billingCycle.name : "No subscription", "Subscriptions");
+    return _buildStatItem(
+        value: state.subscriptions.isNotEmpty ? state.subscriptions.first.plan.billingCycle.name : "No subscription",
+        label: "Subscriptions",
+        onTap: () => context.push("/subscription/manage/list", extra: SubscriptionManageTarget.manage)
+    );
 
   }
 
-  Widget _buildStatItem(String value, String label) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          value,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(fontSize: 13, color: Colors.white),
-        ),
-      ],
+  Widget _buildStatItem({required String value, required String label, VoidCallback? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            value,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(fontSize: 13, color: Colors.white),
+          ),
+        ],
+      ),
     );
   }
 }

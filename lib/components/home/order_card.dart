@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:user_app/blocs/recycle_order_cubit.dart';
 import 'package:user_app/components/register/action_button.dart';
 
+import 'package:flutter/gestures.dart';
 import '../../models/recycle_models.dart';
 import '../../models/subscription_models.dart';
 import '../../utils/snack.dart';
@@ -13,20 +14,23 @@ class InitialBagDeliveryCard extends StatelessWidget {
 
   const InitialBagDeliveryCard(this.trackingNumber, {super.key});
 
-  Widget _buildItem() {
-    String bullet = "\u2022 ";
+  final String bullet = "\u2022";
+  Widget _buildItemForSF() {
     return RichText(
       text: TextSpan(
         style: TextStyle(fontSize: 16, color: Colors.black),
         children: [
-          TextSpan(text: "$bullet Check your phone", style: TextStyle(fontWeight: FontWeight.bold)),
+          TextSpan(text: "$bullet Please use the "),
+          TextSpan(text: "SF Express App", style: TextStyle(fontWeight: FontWeight.bold)),
           TextSpan(
-            text: " for the latest courier’s updates",
-            style: TextStyle(),
+            text: " for latest tracking updates.",
           ),
         ],
       ),
     );
+  }
+  Widget _buildMessage(String message) {
+    return Text(bullet + " " +message, style: TextStyle(fontSize: 16, color: Colors.black));
   }
 
   @override
@@ -81,7 +85,7 @@ class InitialBagDeliveryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Tracking #$trackingNumber",
+                  "Tracking #${trackingNumber ?? ""}",
                   style: const TextStyle(
                     fontSize: 18,
                     color: Colors.black87,
@@ -89,10 +93,32 @@ class InitialBagDeliveryCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                _buildItem(),
-                const SizedBox(height: 24),
+                _buildItemForSF(),
+                _buildMessage("Please refresh this page once you’ve received the bag and tap on the button below to schedule a pick up."),
 
-                ActionButton("Schedule a recycle pick up", disable: true)
+                ActionButton("Schedule a recycle pick up", disable: true),
+                RichText(
+                  text: TextSpan(
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                    children: [
+                      TextSpan(text: "Please"),
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.middle,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(8),
+                          onTap: () {},
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Text(" contact us ", style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                          ),
+                        ),
+                      ),
+                      TextSpan(
+                        text: "is something is wrong",
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
           ),

@@ -27,6 +27,17 @@ class ProfileApi extends ApiEndpoint {
     }
   }
 
+  Future<void> patchProfile({
+    // required String accessToken,
+    required ProfilePatchRequest request,
+  }) async {
+    try {
+      await http.patch('/profile', data: request.toJson());
+    } on DioException catch (e) {
+      throw _handleProfileDioError(e);
+    }
+  }
+
   /// Handle Dio errors for profile
   Exception _handleProfileDioError(DioException e) {
     print('Profile API Error: ${e.message}');

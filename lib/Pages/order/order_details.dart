@@ -6,6 +6,7 @@ import 'package:user_app/style.dart';
 
 import '../../blocs/recycle_order_cubit.dart';
 import '../../models/recycle_models.dart';
+import '../../utils/time.dart';
 
 class PickUpOrderDetailsPage extends StatelessWidget {
   final String orderId;
@@ -93,7 +94,7 @@ class PickUpOrderDetailsPage extends StatelessWidget {
             // 3. Pick Up Date and Time
             _buildLabel('Pick Up Date and Time'),
             const SizedBox(height: 6),
-            _buildValue('${order.pickupDate} | ${order.pickupTime}'),
+            _buildValue('${convertDateTimeToString(order.pickupAt, "dd MMM y | HH:mm")}'),
 
             const SizedBox(height: 20),
 

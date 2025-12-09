@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:user_app/blocs/subscription_cubit.dart';
 import 'package:user_app/style.dart';
 
+import '../../blocs/subscription_plan_cubit.dart';
 import '../../components/subscription/card.dart';
 import '../../models/subscription_models.dart';
 
@@ -104,23 +105,23 @@ class _SubscriptionListPageState extends State<SubscriptionListPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SubscriptionCubit()..loadPlans(),
-      child: BlocBuilder<SubscriptionCubit, SubscriptionState>(
+      create: (context) => SubscriptionPlanCubit()..loadPlans(),
+      child: BlocBuilder<SubscriptionPlanCubit, SubscriptionPlanState>(
         builder: (context, state) {
             return Scaffold(
               appBar: AppBar(
-                backgroundColor: Colors.transparent,
+                backgroundColor: mainPurple,
                 elevation: 0,
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
                     context.pop();
                   },
                 ),
                 title: const Text(
-                  "Subscriptions",
+                  "Subscriptions Plan",
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
@@ -135,7 +136,7 @@ class _SubscriptionListPageState extends State<SubscriptionListPage> {
     );
   }
   
-  Widget _buildBody(SubscriptionState state){
+  Widget _buildBody(SubscriptionPlanState state){
     if (state is SubscriptionPlansLoaded) {
       return SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),

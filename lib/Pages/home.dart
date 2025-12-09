@@ -63,8 +63,7 @@ class _HomeViewState extends State<_HomeView> {
     if (entitlementState is EntitlementLoaded) {
       _lastEntitlementState = entitlementState;
     }
-    if (subscriptionState is SubscriptionDetailAndListLoaded ||
-        subscriptionState is SubscriptionListLoaded) {
+    if (subscriptionState is SubscriptionListLoaded) {
       _lastSubscriptionState = subscriptionState;
     }
     if (recycleOrderState is RecycleOrderListLoaded) {
@@ -75,7 +74,7 @@ class _HomeViewState extends State<_HomeView> {
     if (!_hasInitialData) {
       final hasData = profileState is ProfileLoaded &&
           entitlementState is EntitlementLoaded &&
-          subscriptionState is SubscriptionDetailAndListLoaded &&
+          subscriptionState is SubscriptionListLoaded &&
           recycleOrderState is RecycleOrderListLoaded;
       if (hasData) {
         _hasInitialData = true;
@@ -119,9 +118,13 @@ class _HomeViewState extends State<_HomeView> {
     final bool isReady =
         effectiveProfileState is ProfileLoaded &&
         effectiveEntitlementState is EntitlementLoaded &&
-        effectiveSubscriptionState is SubscriptionDetailAndListLoaded;
+        effectiveSubscriptionState is SubscriptionListLoaded &&
         effectiveRecycleOrderState is RecycleOrderListLoaded;
-
+    print("--ready: $isReady | $_hasInitialData");
+    print("--ready: $effectiveProfileState");
+    print("--ready: $effectiveEntitlementState");
+    print("--ready: $effectiveSubscriptionState");
+    print("--ready: $effectiveRecycleOrderState");
     // Only show skeleton on initial load, not during refresh
     if (!isReady && !_hasInitialData) {
       return const _HomeSkeleton();
@@ -132,7 +135,7 @@ class _HomeViewState extends State<_HomeView> {
       return _HomeContent(
         profileState: _lastProfileState as ProfileLoaded,
         entitlementState: _lastEntitlementState as EntitlementLoaded,
-        subscriptionState: _lastSubscriptionState as SubscriptionDetailAndListLoaded,
+        subscriptionState: _lastSubscriptionState as SubscriptionListLoaded,
         recycleOrderState: _lastRecycleOrderState as RecycleOrderListLoaded,
       );
     }
@@ -140,7 +143,7 @@ class _HomeViewState extends State<_HomeView> {
     return _HomeContent(
       profileState: effectiveProfileState as ProfileLoaded,
       entitlementState: effectiveEntitlementState as EntitlementLoaded,
-      subscriptionState: effectiveSubscriptionState as SubscriptionDetailAndListLoaded,
+      subscriptionState: effectiveSubscriptionState as SubscriptionListLoaded,
       recycleOrderState: effectiveRecycleOrderState as RecycleOrderListLoaded,
     );
   }
@@ -174,7 +177,7 @@ class _HomeViewState extends State<_HomeView> {
 class _HomeContent extends StatelessWidget {
   final ProfileLoaded profileState;
   final EntitlementLoaded entitlementState;
-  final SubscriptionDetailAndListLoaded subscriptionState;
+  final SubscriptionListLoaded subscriptionState;
   final RecycleOrderListLoaded recycleOrderState;
   const _HomeContent({
     required this.profileState,
@@ -229,16 +232,18 @@ class _HomeContent extends StatelessWidget {
                       physics: const BouncingScrollPhysics(),
                       child: Column(
                         children: [
-                          NotificationCard(),
+                          if(subscriptionState is SubscriptionDetailAndListLoaded) NotificationCard(subscriptionState as SubscriptionDetailAndListLoaded),
                           BlocBuilder<SubscriptionCubit, SubscriptionState>(
                             builder: (context, state) {
+
                               // Use effective state for display
                               final displayState = subscriptionState;
+
                               if(recycleOrderState.orders.isNotEmpty && !availableOrderStatus.contains(recycleOrderState.orders.first.status)){
                                 return RecycleOrderCard(recycleOrderState.orders.first);
                               }
-                              // return ScheduleRecycleOrderCard(displayState.detail);
-                              if (displayState.subscriptions.isNotEmpty) {
+
+                              if (displayState is SubscriptionDetailAndListLoaded && displayState.subscriptions.isNotEmpty) {
                                 if (displayState.detail.recyclingProfile != null && displayState.detail.recyclingProfile?.initialBagStatus == "delivered") {
                                   return ScheduleRecycleOrderCard(displayState.detail);
                                 } else {
@@ -246,6 +251,7 @@ class _HomeContent extends StatelessWidget {
                                 }
                               } else {
                                 return PromotionBanner(() => context.push("/subscription/list"));
+
                               }
 
                             },

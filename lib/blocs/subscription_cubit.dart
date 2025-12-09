@@ -28,14 +28,6 @@ class SubscriptionLoading extends SubscriptionState {
   List<Object?> get props => [operation];
 }
 
-class SubscriptionPlansLoaded extends SubscriptionState {
-  final List<PlanListItem> plans;
-
-  const SubscriptionPlansLoaded({required this.plans});
-
-  @override
-  List<Object?> get props => [plans];
-}
 
 class SubscriptionPlanDetailLoaded extends SubscriptionState {
   final PlanDetail plan;
@@ -73,10 +65,9 @@ class SubscriptionListLoaded extends SubscriptionState {
   List<Object?> get props => [subscriptions];
 }
 
-class SubscriptionDetailAndListLoaded extends SubscriptionState {
+class SubscriptionDetailAndListLoaded extends SubscriptionListLoaded {
   final SubscriptionDetail detail;
-  final List<SubscriptionListItem> subscriptions;
-  const SubscriptionDetailAndListLoaded({required this.detail, required this.subscriptions});
+  const SubscriptionDetailAndListLoaded({required this.detail, required super.subscriptions});
 
   @override
   List<Object?> get props => [detail];
@@ -142,25 +133,6 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
       : _api = api ?? Api.instance().subscription(),
         super(const SubscriptionInitial());
 
-  Future<void> loadPlans() async {
-    emit(const SubscriptionLoading('plans'));
-    try {
-      final envelope = await _api.listPlans();
-      emit(SubscriptionPlansLoaded(plans: envelope.data));
-    } catch (error) {
-      _handleError(error);
-    }
-  }
-
-  Future<void> loadPlanDetail(String planId) async {
-    emit(const SubscriptionLoading('plan_detail'));
-    try {
-      final plan = await _api.getPlan(planId: planId);
-      emit(SubscriptionPlanDetailLoaded(plan: plan));
-    } catch (error) {
-      _handleError(error);
-    }
-  }
 
   Future<void> previewSubscription(
       PreviewSubscriptionCreationRequest request) async {
@@ -197,7 +169,8 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
         emit(SubscriptionListLoaded(subscriptions: envelope.subscriptions));
       }
 
-    } catch (error) {
+    } catch (error, t) {
+      print(t);
       _handleError(error);
     }
   }

@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:user_app/blocs/subscription_cubit.dart';
 import 'package:user_app/pages/common/confirm_page.dart';
 import 'package:user_app/pages/common/how_it_works.dart';
 import 'package:user_app/pages/common/recycling_guide.dart';
 import 'package:user_app/pages/guest/login/index.dart';
 import 'package:user_app/pages/guest/register/index.dart';
+import 'package:user_app/pages/history/order/index.dart';
 import 'package:user_app/pages/home.dart';
 import 'package:user_app/pages/order/order_details.dart';
 import 'package:user_app/pages/order/recycle_order.dart';
+import 'package:user_app/pages/setting/index.dart';
 import 'package:user_app/pages/subscription/list.dart';
+import 'package:user_app/pages/subscription/manage/change_plan.dart';
+import 'package:user_app/pages/subscription/manage/detail.dart';
+import 'package:user_app/pages/subscription/manage/list.dart';
 import 'package:user_app/pages/subscription/signup.dart';
 import 'package:user_app/pages/launch.dart';
 
@@ -17,6 +23,7 @@ import 'blocs/login_cubit.dart';
 import 'models/subscription_models.dart';
 import 'pages/guest/login/email_verify.dart';
 import 'pages/guest/welcome/get_start.dart';
+import 'pages/profile/edit.dart';
 
 final router = GoRouter(
   routes: [
@@ -24,6 +31,7 @@ final router = GoRouter(
     GoRoute(path: '/welcome', builder: (context, state) => const IntroPage()),
     GoRoute(path: '/how_it_works', builder: (context, state) => const HowItWorksPage()),
     GoRoute(path: '/recycling_guide', builder: (context, state) => const RecyclingGuidePage()),
+    GoRoute(path: '/settings', builder: (context, state) => SettingsPage(state.extra as SubscriptionListLoaded)),
     GoRoute(path: '/register', builder: (context, state) => RegisterIndex()),
     ShellRoute(
         builder: (context, state, child) => BlocProvider(
@@ -42,22 +50,47 @@ final router = GoRouter(
     GoRoute(path: '/home', builder: (context, state) => HomePage()),
 
     // Subscription
-    GoRoute(path: '/subscription/list', builder: (context, state) => SubscriptionListPage()),
     GoRoute(
-        path: '/subscription/signup',
-        builder: (context, state) {
+      path: "/subscription", builder: (context, state) => Container(),
+      routes: [
+        GoRoute(path: 'list', builder: (context, state) => SubscriptionListPage()),
+        GoRoute(path: 'confirmation', builder: (context, state) => SubscriptionConfirmationPage()),
+        GoRoute(path: 'manage/list', builder: (context, state) => SubscriptionManageListPage(state.extra as SubscriptionManageTarget)),
+        GoRoute(path: 'manage/detail', builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>;
           final plan = extra['plan'] as PlanListItem;
           final features = extra['features'] as List<String>;
-          return SubscriptionSignUp(plan: plan, features: features);
-        }
+          final subscriptionId = extra['subscriptionId'] as String;
+          return SubscriptionManageDetail(plan: plan, features: features, subscriptionId: subscriptionId);
+        }),
+        GoRoute(path: 'manage/change_plan', builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          final plan = extra['plan'] as PlanListItem;
+          final features = extra['features'] as List<String>;
+          final subscriptionId = extra['subscriptionId'] as String;
+          return SubscriptionPlanChange(plan: plan, features: features, subscriptionId: subscriptionId);
+        }),
+        GoRoute(
+            path: 'signup',
+            builder: (context, state) {
+              final extra = state.extra as Map<String, dynamic>;
+              final plan = extra['plan'] as PlanListItem;
+              final features = extra['features'] as List<String>;
+              return SubscriptionSignUp(plan: plan, features: features);
+            }
+        ),
+      ]
     ),
+
 
 
     // Order
     GoRoute(path: '/order/create', builder: (context, state) => SchedulePickUpOrderPage(state.extra as SubscriptionDetail)),
+    GoRoute(path: '/order/history', builder: (context, state) => RecycleOrderHistoryPage()),
     GoRoute(path: '/order/details', builder: (context, state) => PickUpOrderDetailsPage(state.extra as String)),
     GoRoute(path: '/order/confirmation', builder: (context, state) => RecycleOrderConfirmationPage(state.extra as String)),
+
+    GoRoute(path: '/profile/edit', builder: (context, state) => EditProfilePage()),
   ],
 );
 

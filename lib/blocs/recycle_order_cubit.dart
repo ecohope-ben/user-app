@@ -136,13 +136,20 @@ class RecycleOrderCubit extends Cubit<RecycleOrderState> {
   }) async {
     emit(const RecycleOrderLoading('list_orders'));
     try {
+
+      print("--RecycleOrder 1");
       final envelope = await _api.listOrders(
         status: status,
         limit: limit,
         offset: offset,
       );
+
+      print("--RecycleOrder 2");
       emit(RecycleOrderListLoaded(orders: envelope.data));
+
+      print("--RecycleOrder 3");
     } catch (error) {
+      print("--RecycleOrder error");
       _handleError(error);
     }
   }

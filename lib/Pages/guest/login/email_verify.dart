@@ -10,7 +10,8 @@ import '../../../../components/register/otp_input.dart';
 import '../../../../components/register/resend_button.dart';
 import '../../../../models/registration_models.dart';
 import '../../../../style.dart';
-import '../../../utils/popUp.dart';
+import '../../../utils/pop_up.dart';
+import '../../../utils/snack.dart';
 import '../../../utils/validator.dart';
 import '../widgets.dart';
 
@@ -80,13 +81,8 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
                   }
               );
             }
-            final scaffold = ScaffoldMessenger.of(context);
-            scaffold.showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
+            popSnackBar(context, state.message);
+
           }else if(state is LoginCompleted){
             print("--login complete");
             context.go("/home");

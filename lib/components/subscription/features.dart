@@ -1,5 +1,36 @@
 import 'package:flutter/material.dart';
 
+class FeatureCard extends StatelessWidget {
+  final List<String> features;
+  final Color themColor;
+  const FeatureCard({required this.features, required this.themColor, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ]
+      ),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: features.map((feature){
+            return FeaturesListItem(feature, color: themColor);
+          }).toList()
+      ),
+    );
+  }
+}
+
+
 class FeaturesListItem extends StatelessWidget {
   final String feature;
   final Color color;

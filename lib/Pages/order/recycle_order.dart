@@ -18,7 +18,6 @@ class SchedulePickUpOrderPage extends StatefulWidget {
 }
 
 class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
-  // 用於控制表單輸入
   final TextEditingController _addressController = TextEditingController();
 
   // Pickup slots data
@@ -32,7 +31,14 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
   @override
   void initState() {
     super.initState();
-    _addressController.text = widget.subscriptionDetail.deliveryAddress.fullAddress ?? "";
+    print("--address: ${widget.subscriptionDetail.deliveryAddress.fullAddress}");
+    print("--address: ${widget.subscriptionDetail.deliveryAddress.fullAddress?.isEmpty}");
+    print("--address: ${widget.subscriptionDetail.deliveryAddress.address}");
+    if((widget.subscriptionDetail.deliveryAddress.fullAddress?.isEmpty ?? true) || widget.subscriptionDetail.deliveryAddress.fullAddress == null){
+      _addressController.text = widget.subscriptionDetail.deliveryAddress.address;
+    }else {
+      _addressController.text = widget.subscriptionDetail.deliveryAddress.fullAddress!;
+    }
     _loadPickupSlots();
   }
 

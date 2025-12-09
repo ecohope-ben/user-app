@@ -107,7 +107,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         ageGroup: ageGroup
       );
 
-      await _apiService.updateProfile(
+      await _apiService.patchProfile(
         request: request,
       );
 

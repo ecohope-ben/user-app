@@ -1,11 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:user_app/style.dart';
-Map monthToWords = {
-  "1": "January",
-  "2": "February",
-
-};
 
 
 class BirthdayOneStepPicker {

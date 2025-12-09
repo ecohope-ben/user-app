@@ -45,6 +45,20 @@
     "11": "November",
     "12": "December"
   },
+  "month_to_words_short": {
+    "1": "Jan",
+    "2": "Feb",
+    "3": "Mar",
+    "4": "Apr",
+    "5": "May",
+    "6": "Jun",
+    "7": "Jul",
+    "8": "Aug",
+    "9": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dec"
+  },
   "validation": {
     "email_required": "Email is required",
     "email_invalid": "The field is not a valid email address",
@@ -75,9 +89,15 @@
   "cancel": "Cancel",
   "please_contact_at": "Please contact us at ",
   "if_need_help": "if you need help with your account",
+  "error": {
+    "network_error": "Network Error, Please try later"
+  },
   "subscription": {
     "monthly": "Monthly Plan",
-    "yearly": "Yearly Plan"
+    "yearly": "Yearly Plan",
+    "join_now": "Join Now",
+    "change_plan": "Change Plan",
+    "manage": "Manage"
   },
   "order": {
     "status": {
