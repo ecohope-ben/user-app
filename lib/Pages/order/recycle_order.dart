@@ -94,7 +94,7 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
           ),
         );
         // Navigate back after showing success message
-        context.replace("/order/confirmation", extra: response.data.id);
+        context.replace("/order/confirmation", extra: response.id);
       }
     } on RecycleException catch (e){
       setState(() {
@@ -109,6 +109,7 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
         );
       }
     }catch (e) {
+      print(e);
       setState(() {
         _isSubmitLoading = false;
       });

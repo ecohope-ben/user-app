@@ -10,11 +10,13 @@ class ProfileDatePicker extends StatefulWidget {
   final String? Function(String?)? validator;
   final int? initialMonth;
   final int? initialDay;
+  final bool showMainColor;
   const ProfileDatePicker({
     required this.onChange,
     this.validator,
     this.initialMonth,
     this.initialDay,
+    this.showMainColor = true,
     super.key,
   });
 
@@ -66,9 +68,8 @@ class _ProfileDatePickerState extends State<ProfileDatePicker> {
           decoration: InputDecoration(
             hintText: tr("register.date_of_birth"),
             hintStyle: TextStyle(color: Colors.grey),
-            suffixIcon: Icon(Icons.calendar_month_outlined, color: mainPurple),
+            suffixIcon: Icon(Icons.calendar_month_outlined, color: widget.showMainColor ? mainPurple : Colors.grey),
             border: OutlineInputBorder(
-
               borderRadius: BorderRadius.zero,
               borderSide: BorderSide(
                 color: mainPurple
@@ -77,7 +78,7 @@ class _ProfileDatePickerState extends State<ProfileDatePicker> {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.zero,
               borderSide: BorderSide(
-                color: mainPurple,
+                color: widget.showMainColor ? mainPurple : Colors.grey,
               ),
             ),
             focusedBorder: OutlineInputBorder(

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:user_app/components/subscription/features.dart';
 import 'package:user_app/components/subscription/preview.dart';
 import '../../../api/index.dart';
 import '../../../api/endpoints/subscription_api.dart';
 import '../../../models/subscription_models.dart';
+import '../../../routes.dart';
 import '../../../style.dart';
 import '../../../utils/pop_up.dart';
 import '../../../utils/snack.dart';
+import '../../../utils/time.dart';
 
 class SubscriptionPlanChange extends StatefulWidget {
   final PlanListItem plan;
@@ -45,12 +48,8 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
     super.initState();
 
     _loadSubscriptionDetail();
-    _loadData();
   }
 
-  Future<void> _loadData() async {
-    await _loadPreview();
-  }
   Future<void> _loadSubscriptionDetail() async {
     setState(() {
       _isLoadingDetail = true;
@@ -78,45 +77,6 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
     }
   }
 
-
-  Future<void> _loadPreview() async {
-    setState(() {
-      _isLoadingPreview = true;
-      _previewError = null;
-    });
-
-    try {
-      final request = PreviewSubscriptionCreationRequest(
-        planId: widget.plan.id,
-        planVersionId: widget.plan.versionId,
-        discountId: widget.plan.discount?.id,
-      );
-      print("--preview request");
-      print(widget.plan.id);
-      print(widget.plan.versionId);
-      print(widget.plan.discount?.id);
-      final preview = await _subscriptionApi.previewSubscription(request: request);
-      setState(() {
-        _previewData = preview;
-        _isLoadingPreview = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoadingPreview = false;
-        _previewError = e.toString();
-      });
-    }
-  }
-
-
-  String _formatDate(DateTime date) {
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
-  }
-
   String _formatAmount(int amount, String currency) {
     final formatted = (amount / 100).toStringAsFixed(2);
     return '$currency$formatted';
@@ -128,22 +88,27 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
         : 'Yearly Plan';
   }
 
-  String _getRenewalText() {
-    if (_previewData == null) return 'Loading...';
-    return _formatDate(_previewData!.periodEnd);
-  }
+  String _buildAmountText(){
+    if(widget.plan.discount != null){
+      if(widget.plan.discount?.discountType == DiscountType.freeCycles){
 
-  String _getAmountText() {
-    if (_previewData == null) return 'Loading...';
-    if (!_previewData!.requirePayment) {
-      return '${_formatAmount(_previewData!.amount, _previewData!.currency)} | pay nothing until ${_formatDate(_previewData!.periodEnd)}, then \$${widget.plan.priceDecimal}/Month';
+        return '\$0.00, then \$${widget.plan.priceDecimal}/Month';
+      }else {
+        return widget.plan.priceDecimal;
+      }
     }
-    return _formatAmount(_previewData!.amount, _previewData!.currency);
+
+    return widget.plan.priceDecimal ?? "";
+
   }
 
-  String _getAutoRenewText() {
-    final cycle = widget.plan.billingCycle == BillingCycle.monthly ? '1 month' : '1 year';
-    return 'Auto-renews every $cycle, cancel anytime.';
+  String _buildRenewText(){
+    if(widget.plan.billingCycle == BillingCycle.monthly){
+      return "Auto-renews every 1 month, cancel anytime.";
+    }else if(widget.plan.billingCycle == BillingCycle.yearly) {
+      return "Auto-renews every 1 year, cancel anytime.";
+    }
+    return "";
   }
 
   // Check if subscription has scheduled plan change
@@ -181,6 +146,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
 
       // Handle success
       if (mounted) {
+        printRouteStack(context);
         await showForcePopup(
           context,
           title: '成功',
@@ -189,7 +155,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
 
         // Navigate back
         if (mounted) {
-          Navigator.pop(context);
+          context.go("/");
         }
       }
     } catch (e) {
@@ -309,7 +275,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
                       ),
                       Expanded(
                         child: Text(
-                          _getBillingCycleText(),
+                         "Change Plan | ${_getBillingCycleText()}",
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Colors.white,
@@ -345,28 +311,93 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
                                 color: Color(0xFFfafafa),
                                 border: Border.all(color: const Color(0xFFC7C7C7))
                             ),
-                            child: _isLoadingPreview
-                                ? const Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Center(child: CircularProgressIndicator()),
-                            )
-                                : _previewError != null
-                                ? Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Text(
-                                'Error loading preview: $_previewError',
-                                style: const TextStyle(color: Colors.red),
-                              ),
-                            )
-                                : SubscriptionPreviewCard(
-                                billingRecycleType: _getBillingCycleText(),
-                                renewalText: _getRenewalText(),
-                                amountText: _getAmountText(),
-                                autoRenewText: _getAutoRenewText())
+                            child: SubscriptionPreviewCard(
+                                billingRecycleType: widget.plan.billingCycle.name,
+                                renewalText: convertDateTimeToString(_subscriptionDetail?.currentPeriodEnd, "dd MMM y"),
+                                amountText: _buildAmountText(),
+                                autoRenewText: _buildRenewText()
+                            ),
                         ),
 
                         const SizedBox(height: 20),
+                        const Text(
+                          "Your Address",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 0),
+                        const Text(
+                          "This address will be used to deliver your one-time free recycling bag and for future pick up.",
+                          style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.w400),
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          color: Colors.black12,
+                          child: TextField(
+                            readOnly: true,
+                            autofocus: false,
+                            controller: TextEditingController(text: _subscriptionDetail?.deliveryAddress.fullAddress),
 
+                            maxLines: null,
+                            decoration: const InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.transparent),
+                                  borderRadius: BorderRadius.zero
+                              ),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black12),
+                                  borderRadius: BorderRadius.zero
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black12),
+                                  borderRadius: BorderRadius.zero
+                              ),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                            ),
+                            style: const TextStyle(color: Colors.black54),
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+                        const Text(
+                          "Payment Method",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const Text(
+                          "Your credit or debit card",
+                          style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.w400),
+                        ),
+                        const SizedBox(height: 10),
+
+                        Container(
+                          height: 45,
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              color: Colors.black12,
+                              border: Border.all(
+                                  color: Colors.black12
+                              )
+                          ),
+                          child: Row(
+                            children: [
+                              // SvgPicture.asset("assets/icon/credit_card/visa.svg", fit: BoxFit.contain, alignment: Alignment.centerLeft),
+                              Image.asset(
+                                "assets/icon/credit_card/${_subscriptionDetail?.defaultPaymentMethod?.brand.toLowerCase()}.png",
+                                errorBuilder: (context, o, t){
+                                  return Text(_subscriptionDetail?.defaultPaymentMethod?.brand.toUpperCase() ?? "");
+                                },
+                              ),
+                              SizedBox(width: 10),
+                              Text("**${_subscriptionDetail?.defaultPaymentMethod?.last4 ?? ""}")
+                            ],
+                          ),
+
+
+                        ),
+                        Text("Next billing date: ${convertDateTimeToString(_subscriptionDetail?.currentPeriodEnd, "dd MMM y")}"),
+
+
+
+                        const SizedBox(height: 20),
                         // Bottom Button
                         _isLoadingDetail
                             ? const Padding(

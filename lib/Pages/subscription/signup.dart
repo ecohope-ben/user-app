@@ -178,7 +178,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
 
     await Stripe.instance.initPaymentSheet(
       paymentSheetParameters: SetupPaymentSheetParameters(
-        merchantDisplayName: 'My Demo',
+        merchantDisplayName: 'Eco Hope',
         // This is a PaymentIntent flow for the first subscription invoice:
         paymentIntentClientSecret: paymentIntentClientSecret,
         setupIntentClientSecret: setupIntentClientSecret,
@@ -586,7 +586,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                               onPressed: (_isCreatingSubscription) ? null : () {
                                 _createSubscription();
                               },
-                              child: _isCreatingSubscription
+                              child: (_isCreatingSubscription || _isCheckingActivation)
                                   ? const SizedBox(
                                       height: 20,
                                       width: 20,

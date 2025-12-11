@@ -17,7 +17,7 @@ class RecycleApi extends ApiEndpoint {
   }
 
   /// Create a recycle order
-  Future<RecycleOrderCreateEnvelope> createOrder({
+  Future<RecycleOrderDetail> createOrder({
     required RecycleOrderCreateRequest request,
   }) async {
     try {
@@ -25,21 +25,21 @@ class RecycleApi extends ApiEndpoint {
         '/recycle/orders',
         data: request.toJson(),
       );
-      return RecycleOrderCreateEnvelope.fromJson(response.data);
+      return RecycleOrderDetail.fromJson(response.data);
     } on DioException catch (e) {
       throw _handleRecycleDioError(e);
     }
   }
 
   /// Get recycle order details
-  Future<RecycleOrderDetailEnvelope> getOrderDetail({
+  Future<RecycleOrderDetail> getOrderDetail({
     required String recycleOrderId,
   }) async {
     try {
       final response = await http.get(
         '/recycle/orders/$recycleOrderId',
       );
-      return RecycleOrderDetailEnvelope.fromJson(response.data);
+      return RecycleOrderDetail.fromJson(response.data);
     } on DioException catch (e) {
       throw _handleRecycleDioError(e);
     }

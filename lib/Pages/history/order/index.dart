@@ -37,6 +37,7 @@ class RecycleOrderHistoryPage extends StatelessWidget {
         body: BlocBuilder<RecycleOrderCubit, RecycleOrderState>(
           builder: (context, state) {
             if (state is RecycleOrderListLoaded) {
+
               return _buildOrderList(state.orders);
             } else if (state is RecycleOrderError) {
               return _buildError(state.message);
@@ -55,9 +56,9 @@ class RecycleOrderHistoryPage extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.zero, // 輕微圓角
+          borderRadius: BorderRadius.zero,
         ),
-        // 使用 ListView.separated 來構建列表和分隔線
+
         child: historyList.isEmpty
             ? const Center(
                 child: Padding(
@@ -72,12 +73,14 @@ class RecycleOrderHistoryPage extends StatelessWidget {
                 ),
               )
             : ListView.separated(
-                shrinkWrap: true, // 根據內容高度調整
-                physics: const ClampingScrollPhysics(), // 列表滾動效果
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+
+                padding: EdgeInsets.zero,
                 itemCount: historyList.length,
                 separatorBuilder: (context, index) => const Divider(
                   height: 1,
-                  color: Colors.grey,
+                  color: mainPurple,
                 ),
                 itemBuilder: (context, index) {
                   return OrderListItem(historyList[index]);

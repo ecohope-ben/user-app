@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../style.dart';
 
@@ -37,6 +38,10 @@ class _PhoneInputState extends State<PhoneInput> {
         style: TextStyle(fontSize: 30),
         validator: widget.validator,
         maxLength: 8,
+        keyboardType: TextInputType.number,
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly
+        ],
         decoration: InputDecoration(
           hintText: tr("register.phone_number"),
           hintStyle: TextStyle(fontSize: 27, color: Colors.grey),

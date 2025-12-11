@@ -137,10 +137,8 @@ class RecycleOrderListItem {
   final String recycleOrderNo;
   @JsonKey(name: 'order_type')
   final RecycleOrderType orderType;
-  @JsonKey(name: 'pickup_date')
-  final String pickupDate;
-  @JsonKey(name: 'pickup_time')
-  final String pickupTime;
+  @JsonKey(name: 'pickup_at')
+  final DateTime pickupAt;
   final RecycleOrderStatus status;
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
@@ -149,8 +147,7 @@ class RecycleOrderListItem {
     required this.id,
     required this.recycleOrderNo,
     required this.orderType,
-    required this.pickupDate,
-    required this.pickupTime,
+    required this.pickupAt,
     required this.status,
     required this.createdAt,
   });
@@ -292,10 +289,6 @@ class RecycleOrderDetail {
   final RecycleOrderAddress deliveryAddress;
   @JsonKey(name: 'pickup_at')
   final DateTime pickupAt;
-  @JsonKey(name: 'pickup_date')
-  final String pickupDate;
-  @JsonKey(name: 'pickup_time')
-  final String pickupTime;
   final RecycleOrderStatus status;
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
@@ -313,8 +306,6 @@ class RecycleOrderDetail {
     required this.orderType,
     required this.deliveryAddress,
     required this.pickupAt,
-    required this.pickupDate,
-    required this.pickupTime,
     required this.status,
     required this.createdAt,
     required this.updatedAt,

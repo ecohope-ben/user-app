@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/blocs/subscription_cubit.dart';
 import 'package:user_app/style.dart';
+import 'package:user_app/utils/pop_up.dart';
 
+import '../../auth/index.dart';
 import '../../components/common/explore_banner.dart';
 import '../subscription/manage/list.dart';
 
@@ -91,7 +93,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     _buildDivider(),
 
                     // Transaction History
-                    SettingsTile(title: 'Transaction History'),
+                    SettingsTile(title: 'Transaction History', onTap: () => context.push("/payments/history"),),
                     _buildDivider(),
 
                     // FAQ & Feedback
@@ -100,8 +102,30 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
 
-              const SizedBox(height: 30),
-
+              const SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.zero,
+                ),
+                child: Column(
+                  children: [
+                    SettingsTile(
+                        title: 'Logout',
+                      onTap: (){
+                          showPopup(
+                              context,
+                            title: "確認登出？",
+                            onConfirm: (){
+                              Auth.instance().logout();
+                              context.go("/get_start");
+                            }
+                          );
+                      },
+                    ),
+                  ],
+                )
+              ),
               // 3. 底部鏈接
               TextButton(
                 onPressed: () {},

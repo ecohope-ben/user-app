@@ -1,10 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:user_app/auth/index.dart';
 import 'package:user_app/constants.dart';
 import 'package:user_app/style.dart';
 import '../../blocs/profile_cubit.dart';
 import '../../components/profile/date_picker.dart';
+import '../../utils/pop_up.dart';
 
 class EditProfilePage extends StatelessWidget {
   const EditProfilePage({super.key});
@@ -68,6 +71,7 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
       setState(() {
         _nameController.text = profile.name;
         selectedGender = profile.gender.toString().split('.').last;
+        selectedAge = profile.ageGroup;
         selectedMonth = profile.birthMonth;
         selectedDay = profile.birthDay;
         
@@ -163,9 +167,8 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                 style: const TextStyle(fontSize: 16),
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  // 強制顯示紫色邊框
                   enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: mainPurple), // 紫色
+                    borderSide: const BorderSide(color: Colors.grey),
                     borderRadius: BorderRadius.zero,
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -216,6 +219,7 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                 key: ValueKey('${selectedMonth}_${selectedDay}'),
                 initialMonth: selectedMonth,
                 initialDay: selectedDay,
+                showMainColor: false,
                 onChange: (month, day) {
                   setState(() {
                     selectedMonth = month;
@@ -362,7 +366,14 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                       borderRadius: BorderRadius.zero, // 矩形
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () => showPopup(
+                      context,
+                      title: "確認登出？",
+                      onConfirm: (){
+                        Auth.instance().logout();
+                        context.go("/get_start");
+                      }
+                  ),
                   child: const Text(
                     "Log Out",
                     style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
@@ -397,8 +408,12 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
         borderSide: const BorderSide(color: Colors.grey),
         borderRadius: BorderRadius.zero,
       ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: mainPurple),
+        borderRadius: BorderRadius.zero,
+      ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.grey.shade400),
+        borderSide: BorderSide(color: Colors.grey),
         borderRadius: BorderRadius.zero,
       ),
       filled: true,

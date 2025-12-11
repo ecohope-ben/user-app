@@ -28,7 +28,7 @@ class _ProfileInputState extends State<ProfileInput> {
   int? _birthDay;
 
   void submit(){
-    context.read<ProfileCubit>().updateProfile(
+    context.read<ProfileCubit>().updateProfileOnboarding(
       name: _nameController.text,
       gender: _gender,
       birthMonth: _birthMonth,

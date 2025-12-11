@@ -135,17 +135,21 @@ class IntroPage extends StatelessWidget {
                       style: const TextStyle(fontSize: 14, color: Colors.white),
                       children: [
                         const TextSpan(text: "Already have an account? "),
-                        TextSpan(
-                          text: "Login",
-                          style: const TextStyle(
-                            color: Colors.blueAccent,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: InkWell(
+                            onTap: () => context.push("/login"),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: Text(
+                                " Login ",
+                                style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontWeight: FontWeight.bold,
+                              )
+                              ),
+                            ),
                           ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              context.push("/login");
-                            },
                         ),
                       ],
                     ),

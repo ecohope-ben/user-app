@@ -87,6 +87,53 @@ class ProfileCubit extends Cubit<ProfileState> {
       }
     }
   }
+  /// Update profile
+  Future<void> updateProfileOnboarding({
+    String? name,
+    String? gender,
+    int? birthMonth,
+    int? birthDay,
+    String? ageGroup
+  }) async {
+    try {
+      emit(ProfileLoading());
+
+      final request = ProfilePatchRequest(
+          name: name,
+          gender: gender,
+          birthMonth: birthMonth,
+          birthDay: birthDay,
+          ageGroup: ageGroup
+      );
+
+      await _apiService.updateProfile(
+        request: request,
+      );
+
+      // refresh token after register
+      final auth = Auth.instance();
+      final session = await Api.instance().login().refreshSession();
+
+      await auth.saveAccessToken(session.accessToken);
+      await auth.saveRefreshToken(session.refreshToken);
+      await auth.saveSessionId(session.id);
+
+      emit(ProfileUpdateSuccess());
+
+      // // Reload profile after update
+      // await loadProfile();
+    } catch (e) {
+      if (e is ProfileException) {
+        emit(ProfileError(
+          message: e.userMessage ?? "",
+          code: e.code,
+          fieldErrors: e.fields,
+        ));
+      } else {
+        emit(ProfileError(message: e.toString()));
+      }
+    }
+  }
 
   /// Update profile
   Future<void> updateProfile({

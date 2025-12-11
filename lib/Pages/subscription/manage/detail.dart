@@ -1,9 +1,12 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:user_app/utils/time.dart';
 import '../../../api/index.dart';
 import '../../../api/endpoints/subscription_api.dart';
 import '../../../components/subscription/features.dart';
+import '../../../components/subscription/preview.dart';
 import '../../../models/subscription_models.dart';
 import '../../../style.dart';
 import '../../../utils/pop_up.dart';
@@ -36,6 +39,28 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
   void initState() {
     super.initState();
     _loadSubscriptionDetail();
+  }
+
+  String _buildAmountText(){
+    if(_subscriptionDetail?.discount != null){
+      if(_subscriptionDetail!.discount?.discountType == DiscountType.freeCycles){
+        return 'Pay nothing until ${convertDateTimeToString(_subscriptionDetail?.currentPeriodEnd, "dd MMM y")}, then \$${widget.plan.priceDecimal}/Month';
+      }else {
+        return '${_subscriptionDetail?.plan.priceDecimal}';
+      }
+    }
+
+    return _subscriptionDetail?.plan.priceDecimal ?? "";
+
+  }
+
+  String _buildRenewText(){
+    if(_subscriptionDetail?.plan.billingCycle == BillingCycle.monthly){
+      return "Auto-renews every 1 month, cancel anytime.";
+    }else if(_subscriptionDetail?.plan.billingCycle == BillingCycle.yearly) {
+      return "Auto-renews every 1 year, cancel anytime.";
+    }
+    return "";
   }
 
   Future<void> _loadSubscriptionDetail() async {
@@ -277,7 +302,6 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                   ),
                 ),
 
-                // 主要滾動內容
                 Expanded(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -290,8 +314,6 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                         ),
 
                         const SizedBox(height: 15),
-
-                        // Cancellation Info Box
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
@@ -299,24 +321,136 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                               color: Color(0xFFfafafa),
                               border: Border.all(color: const Color(0xFFC7C7C7))
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "取消訂閱說明",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          child: SubscriptionPreviewCard(
+                            billingRecycleType: _subscriptionDetail?.plan.billingCycle.name ?? "",
+                            renewalText: convertDateTimeToString(_subscriptionDetail?.currentPeriodEnd, "dd MMM y"),
+                            amountText: _buildAmountText(),
+                            autoRenewText: _buildRenewText()
+                          ),
+                        ),
+
+
+                        const SizedBox(height: 20),
+                        const Text(
+                          "Your Address",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 0),
+                        const Text(
+                          "This address will be used to deliver your one-time free recycling bag and for future pick up.",
+                          style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.w400),
+                        ),
+                        const SizedBox(height: 10),
+                        InkWell(
+                          onTap: () async {
+                            print("--ontap");
+                            final result = await context.push("/subscription/manage/change_address", extra: _subscriptionDetail!);
+                            // Reload subscription detail if address was updated successfully
+                            if (result == true) {
+                              await _loadSubscriptionDetail();
+                            }
+                          },
+                          // onTap: () => _subscriptionDetail != null ? context.push("/subscription/manage/change_address", extra: _subscriptionDetail!) : null,
+                          child: Container(
+                            color: Colors.white,
+                            child: TextField(
+                              readOnly: true,
+                              controller: TextEditingController(text: _subscriptionDetail?.deliveryAddress.fullAddress),
+
+                              maxLines: null,
+                              decoration: InputDecoration(
+                                suffixIcon: InkWell(
+                                  onTap: () async {
+                                    final result = await context.push("/subscription/manage/change_address", extra: _subscriptionDetail!);
+                                    // Reload subscription detail if address was updated successfully
+                                    if (result == true) {
+                                      await _loadSubscriptionDetail();
+                                    }
+                                  },
+                                    child: Icon(Icons.chevron_right)
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black12),
+                                    borderRadius: BorderRadius.zero
+                                ),
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black12),
+                                    borderRadius: BorderRadius.zero
+                                ),
+                                enabledBorder  : OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black12),
+                                    borderRadius: BorderRadius.zero
+                                ),
+                                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                               ),
-                              const SizedBox(height: 12),
-                              const Text(
-                                "取消訂閱後，您的訂閱將在當前計費週期結束後停止。在此之前，您仍可繼續使用所有服務。",
-                                style: TextStyle(color: Colors.black87, fontSize: 14, height: 1.5),
-                              ),
-                            ],
+                              style: const TextStyle(color: Colors.black54),
+                            ),
                           ),
                         ),
 
                         const SizedBox(height: 20),
+                        const Text(
+                          "Payment Method",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const Text(
+                          "Your credit or debit card",
+                          style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.w400),
+                        ),
+                        const SizedBox(height: 10),
+
+                        InkWell(
+                          onTap: () async {
+                            if (_subscriptionDetail != null) {
+                              final result = await context.push(
+                                "/subscription/manage/change_payment_method",
+                                extra: widget.subscriptionId,
+                              );
+                              // Reload subscription detail if payment method was updated successfully
+                              if (result == true) {
+                                await _loadSubscriptionDetail();
+                              }
+                            }
+                          },
+                          child: Container(
+                            height: 45,
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.black12
+                              )
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+
+                              children: [
+                                // SvgPicture.asset("assets/icon/credit_card/visa.svg", fit: BoxFit.contain, alignment: Alignment.centerLeft),
+                                Image.asset(
+                                  "assets/icon/credit_card/${_subscriptionDetail?.defaultPaymentMethod?.brand.toLowerCase()}.png",
+                                  errorBuilder: (context, o, t){
+                                    return Text(_subscriptionDetail?.defaultPaymentMethod?.brand.toUpperCase() ?? "");
+                                  },
+                                ),
+                                SizedBox(width: 10),
+                                Text("**${_subscriptionDetail?.defaultPaymentMethod?.last4 ?? ""}"),
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Icon(Icons.chevron_right),
+                                  ),
+                                )
+
+                              ],
+                            ),
+                          ),
+                        ),
+                        Text("Next billing date: ${convertDateTimeToString(_subscriptionDetail?.currentPeriodEnd, "dd MMM y")}"),
+                        (_hasScheduledCancellation || _hasScheduledPlanChange) ? const SizedBox(height: 20) : const SizedBox(height: 40),
+
+
                         // Change Plan button
+                        if(!_hasScheduledCancellation && !_hasScheduledPlanChange)
                         Container(
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(vertical: 0),
@@ -338,16 +472,16 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                             )
                         ),
 
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
                         if(_hasScheduledPlanChange)
                           _buildCancelSchedulePlanChange(),
 
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 00),
                         // Bottom Button
                         _isLoadingDetail
                             ? const Padding(
                                 padding: EdgeInsets.all(16.0),
-                                child: Center(child: CircularProgressIndicator()),
+                                child: Center(child: CircularProgressIndicator(color: Colors.black)),
                               )
                             : _errorMessage != null
                                 ? Padding(
@@ -366,54 +500,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                                       ],
                                     ),
                                   )
-                                : Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(vertical: 0),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(color: Colors.black)
-                                    ),
-                                    child: TextButton(
-                                      onPressed: (_isProcessing) ? null : () {
-                                        if (_hasScheduledCancellation) {
-                                          // Keep subscription (cancel the cancellation)
-                                          showPopup(
-                                            context,
-                                            title: "保留訂閱？",
-                                            message: "您確定要保留訂閱嗎？\n您的訂閱將繼續自動續訂。",
-                                            onConfirm: () => _keepSubscription(),
-                                            confirmText: "保留訂閱"
-                                          );
-                                        } else {
-                                          // Cancel subscription
-                                          showPopup(
-                                            context,
-                                            title: "取消訂閱？",
-                                            message: "您確定要取消您的訂閱計劃嗎？\n此訂閱將在當前計費週期結束後取消。",
-                                            onConfirm: () => _cancelSubscription(),
-                                            confirmText: "取消訂閱"
-                                          );
-                                        }
-                                      },
-                                      child: _isProcessing ? const SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                                        ),
-                                      )
-                                          : Text(
-                                        _hasScheduledCancellation ? "保留訂閱" : "取消訂閱",
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    )
-                                ),
+                                : _buildCancelSubscriptionButton(),
 
 
                         const SizedBox(height: 16),
@@ -430,6 +517,57 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
     );
   }
 
+  Widget _buildCancelSubscriptionButton(){
+    if(!_hasScheduledPlanChange) {
+      return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 0),
+          decoration: (_hasScheduledCancellation) ? BoxDecoration(
+              color: Colors.black
+          ) : null,
+          child: TextButton(
+            onPressed: (_isProcessing) ? null : () {
+              if (_hasScheduledCancellation) {
+                // Keep subscription (cancel the cancellation)
+                showPopup(
+                    context,
+                    title: "保留訂閱？",
+                    message: "您確定要保留訂閱嗎？\n您的訂閱將繼續自動續訂。",
+                    onConfirm: () => _keepSubscription(),
+                    confirmText: "保留訂閱"
+                );
+              } else {
+                // Cancel subscription
+                showPopup(
+                    context,
+                    title: "取消訂閱？",
+                    message: "您確定要取消您的訂閱計劃嗎？\n此訂閱將在當前計費週期結束後取消。",
+                    onConfirm: () => _cancelSubscription(),
+                    confirmText: "取消訂閱"
+                );
+              }
+            },
+            child: _isProcessing ? SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(_hasScheduledCancellation ? Colors.white : Colors.black),
+              ),
+            )
+                : Text(
+              _hasScheduledCancellation ? "保留訂閱" : "取消訂閱",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: _hasScheduledCancellation ? Colors.white : Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+          )
+      );
+    }else return Container();
+  }
   Widget _buildCancelSchedulePlanChange(){
     return Container(
       width: double.infinity,

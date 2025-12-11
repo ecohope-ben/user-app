@@ -51,6 +51,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+          progressIndicatorTheme: ProgressIndicatorThemeData(
+            color: Colors.black
+          ),
+          snackBarTheme: SnackBarThemeData(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          ),
           inputDecorationTheme: InputDecorationTheme(
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../models/recycle_models.dart';
+import '../../utils/time.dart';
 
 class OrderListItem extends StatelessWidget {
   final RecycleOrderListItem data;
@@ -12,41 +13,40 @@ class OrderListItem extends StatelessWidget {
     return InkWell(
       onTap: () => context.push("/order/details", extra: data.id),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // 左側資訊區塊
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    data.id,
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14,
-                    ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "#${data.recycleOrderNo}",
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
                   ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    "Pick Up Date and Time",
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 14,
-                    ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  "Pick Up Date and Time",
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 14,
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "${data.pickupDate} | ${data.pickupTime}",
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  convertDateTimeToString(data.pickupAt, "dd MMM y | HH:mm"),
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             // 右側狀態區塊
             Row(

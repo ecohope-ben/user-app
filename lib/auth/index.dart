@@ -14,7 +14,7 @@ class Auth {
 
   String? firebaseToken;
 
-  // get isLoggedIn => accessToken != null && user != null;
+  get isLoggedIn => accessToken != null && refreshToken != null;
 
   static Auth instance() => _instance;
 
@@ -43,13 +43,13 @@ class Auth {
     }
   }
 
-  Future saveAccessToken(String accessToken) async {
+  Future saveAccessToken(String? accessToken) async {
     print("--save access token");
     this.accessToken = accessToken;
     await storage.write(key: "access_token", value: accessToken);
   }
 
-  Future saveRefreshToken(String refreshToken) async {
+  Future saveRefreshToken(String? refreshToken) async {
     this.refreshToken = refreshToken;
     await storage.write(key: "refresh_token", value: refreshToken);
   }
@@ -64,5 +64,11 @@ class Auth {
     await storage.write(key: "profile", value: jsonEncode(profile.toJson()));
   }
 
-  // static bool loggedIn() => Auth.instance().isLoggedIn;
+  Future logout() async {
+    storage.deleteAll();
+    Auth.instance().saveAccessToken(null);
+    Auth.instance().saveRefreshToken(null);
+
+  }
+  static bool loggedIn() => Auth.instance().isLoggedIn;
 }

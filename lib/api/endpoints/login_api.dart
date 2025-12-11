@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../../auth/index.dart';
 import '../../models/login_models.dart';
 import '../../models/registration_models.dart';
 import '../index.dart';
@@ -124,7 +125,14 @@ class LoginApi extends ApiEndpoint {
   // The interceptor will handle this automatically
   Future<Session> refreshSession() async {
     try {
-      final response = await http.post('/auth/session/refresh');
+      final refreshToken = Auth.instance().refreshToken;
+      final sessionId = Auth.instance().sessionId;
+
+      final response = await http.post('/auth/session/refresh', data: {
+        "refresh_token": refreshToken,
+        "session_id": sessionId,
+      });
+
       return Session.fromJson(response.data);
     } on DioException catch (e) {
       throw _handleLoginDioError(e);

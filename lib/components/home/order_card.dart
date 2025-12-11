@@ -8,6 +8,7 @@ import 'package:flutter/gestures.dart';
 import '../../models/recycle_models.dart';
 import '../../models/subscription_models.dart';
 import '../../utils/snack.dart';
+import '../../utils/time.dart';
 
 class InitialBagDeliveryCard extends StatelessWidget {
   final String? trackingNumber;
@@ -265,7 +266,7 @@ class RecycleOrderCard extends StatelessWidget {
                         children: [
                           Text("Tracking #${logisticsOrder?.trackingNo ?? ""}", style: TextStyle(fontSize: 18)),
                           const SizedBox(height: 12),
-                          Text("Pick Up on ${recycleOrder.pickupDate} | ${recycleOrder.pickupTime}", style: TextStyle(fontSize: 16)),
+                          Text("Pick Up on ${convertDateTimeToString(recycleOrder.pickupAt, "dd MMM y | HH:mm")}", style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),

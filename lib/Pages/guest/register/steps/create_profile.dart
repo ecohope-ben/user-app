@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../api/index.dart';
+import '../../../../auth/index.dart';
 import '../../../../blocs/profile_cubit.dart';
 import '../../../../components/register/action_button.dart';
 import '../../../../components/register/profile_input.dart';
@@ -9,7 +11,14 @@ import '../../widgets.dart';
 
 class CreateProfileStep extends StatelessWidget {
   const CreateProfileStep({super.key});
+  Future<void> refreshToken() async {
+    final auth = Auth.instance();
+    final session = await Api.instance().login().refreshSession();
 
+    await auth.saveAccessToken(session.accessToken);
+    await auth.saveRefreshToken(session.refreshToken);
+    await auth.saveSessionId(session.id);
+  }
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

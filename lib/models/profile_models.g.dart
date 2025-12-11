@@ -13,6 +13,7 @@ Profile _$ProfileFromJson(Map<String, dynamic> json) => Profile(
   gender: $enumDecode(_$GenderEnumMap, json['gender']),
   birthMonth: (json['birth_month'] as num).toInt(),
   birthDay: (json['birth_day'] as num).toInt(),
+  ageGroup: json['age_group'] as String,
   updatedAt: DateTime.parse(json['updated_at'] as String),
 );
 
@@ -23,6 +24,7 @@ Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
   'gender': _$GenderEnumMap[instance.gender]!,
   'birth_month': instance.birthMonth,
   'birth_day': instance.birthDay,
+  'age_group': instance.ageGroup,
   'updated_at': instance.updatedAt.toIso8601String(),
 };
 

@@ -1,1 +1,136 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:user_app/style.dart';
+
+import '../../../blocs/payment_cubit.dart';
+import '../../../components/payment/payment_list_item.dart';
+import '../../../models/payment_models.dart';
+
+class TransactionHistoryPage extends StatelessWidget {
+  const TransactionHistoryPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => PaymentCubit()..listPayments(),
+      child: Scaffold(
+        backgroundColor: mainPurple,
+        appBar: AppBar(
+          backgroundColor: mainPurple,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          title: const Text(
+            'Transaction History',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+        ),
+        body: BlocBuilder<PaymentCubit, PaymentState>(
+          builder: (context, state) {
+            if (state is PaymentListLoaded) {
+
+              return _buildOrderList(state.payments);
+            } else if (state is PaymentError) {
+              return _buildError(state.message);
+            } else {
+              return _buildLoading();
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOrderList(List<PaymentListItem> historyList) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.zero,
+        ),
+
+        child: historyList.isEmpty
+            ? const Center(
+          child: Padding(
+            padding: EdgeInsets.all(32.0),
+            child: Text(
+              'No transaction history found',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        )
+            : ListView.separated(
+          shrinkWrap: true,
+          physics: const BouncingScrollPhysics(),
+
+          padding: EdgeInsets.zero,
+          itemCount: historyList.length,
+          separatorBuilder: (context, index) => const Divider(
+            height: 1,
+            color: mainPurple,
+          ),
+          itemBuilder: (context, index) {
+            return PaymentHistoryListItem(historyList[index]);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoading() {
+    return const Center(
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      ),
+    );
+  }
+
+  Widget _buildError(String message) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error_outline,
+              color: Colors.white,
+              size: 48,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Error loading transaction history',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              message,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+}

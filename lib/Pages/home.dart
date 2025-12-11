@@ -1,3 +1,4 @@
+import 'package:el_tooltip/el_tooltip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +6,7 @@ import 'package:user_app/components/home/promotion_banner.dart';
 import 'package:user_app/components/home/recycle_info_card.dart';
 import 'package:user_app/components/register/action_button.dart';
 import 'package:user_app/routes.dart';
+import 'package:user_app/utils/snack.dart';
 
 import '../blocs/entitlement_cubit.dart';
 import '../blocs/login_cubit.dart';
@@ -16,6 +18,7 @@ import '../components/home/notification_card.dart';
 import '../components/home/order_card.dart';
 import '../components/home/silver.dart';
 import '../models/recycle_models.dart';
+import '../models/subscription_models.dart';
 import '../style.dart';
 
 class HomePage extends StatelessWidget {
@@ -174,17 +177,25 @@ class _HomeViewState extends State<_HomeView> {
   }
 }
 
-class _HomeContent extends StatelessWidget {
+class _HomeContent extends StatefulWidget {
   final ProfileLoaded profileState;
   final EntitlementLoaded entitlementState;
   final SubscriptionListLoaded subscriptionState;
   final RecycleOrderListLoaded recycleOrderState;
-  const _HomeContent({
+
+  _HomeContent({
     required this.profileState,
     required this.entitlementState,
     required this.subscriptionState,
     required this.recycleOrderState,
   });
+
+  @override
+  State<_HomeContent> createState() => _HomeContentState();
+}
+
+class _HomeContentState extends State<_HomeContent> {
+  final ElTooltipController tooltipController = ElTooltipController();
 
   Future<void> _refreshData(BuildContext context) async {
     final profileCubit = context.read<ProfileCubit>();
@@ -200,12 +211,30 @@ class _HomeContent extends StatelessWidget {
     ]);
   }
 
+  void _showTooltip(){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) tooltipController.show();
+      });
+      return;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     // Use provided states or watch from context
     // final effectiveSubscriptionState = subscriptionState ?? context.watch<SubscriptionCubit>().state;
 
     final List<RecycleOrderStatus> availableOrderStatus = [RecycleOrderStatus.completed, RecycleOrderStatus.failed];
+
+
     return Scaffold(
       body: SafeArea(
         top: false,
@@ -221,9 +250,9 @@ class _HomeContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SliverBar(
-                  profileState: profileState,
-                  entitlementState: entitlementState,
-                  subscriptionState: subscriptionState,
+                  profileState: widget.profileState,
+                  entitlementState: widget.entitlementState,
+                  subscriptionState: widget.subscriptionState,
                 ),
                 Expanded(
                   child: RefreshIndicator(
@@ -232,15 +261,20 @@ class _HomeContent extends StatelessWidget {
                       physics: const BouncingScrollPhysics(),
                       child: Column(
                         children: [
-                          if(subscriptionState is SubscriptionDetailAndListLoaded) NotificationCard(subscriptionState as SubscriptionDetailAndListLoaded),
+                          if(widget.subscriptionState is SubscriptionDetailAndListLoaded) NotificationCard(widget.subscriptionState as SubscriptionDetailAndListLoaded),
                           BlocBuilder<SubscriptionCubit, SubscriptionState>(
                             builder: (context, state) {
-
                               // Use effective state for display
-                              final displayState = subscriptionState;
+                              final displayState = widget.subscriptionState;
 
-                              if(recycleOrderState.orders.isNotEmpty && !availableOrderStatus.contains(recycleOrderState.orders.first.status)){
-                                return RecycleOrderCard(recycleOrderState.orders.first);
+                              print("--recycleOrderState.orders");
+
+                              if(widget.recycleOrderState.orders.isNotEmpty && !availableOrderStatus.contains(widget.recycleOrderState.orders.first.status)){
+
+                                if(widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed && widget.entitlementState.entitlements.isNotEmpty){
+                                  _showTooltip();
+                                }
+                                return RecycleOrderCard(widget.recycleOrderState.orders.first);
                               }
 
                               if (displayState is SubscriptionDetailAndListLoaded && displayState.subscriptions.isNotEmpty) {
@@ -290,11 +324,17 @@ class _HomeContent extends StatelessWidget {
                 ),
               ],
             ),
-            const Positioned(
+            Positioned(
               bottom: 30,
               left: 0,
               right: 0,
-              child: CustomBottomNavBar(),
+              child: widget.subscriptionState is SubscriptionDetailAndListLoaded ?
+              CustomBottomNavBar(
+                  tooltipController,
+                  subscriptionDetail: (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail,
+                  hasEntitlement: widget.entitlementState.entitlements.isNotEmpty,
+              ) :
+              CustomBottomNavBar(tooltipController, hasEntitlement: widget.entitlementState.entitlements.isNotEmpty),
             ),
           ],
         ),
@@ -345,12 +385,7 @@ class _HomeSkeleton extends StatelessWidget {
                 ),
               ],
             ),
-            const Positioned(
-              bottom: 30,
-              left: 0,
-              right: 0,
-              child: CustomBottomNavBar(),
-            ),
+
           ],
         ),
       ),
@@ -417,10 +452,47 @@ class _HomeErrorView extends StatelessWidget {
 }
 
 class CustomBottomNavBar extends StatelessWidget {
-  const CustomBottomNavBar({super.key});
+
+  final ElTooltipController tooltipController;
+  final SubscriptionDetail? subscriptionDetail;
+  final bool hasEntitlement;
+  const CustomBottomNavBar(this.tooltipController, {this.subscriptionDetail, required this.hasEntitlement, super.key});
+
+  Widget _buildMainLogo(BuildContext context){
+
+    return InkWell(
+      onTap: () {
+        if(subscriptionDetail == null){
+          popSnackBar(context, "請先訂閱計劃");
+        }else if(!hasEntitlement){
+          popSnackBar(context, "沒有有效的回收次數");
+        }else {
+          context.go("/order/create", extra: subscriptionDetail);
+        }
+      },
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          color: Colors.black, // 黑色背景
+          shape: BoxShape.circle,
+          // border: Border.all(color: Colors.white, width: 3),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Image.asset("assets/icon/nav_main.png", scale: 3),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return Center(
       child: SizedBox(
         width: 200, // 控制導航列寬度
@@ -459,26 +531,18 @@ class CustomBottomNavBar extends StatelessWidget {
               ),
             ),
 
-            // 中間突出的大圓按鈕
+            // Main logo button
             Positioned(
               top: 0,
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.black, // 黑色背景
-                  shape: BoxShape.circle,
-                  // border: Border.all(color: Colors.white, width: 3),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Image.asset("assets/icon/nav_main.png", scale: 3),
-              ),
+              child: _buildMainLogo(context)
+              // ElTooltip(
+              //   controller: tooltipController,
+              //   content: Text("Schedule a pickup here", softWrap: true, style: TextStyle(color: Colors.white)),
+              //   radius: Radius.zero,
+              //   showModal: false,
+              //   color: Colors.black,
+              //   child: _buildMainLogo()
+              // ),
             ),
           ],
         ),

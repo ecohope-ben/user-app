@@ -109,8 +109,8 @@ class RecycleOrderCubit extends Cubit<RecycleOrderState> {
   Future<void> createOrder(RecycleOrderCreateRequest request) async {
     emit(const RecycleOrderLoading('create_order'));
     try {
-      final envelope = await _api.createOrder(request: request);
-      emit(RecycleOrderCreated(order: envelope.data));
+      final response = await _api.createOrder(request: request);
+      emit(RecycleOrderCreated(order: response));
     } catch (error) {
       _handleError(error);
     }
@@ -120,8 +120,8 @@ class RecycleOrderCubit extends Cubit<RecycleOrderState> {
   Future<void> loadOrderDetail(String recycleOrderId) async {
     emit(const RecycleOrderLoading('order_detail'));
     try {
-      final envelope = await _api.getOrderDetail(recycleOrderId: recycleOrderId);
-      emit(RecycleOrderDetailLoaded(order: envelope.data));
+      final response = await _api.getOrderDetail(recycleOrderId: recycleOrderId);
+      emit(RecycleOrderDetailLoaded(order: response));
     } catch (error, t) {
       print(t);
       _handleError(error);
@@ -148,8 +148,10 @@ class RecycleOrderCubit extends Cubit<RecycleOrderState> {
       emit(RecycleOrderListLoaded(orders: envelope.data));
 
       print("--RecycleOrder 3");
-    } catch (error) {
+    } catch (error, t) {
+
       print("--RecycleOrder error");
+      print(t);
       _handleError(error);
     }
   }
@@ -173,3 +175,4 @@ class RecycleOrderCubit extends Cubit<RecycleOrderState> {
     }
   }
 }
+

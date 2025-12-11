@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'endpoints/entitlement_api.dart';
 import 'endpoints/login_api.dart';
 import 'endpoints/logistics_api.dart';
+import 'endpoints/payment_api.dart';
 import 'endpoints/profile_api.dart';
 import 'endpoints/registration_api.dart';
 import 'endpoints/recycle_api.dart';
@@ -54,6 +55,7 @@ class Api {
   EntitlementApi entitlements() => getApi<EntitlementApi>(() => EntitlementApi(this)) as EntitlementApi;
   LogisticsApi logistics() => getApi<LogisticsApi>(() => LogisticsApi(this)) as LogisticsApi;
   RecycleApi recycle() => getApi<RecycleApi>(() => RecycleApi(this)) as RecycleApi;
+  PaymentApi payment() => getApi<PaymentApi>(() => PaymentApi(this)) as PaymentApi;
 }
 
 abstract class ApiEndpoint {

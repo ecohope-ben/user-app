@@ -21,6 +21,8 @@ class Profile {
   final int birthMonth;
   @JsonKey(name: 'birth_day')
   final int birthDay;
+  @JsonKey(name: 'age_group')
+  final String ageGroup;
   @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
 
@@ -31,6 +33,7 @@ class Profile {
     required this.gender,
     required this.birthMonth,
     required this.birthDay,
+    required this.ageGroup,
     required this.updatedAt,
   });
 
