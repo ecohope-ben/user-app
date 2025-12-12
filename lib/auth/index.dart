@@ -23,14 +23,6 @@ class Auth {
 
   Future initialize() async {
 
-    final prefs = await SharedPreferences.getInstance();
-
-    if (prefs.getBool('first_run') ?? true) {
-      await storage.deleteAll();
-      prefs.setBool('first_run', false);
-    }
-
-
     accessToken = await storage.read(key: "access_token");
     refreshToken = await storage.read(key: "refresh_token");
     sessionId = await storage.read(key: "session_id");
@@ -62,6 +54,10 @@ class Auth {
   Future saveProfile(Profile profile) async {
     this.profile = profile;
     await storage.write(key: "profile", value: jsonEncode(profile.toJson()));
+  }
+
+  void removeAllStorage(){
+    storage.deleteAll();
   }
 
   Future logout() async {

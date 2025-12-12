@@ -1,5 +1,8 @@
 {
   "register": {
+    "email": "Email",
+    "phone": "Phone",
+    "profile": "Profile",
     "email_address": "Email Address",
     "your_email_address": "Your Email Address",
     "email_description": "You may use this email address to login next time.",
@@ -7,6 +10,7 @@
     "check_email_description": "We just sent you the OTP code at {}.",
     "edit_email": "Edit email {}",
     "edit_phone": "Edit phone {}",
+    "register_now": "Register Now",
 
     "dont_receive_code": "Didn’t receive code?",
     "resend": "Resend",
@@ -16,7 +20,7 @@
     "invalid_phone_hk": "Please input valid Hong Kong Mobile Phone",
     "verify_phone_number": "Verify Phone Number",
     "verify_phone_description": "We just sent you a SMS for the OTP code at {}.",
-    "profile": "Your Profile",
+    "personal_profile": "Your Profile",
     "profile_description": "Please fill in the information.",
     "select_date_of_birth": "Selected Date of Birth",
     "date_of_birth": "Date of Birth",

@@ -3,10 +3,11 @@ import 'dart:io' show Platform;
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:user_app/api/endpoints/payment_api.dart';
 import 'endpoints/entitlement_api.dart';
 import 'endpoints/login_api.dart';
 import 'endpoints/logistics_api.dart';
-import 'endpoints/payment_api.dart';
+import 'endpoints/onboarding_api.dart';
 import 'endpoints/profile_api.dart';
 import 'endpoints/registration_api.dart';
 import 'endpoints/recycle_api.dart';
@@ -56,6 +57,7 @@ class Api {
   LogisticsApi logistics() => getApi<LogisticsApi>(() => LogisticsApi(this)) as LogisticsApi;
   RecycleApi recycle() => getApi<RecycleApi>(() => RecycleApi(this)) as RecycleApi;
   PaymentApi payment() => getApi<PaymentApi>(() => PaymentApi(this)) as PaymentApi;
+  OnboardingApi onboarding() => getApi<OnboardingApi>(() => OnboardingApi(this)) as OnboardingApi;
 }
 
 abstract class ApiEndpoint {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:step_progress/step_progress.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +28,9 @@ class _RegisterIndexState extends State<RegisterIndex> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.close, color: Colors.black),
+        leading: InkWell(
+            onTap: () => context.pop(),
+            child: Icon(Icons.close, color: Colors.black)),
       ),
       body: BlocProvider(
         create: (context) => RegistrationCubit()..startRegistration(),

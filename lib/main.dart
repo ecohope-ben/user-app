@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.light,
       theme: ThemeData(
           progressIndicatorTheme: ProgressIndicatorThemeData(
             color: Colors.black
@@ -83,7 +84,7 @@ class MyApp extends StatelessWidget {
       // onGenerateRoute: onGenerateRoute,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
-      locale: Locale("en", "US"),
+      locale: context.locale,
     );
   }
 }

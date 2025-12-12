@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_app/auth/index.dart';
+
+import '../api/index.dart';
+import '../models/onboarding_models.dart';
+import '../utils/snack.dart';
 
 class LaunchPage extends StatefulWidget {
   const LaunchPage({super.key});
@@ -20,13 +25,39 @@ class _LaunchPageState extends State<LaunchPage> {
     final auth = Auth.instance();
     await auth.initialize();
 
+    final prefs = await SharedPreferences.getInstance();
+    bool firstRun = prefs.getBool('first_run') ?? true;
+    if (firstRun) {
+      auth.removeAllStorage();
+    }
     if (!mounted) return;
 
     final token = auth.accessToken;
     if (token != null && token.isNotEmpty) {
-      context.go('/home');
+      checkOnboarding(context);
+      // context.go('/home');
     } else {
-      context.go('/welcome');
+      if(firstRun) {
+        context.go('/welcome');
+      }else{
+        context.go('/welcome');
+        // context.go("/get_start");
+      }
+    }
+
+    prefs.setBool('first_run', false);
+  }
+
+  Future<void> checkOnboarding(BuildContext context) async {
+    try {
+      final result = await Api.instance().onboarding().getStatus();
+      if (result.onboarding.status == OnboardingStatus.completed) {
+        if(mounted) context.go("/home");
+      } else {
+        if(mounted) context.push("/onboarding_profile");
+      }
+    } catch (e) {
+      if(mounted) popSnackBar(context, "登入錯誤，請重試");
     }
   }
 
@@ -40,6 +71,7 @@ class _LaunchPageState extends State<LaunchPage> {
     );
   }
 }
+
 
 
 

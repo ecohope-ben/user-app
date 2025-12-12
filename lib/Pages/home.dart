@@ -238,6 +238,8 @@ class _HomeContentState extends State<_HomeContent> {
     return Scaffold(
       body: SafeArea(
         top: false,
+        bottom: false,
+        maintainBottomViewPadding: true,
         child: Stack(
           children: [
             Positioned.fill(
@@ -467,7 +469,7 @@ class CustomBottomNavBar extends StatelessWidget {
         }else if(!hasEntitlement){
           popSnackBar(context, "沒有有效的回收次數");
         }else {
-          context.go("/order/create", extra: subscriptionDetail);
+          context.push("/order/create", extra: subscriptionDetail);
         }
       },
       child: Container(

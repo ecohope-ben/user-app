@@ -42,7 +42,10 @@ class _LoginIndexState extends State<LoginIndex>{
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: Icon(Icons.close, color: Colors.black),
+        leading: InkWell(
+            onTap: () => context.pop(),
+            child: Icon(Icons.close, color: Colors.black)
+        ),
       ),
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
@@ -91,16 +94,22 @@ class _LoginIndexState extends State<LoginIndex>{
 
                           final bloc = context.read<LoginCubit>();
                           final result = await bloc.updateEmail(email: email);
+                          print("--result: $result");
+                          print(result);
 
-                          if(mounted && result) {
-                            context.push("/login/verify");
-                            // final result = await context.push("/login/verify");
-                            // if(result is bool && result){
-                            //
-                            // }
+                          if(mounted) {
+                            if(result) {
+                              context.push("/login/verify");
+                            }else {
+                              context.read<LoginCubit>().reset();
+                              context.read<LoginCubit>().startLogin();
 
-                            // context.push("/login/verify", extra: context.read<LoginCubit>());
-                            // context.pushNamedWithBloc("/login/verify", context.read<LoginCubit>());
+                              // retry
+                              final result = await bloc.updateEmail(email: email);
+                              if(result) {
+                                context.push("/login/verify");
+                              }
+                            }
                           }
                         }
                       }

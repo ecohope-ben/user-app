@@ -6,7 +6,11 @@ import 'package:user_app/pages/common/confirm_page.dart';
 import 'package:user_app/pages/common/how_it_works.dart';
 import 'package:user_app/pages/common/recycling_guide.dart';
 import 'package:user_app/pages/guest/login/index.dart';
+import 'package:user_app/pages/guest/login/onboarding_profile.dart';
 import 'package:user_app/pages/guest/register/index.dart';
+import 'package:user_app/pages/guest/register/steps/create_profile.dart';
+import 'package:user_app/pages/guest/welcome/index.dart';
+import 'package:user_app/pages/guest/welcome/page1.dart';
 import 'package:user_app/pages/history/order/index.dart';
 import 'package:user_app/pages/history/transaction/detail.dart';
 import 'package:user_app/pages/history/transaction/index.dart';
@@ -34,7 +38,8 @@ final router = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (context, state) => const LaunchPage()),
     GoRoute(path: '/welcome', builder: (context, state) => const IntroPage()),
-    GoRoute(path: '/get_start', builder: (context, state) => const IntroPage()),
+    GoRoute(path: '/get_start', builder: (context, state) => const GetStartPage()),
+
     GoRoute(path: '/how_it_works', builder: (context, state) => const HowItWorksPage()),
     GoRoute(path: '/recycling_guide', builder: (context, state) => const RecyclingGuidePage()),
     GoRoute(path: '/settings', builder: (context, state) => SettingsPage(state.extra as SubscriptionListLoaded)),
@@ -48,12 +53,13 @@ final router = GoRouter(
           GoRoute(
               path: '/login', builder: (context, state) => const LoginIndex(),
               routes: [
-                GoRoute(path: 'verify', builder: (context, state) => const LoginEmailVerification())
+                GoRoute(path: 'verify', builder: (context, state) => const LoginEmailVerification()),
               ]
           ),
         ]
     ),
     GoRoute(path: '/home', builder: (context, state) => HomePage()),
+    GoRoute(path: '/onboarding_profile', builder: (context, state) => OnboardingProfile()),
 
     // Subscription
     GoRoute(

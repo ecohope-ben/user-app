@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:go_router/go_router.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../style.dart';
 
-class IntroPage extends StatelessWidget {
-  const IntroPage({super.key});
+class GetStartPage extends StatefulWidget {
+  const GetStartPage({super.key});
+
+  @override
+  State<GetStartPage> createState() => _GetStartPageState();
+}
+
+class _GetStartPageState extends State<GetStartPage> {
+  bool _agreeToTerms = false;
+  bool _agreeToPrivacy = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +43,56 @@ class IntroPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 children: [
-                  const Spacer(flex: 2),
+                  // Language switcher icon at top right
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      PopupMenuButton<Locale>(
+                        icon: Row(
+                          children: [
+                            const Icon(
+                              Icons.language,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                            Icon(Icons.arrow_drop_down, color: Colors.white)
+                          ],
+                        ),
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                        itemBuilder: (BuildContext context) => [
+                          PopupMenuItem<Locale>(
+                            value: const Locale('en', 'US'),
+                            child: Row(
+                              children: [
+                                const Text('English'),
+                                const Spacer(),
+                                if (context.locale == const Locale('en', 'US'))
+                                  const Icon(Icons.check, color: Colors.blue, size: 20),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem<Locale>(
+                            value: const Locale('zh', 'HK'),
+                            child: Row(
+                              children: [
+                                const Text('繁體中文'),
+                                const Spacer(),
+                                if (context.locale == const Locale('zh', 'HK'))
+                                  const Icon(Icons.check, color: Colors.blue, size: 20),
+                              ],
+                            ),
+                          ),
+                        ],
+                        onSelected: (Locale locale) {
+                          context.setLocale(locale);
+                        },
+                      ),
+                    ],
+                  ),
+                  const Spacer(flex: 1),
 
                   Image.asset("assets/icon/white_logo.png", width: 180),
 
@@ -95,14 +153,14 @@ class IntroPage extends StatelessWidget {
                     ),
                   ),
 
-                  const Spacer(flex: 2),
+                  const Spacer(flex: 1),
 
                   // Get Started button
                   Container(
                       width: double.infinity,
                       height: 40,
                       // padding: const EdgeInsets.symmetric(vertical: 0),
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Colors.black,
                         border: Border(
                           bottom: BorderSide(
@@ -112,12 +170,8 @@ class IntroPage extends StatelessWidget {
                         ),
                       ),
                       child: TextButton(
-                        onPressed: () {
-                          // context.push("/home");
-                          context.push("/register");
-                          print("Get Started Tapped");
-                        },
-                        child: Text("Get Started", textAlign: TextAlign.center,
+                        onPressed:() => context.push("/register"),
+                        child: Text(tr("register.register_now"), textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -127,7 +181,7 @@ class IntroPage extends StatelessWidget {
                     ),
 
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 18),
 
                   // Login
                   RichText(
@@ -155,19 +209,72 @@ class IntroPage extends StatelessWidget {
                     ),
                   ),
 
-                  const Spacer(flex: 1),
+                  const SizedBox(height: 16),
 
-                  // 分頁指示器 (Dots)
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     _buildDot(isActive: false),
-                  //     const SizedBox(width: 8),
-                  //     _buildDot(isActive: false),
-                  //     const SizedBox(width: 8),
-                  //     _buildDot(isActive: true),
-                  //   ],
-                  // ),
+                  // Terms and Privacy checkboxes
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _agreeToTerms,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _agreeToTerms = value ?? false;
+                          });
+                        },
+                        activeColor: Colors.white,
+                        checkColor: Colors.black,
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _agreeToTerms = !_agreeToTerms;
+                            });
+                          },
+                          child: const Text(
+                            "I agree to the Terms and Conditions",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _agreeToPrivacy,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _agreeToPrivacy = value ?? false;
+                          });
+                        },
+                        activeColor: Colors.white,
+                        checkColor: Colors.black,
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _agreeToPrivacy = !_agreeToPrivacy;
+                            });
+                          },
+                          child: const Text(
+                            "I agree to the Privacy Policy",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const Spacer(flex: 1),
 
                   const SizedBox(height: 20),
                 ],
@@ -179,15 +286,5 @@ class IntroPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDot({required bool isActive}) {
-    return Container(
-      width: 8,
-      height: 8,
-      decoration: BoxDecoration(
-        color: isActive ? Colors.white : Colors.grey[700],
-        shape: BoxShape.circle,
-      ),
-    );
-  }
 }
 

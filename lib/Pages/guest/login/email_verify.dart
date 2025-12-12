@@ -4,12 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/blocs/login_cubit.dart';
 import 'package:user_app/models/login_models.dart';
+import 'package:user_app/models/onboarding_models.dart';
 import 'package:user_app/routes.dart';
 
 import '../../../../components/register/otp_input.dart';
 import '../../../../components/register/resend_button.dart';
 import '../../../../models/registration_models.dart';
 import '../../../../style.dart';
+import '../../../api/index.dart';
 import '../../../utils/pop_up.dart';
 import '../../../utils/snack.dart';
 import '../../../utils/validator.dart';
@@ -27,6 +29,19 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
 
   void _submitOTP(String verificationCode) {
     context.read<LoginCubit>().verifyEmailOtp(verificationCode);
+  }
+
+  Future<void> checkOnboarding(BuildContext context) async {
+    try {
+      final result = await Api.instance().onboarding().getStatus();
+      if (result.onboarding.status == OnboardingStatus.completed) {
+        context.go("/home");
+      } else {
+        context.push("/onboarding_profile");
+      }
+    } catch (e) {
+      popSnackBar(context, "登入錯誤，請重試");
+    }
   }
 
   @override
@@ -85,7 +100,9 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
 
           }else if(state is LoginCompleted){
             print("--login complete");
-            context.go("/home");
+            checkOnboarding(context);
+            // context.go("/home");
+
           }
 
         },

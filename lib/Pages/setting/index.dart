@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:user_app/blocs/subscription_cubit.dart';
 import 'package:user_app/style.dart';
 import 'package:user_app/utils/pop_up.dart';
@@ -17,6 +18,23 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  String _version = '';
+  String _buildNumber = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVersionInfo();
+  }
+
+  Future<void> _loadVersionInfo() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      _version = packageInfo.version;
+      _buildNumber = packageInfo.buildNumber;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,6 +144,17 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 )
               ),
+              
+              const SizedBox(height: 20),
+              // App version and build number
+              Text(
+                'Version $_version ($_buildNumber)',
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 12,
+                ),
+              ),
+              
               // 3. 底部鏈接
               TextButton(
                 onPressed: () {},
@@ -133,7 +162,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   'Terms & Privacy policy',
                   style: TextStyle(
                     color: Colors.white70,
-                    decoration: TextDecoration.underline,
                   ),
                 ),
               ),

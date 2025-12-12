@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../../auth/index.dart';
 import '../../models/registration_models.dart';
+import '../../routes.dart';
 
 class RefreshTokenInterceptor extends Interceptor {
   final Auth _auth = Auth.instance();
@@ -85,6 +86,16 @@ class RefreshTokenInterceptor extends Interceptor {
       } catch (e) {
         print("--401 retry error");
         print(e.toString());
+        
+        // If refresh token endpoint returns 401, logout user
+        if (e is DioException && 
+            e.response?.statusCode == 401 && 
+            e.requestOptions.path == '/auth/session/refresh') {
+          print("--Refresh token expired, logging out");
+          await _auth.logout();
+          router.go("/get_start");
+        }
+        
         // Refresh failed, reject all pending requests
         if (_pendingRequests.isNotEmpty) {
           _rejectPendingRequests(e);

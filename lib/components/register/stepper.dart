@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:step_progress/step_progress.dart';
 
@@ -24,8 +25,9 @@ class _RegisterStepperState extends State<RegisterStepper> {
           return Image.asset("assets/icon/steper-outlined.png");
         }
       },
-      nodeTitles: const [
-        'Email',
+      nodeTitles: [
+        tr("email"),
+
         'Phone',
         'Profile'
       ],

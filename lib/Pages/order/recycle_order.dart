@@ -186,7 +186,7 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
           onPressed: () {
-            // 處理返回或關閉
+            context.pop();
           },
         ),
         title: const Text(

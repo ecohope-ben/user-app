@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -135,7 +136,7 @@ class _SliverBarState extends State<SliverBar> {
   Widget _buildSubscription() {
    final state = widget.subscriptionState;
     return _buildStatItem(
-        value: state.subscriptions.isNotEmpty ? state.subscriptions.first.plan.billingCycle.name : "No subscription",
+        value: state.subscriptions.isNotEmpty ? tr("subscription.${state.subscriptions.first.plan.billingCycle.name}") : "No subscription",
         label: "Subscriptions",
         onTap: () => context.push("/subscription/manage/list", extra: SubscriptionManageTarget.manage)
     );

@@ -45,7 +45,7 @@ class CreateProfileStep extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Image.asset("assets/icon/register_profile.png", width: 140),
-              TitleText(tr("register.profile")),
+              TitleText(tr("register.personal_profile")),
               SubTitleText(tr("register.profile_description")),
               ProfileInput()
             ],

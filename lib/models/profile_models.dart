@@ -22,7 +22,7 @@ class Profile {
   @JsonKey(name: 'birth_day')
   final int birthDay;
   @JsonKey(name: 'age_group')
-  final String ageGroup;
+  final String? ageGroup;
   @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
 
