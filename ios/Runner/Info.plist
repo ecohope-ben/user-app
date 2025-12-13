@@ -35,6 +35,8 @@
     <key>NSCameraUsageDescription</key>
     <string>This app needs camera access to scan QR codes to verify user identity</string>
 	<key>UISupportedInterfaceOrientations</key>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>

@@ -446,6 +446,8 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                           ),
                         ),
                         Text("Next billing date: ${convertDateTimeToString(_subscriptionDetail?.currentPeriodEnd, "dd MMM y")}"),
+                        _buildFailedPaymentNotice(),
+
                         (_hasScheduledCancellation || _hasScheduledPlanChange) ? const SizedBox(height: 20) : const SizedBox(height: 40),
 
 
@@ -514,6 +516,13 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFailedPaymentNotice(){
+    return Text(
+      "There is an issue with your payment method. Update your payment information to correct the problem and try again.",
+      style: TextStyle(color: Colors.red),
     );
   }
 

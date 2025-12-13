@@ -263,26 +263,39 @@ class _HomeContentState extends State<_HomeContent> {
                       physics: const BouncingScrollPhysics(),
                       child: Column(
                         children: [
-                          if(widget.subscriptionState is SubscriptionDetailAndListLoaded) NotificationCard(widget.subscriptionState as SubscriptionDetailAndListLoaded),
+                          if(widget.subscriptionState is SubscriptionDetailAndListLoaded && (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.lifecycleState == SubscriptionLifecycleState.pastDue) PaymentFailedNotificationCard((widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.id),
+                          if(widget.subscriptionState is SubscriptionDetailAndListLoaded && widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed) FinishedRecycleOrderNotificationCard(widget.subscriptionState as SubscriptionDetailAndListLoaded),
                           BlocBuilder<SubscriptionCubit, SubscriptionState>(
                             builder: (context, state) {
                               // Use effective state for display
                               final displayState = widget.subscriptionState;
 
                               print("--recycleOrderState.orders");
+                              // displayState.subscriptions.length
 
                               if(widget.recycleOrderState.orders.isNotEmpty && !availableOrderStatus.contains(widget.recycleOrderState.orders.first.status)){
+                                print("--show card 1");
 
-                                if(widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed && widget.entitlementState.entitlements.isNotEmpty){
-                                  _showTooltip();
-                                }
+                                // if(widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed && widget.entitlementState.entitlements.isNotEmpty){
+                                //   print("--show card 2");
+                                //   _showTooltip();
+                                // }
                                 return RecycleOrderCard(widget.recycleOrderState.orders.first);
                               }
 
                               if (displayState is SubscriptionDetailAndListLoaded && displayState.subscriptions.isNotEmpty) {
                                 if (displayState.detail.recyclingProfile != null && displayState.detail.recyclingProfile?.initialBagStatus == "delivered") {
-                                  return ScheduleRecycleOrderCard(displayState.detail);
+                                  print("--show card 3");
+
+                                  // check is first time to order
+                                  if(widget.recycleOrderState.orders.isEmpty) {
+                                    return ScheduleRecycleOrderCard(displayState.detail);
+                                  } else {
+                                    /// then may show tooltips
+                                    return Container();
+                                  }
                                 } else {
+                                  print("--show card 4");
                                   return InitialBagDeliveryCard(displayState.detail.recyclingProfile?.initialBagDeliveryTrackingNo);
                                 }
                               } else {

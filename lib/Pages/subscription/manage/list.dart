@@ -256,7 +256,7 @@ class _SubscriptionManageListPageState extends State<SubscriptionManageListPage>
       }
       if(currentSubscription.plan.id == plan.id){
         if(widget.target == SubscriptionManageTarget.manage) {
-          list.insert(0, SubscriptionCard(plan: plan, features: features, isCurrentPlan: true, subscriptionId: currentSubscription.id));
+          list.insert(0, SubscriptionCard(plan: plan, features: features, isCurrentPlan: true, isPaymentFailed: currentSubscription.lifecycleState == SubscriptionLifecycleState.pastDue, subscriptionId: currentSubscription.id));
         }
       }else {
         list.add(SubscriptionCard(plan: plan, features: features, target: SubscriptionManageTarget.change, subscriptionId: currentSubscription.id));

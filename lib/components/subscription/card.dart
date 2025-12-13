@@ -11,6 +11,7 @@ class SubscriptionCard extends StatelessWidget {
   final PlanListItem plan;
   final List<String> features;
   final bool isCurrentPlan;
+  final bool isPaymentFailed;
   final String? subscriptionId;
   final SubscriptionManageTarget target;
   const SubscriptionCard({
@@ -19,6 +20,7 @@ class SubscriptionCard extends StatelessWidget {
     required this.features,
     this.target = SubscriptionManageTarget.normal,
     this.isCurrentPlan = false,
+    this.isPaymentFailed = false,
     this.subscriptionId,
   });
 
@@ -65,6 +67,7 @@ class SubscriptionCard extends StatelessWidget {
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
           SizedBox(
@@ -229,7 +232,13 @@ class SubscriptionCard extends StatelessWidget {
 
   Widget _buildActiveLabel(){
     if(isCurrentPlan){
-      return Row(
+      if(isPaymentFailed){
+        return Padding(
+          padding: const EdgeInsets.only(left: 20, top: 10),
+          child: Text("Payment Failed", style: TextStyle(color: Colors.red),),
+        );
+      }else {
+        return Row(
         children: [
           Container(
             width: 12,
@@ -246,6 +255,7 @@ class SubscriptionCard extends StatelessWidget {
           )
         ],
       );
+      }
     }else return Container();
   }
 }

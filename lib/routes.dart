@@ -68,9 +68,9 @@ final router = GoRouter(
     GoRoute(
       path: "/subscription", builder: (context, state) => Container(),
       routes: [
-        // GoRoute(path: 'list', builder: (context, state) => SubscriptionListPage()),
+        GoRoute(path: 'list', builder: (context, state) => SubscriptionListPage()),
         GoRoute(path: 'confirmation', builder: (context, state) => SubscriptionConfirmationPage()),
-        // GoRoute(path: 'manage/list', builder: (context, state) => SubscriptionManageListPage(state.extra as SubscriptionManageTarget)),
+        GoRoute(path: 'manage/list', builder: (context, state) => SubscriptionManageListPage(state.extra as SubscriptionManageTarget)),
         GoRoute(path: 'manage/change_address', builder: (context, state) => SubscriptionChangeAddress(state.extra as SubscriptionDetail)),
         GoRoute(path: 'manage/change_payment_method', builder: (context, state) => SubscriptionChangePaymentMethod(subscriptionId: state.extra as String)),
         GoRoute(path: 'manage/detail', builder: (context, state) {
