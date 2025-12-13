@@ -57,14 +57,15 @@ class Auth {
   }
 
   void removeAllStorage(){
-    storage.deleteAll();
-  }
-
-  Future logout() async {
+    print("--remove all storage");
     storage.deleteAll();
     Auth.instance().saveAccessToken(null);
     Auth.instance().saveRefreshToken(null);
-
   }
+
+  Future logout() async {
+    removeAllStorage();
+  }
+
   static bool loggedIn() => Auth.instance().isLoggedIn;
 }

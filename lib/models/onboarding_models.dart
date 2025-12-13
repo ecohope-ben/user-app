@@ -75,3 +75,4 @@ class OnboardingErrorBody {
 
   Map<String, dynamic> toJson() => _$OnboardingErrorBodyToJson(this);
 }
+

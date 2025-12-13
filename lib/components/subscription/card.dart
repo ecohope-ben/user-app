@@ -126,17 +126,18 @@ class SubscriptionCard extends StatelessWidget {
                                 ),
                                 Flexible(
                                   child: Text(
-                                    (plan.discount?.discountType == DiscountType.freeCycles) ? "1 Month Free Trial" : plan.name,
+                                    (plan.discount?.discountType == DiscountType.freeCycles && target == SubscriptionManageTarget.normal) ? "1 Month Free Trial" : plan.name,
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
+                                      height: 1,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                            if(plan.discount?.discountType == DiscountType.freeCycles) Text("(Limited Offer)", style: TextStyle(color: Colors.white))
+                            if(plan.discount?.discountType == DiscountType.freeCycles && target == SubscriptionManageTarget.normal) Text("(Limited Offer)", style: TextStyle(color: Colors.white))
                           ],
                         ),
                       ),

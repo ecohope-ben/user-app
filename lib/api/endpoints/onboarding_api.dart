@@ -91,3 +91,4 @@ class OnboardingException implements Exception {
   String toString() =>
       'OnboardingException: $userMessage (Code: $code, Status: $httpStatus)';
 }
+

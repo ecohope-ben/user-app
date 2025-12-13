@@ -138,7 +138,7 @@ class _SliverBarState extends State<SliverBar> {
     return _buildStatItem(
         value: state.subscriptions.isNotEmpty ? tr("subscription.${state.subscriptions.first.plan.billingCycle.name}") : "No subscription",
         label: "Subscriptions",
-        onTap: () => context.push("/subscription/manage/list", extra: SubscriptionManageTarget.manage)
+        onTap: () => state.subscriptions.isNotEmpty ? context.push("/subscription/manage/list", extra: SubscriptionManageTarget.manage) : context.push("/subscription/list")
     );
 
   }

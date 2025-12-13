@@ -218,3 +218,4 @@ class FieldViolation {
   Map<String, dynamic> toJson() => _$FieldViolationToJson(this);
 }
 
+

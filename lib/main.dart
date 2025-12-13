@@ -18,7 +18,8 @@ Future<void> main() async {
   Bloc.observer = SimpleBlocObserver();
   await EasyLocalization.ensureInitialized();
   // setup Strip
-  String stripePublishableKey = "pk_test_51SWuMM1Jfb61gpEIzzpyPQjT6ac4QsV9G0Q1TztigtuLLNOlvrgkhpCGDY8II6GU41N94tzHBwbyGgLVmzYprQSi00wYbyrMjy";
+  // String stripePublishableKey = "pk_test_51SWuMM1Jfb61gpEIzzpyPQjT6ac4QsV9G0Q1TztigtuLLNOlvrgkhpCGDY8II6GU41N94tzHBwbyGgLVmzYprQSi00wYbyrMjy";
+  String stripePublishableKey = "pk_test_51SdCxZ14V5VohwSZCqKviJAEHZLVIG0u4bEXUK4F5SFAP699oJoib3Wl2Ab4ERoeJ9G4HbZkkQ5ogYYbpAnLsAPB0009ntreAD";
   Stripe.publishableKey = stripePublishableKey;
   await Stripe.instance.applySettings();
 
@@ -42,7 +43,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // String baseUrl = "http://192.168.50.237:3001";
     // String baseUrl = "http://172.19.44.17:3001";
-    String baseUrl = "https://customer-int.eco-hope.org";
+    // String baseUrl = "https://customer-int.eco-hope.org";
+    String baseUrl = "https://customer-api-stg.eco-hope.org";
     Api.instance().setBaseUrl(baseUrl)
         .addInterceptor(AuthorizationInterceptor())
         .addInterceptor(ApiLocalizationInterceptor(context))
