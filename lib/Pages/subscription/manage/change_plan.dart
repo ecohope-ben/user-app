@@ -89,16 +89,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
   }
 
   String _buildAmountText(){
-    if(widget.plan.discount != null){
-      if(widget.plan.discount?.discountType == DiscountType.freeCycles){
-
-        return '\$0.00, then \$${widget.plan.priceDecimal}/Month';
-      }else {
-        return widget.plan.priceDecimal;
-      }
-    }
-
-    return widget.plan.priceDecimal ?? "";
+    return "\$${widget.plan.priceDecimal}";
 
   }
 

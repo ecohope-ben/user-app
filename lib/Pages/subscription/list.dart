@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/blocs/subscription_cubit.dart';
+import 'package:user_app/routes.dart';
 import 'package:user_app/style.dart';
 
 import '../../blocs/subscription_plan_cubit.dart';
@@ -29,6 +30,7 @@ class _SubscriptionListPageState extends State<SubscriptionListPage> {
     super.initState();
     // Load features after first frame to get context
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      printRouteStack(context);
       if (mounted) {
         _currentLocale = context.locale;
         _loadPlanFeatures();

@@ -7,6 +7,7 @@ import 'package:user_app/components/subscription/features.dart';
 
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:user_app/components/subscription/preview.dart';
+import 'package:user_app/routes.dart';
 import '../../api/index.dart';
 import '../../api/endpoints/subscription_api.dart';
 import '../../components/subscription/payment_detail_row.dart';
@@ -341,7 +342,8 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
 
           // Navigate back or to home page
           if (mounted) {
-            Navigator.pop(context);
+            // Navigator.pop(context);
+            context.go("/subscription/confirmation");
           }
         } else if (response.result == ActivateSubscriptionResult.failed) {
           // Failed - stop polling and show error message
@@ -386,7 +388,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
         );
 
         if (mounted) {
-          context.replace("/subscription/confirmation");
+          context.go("/subscription/confirmation");
         }
       } else if (response.result == ActivateSubscriptionResult.failed) {
         _activationCheckTimer?.cancel();

@@ -25,7 +25,9 @@ Future<void> main() async {
 
   SystemUiOverlayStyle mySystemTheme = SystemUiOverlayStyle.light.copyWith(systemNavigationBarColor: backgroundColor, systemNavigationBarIconBrightness: Brightness.dark);
   SystemChrome.setSystemUIOverlayStyle(mySystemTheme);
-
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp
+  ]); // Only allow portrait modes
   runApp(
     EasyLocalization(
         supportedLocales: [Locale('en', 'US'), Locale('zh', 'HK')],

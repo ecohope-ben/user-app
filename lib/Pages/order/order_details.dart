@@ -15,33 +15,49 @@ class PickUpOrderDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: mainPurple,
-        leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => context.pop
+    return PopScope(
+      canPop: context.canPop(),
+      onPopInvokedWithResult: (didPop, t){
+        if (didPop) {
+          return; // If the pop was successful, do nothing additional
+        } else{
+          context.go("/home");
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: mainPurple,
+          leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () {
+              if(context.canPop()){
+                context.pop();
+              }else{
+                context.go("/home");
+              }
+            },
+          ),
+          title: const Text(
+            'Recycle Pick Up Details',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+          ),
+          centerTitle: false,
         ),
-        title: const Text(
-          'Recycle Pick Up Details',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-        ),
-        centerTitle: false,
-      ),
-      body: BlocProvider(
-        create: (context) =>
-        RecycleOrderCubit()..loadOrderDetail(orderId),
-        child:  BlocBuilder<RecycleOrderCubit, RecycleOrderState>(
-          builder: (context, state) {
-            if(state is RecycleOrderDetailLoaded) {
-              return _buildBody(state.order);
-            }else if (state is RecycleOrderError){
-              /// build error screen
-              return Container();
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          },
+        body: BlocProvider(
+          create: (context) =>
+          RecycleOrderCubit()..loadOrderDetail(orderId),
+          child:  BlocBuilder<RecycleOrderCubit, RecycleOrderState>(
+            builder: (context, state) {
+              if(state is RecycleOrderDetailLoaded) {
+                return _buildBody(state.order);
+              }else if (state is RecycleOrderError){
+                /// build error screen
+                return Container();
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
         ),
       ),
     );

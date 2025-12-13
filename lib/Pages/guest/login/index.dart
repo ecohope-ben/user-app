@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:user_app/auth/index.dart';
 import 'package:user_app/blocs/login_cubit.dart';
 import 'package:user_app/models/login_models.dart';
 import 'package:user_app/utils/validator.dart';
@@ -29,6 +30,7 @@ class _LoginIndexState extends State<LoginIndex>{
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      Auth.instance().removeAllStorage();
       if (mounted) {
         context.read<LoginCubit>().startLogin();
       }
@@ -50,6 +52,8 @@ class _LoginIndexState extends State<LoginIndex>{
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if(state is LoginInProgress){
+            print("--login inprogrss");
+            print(state);
             if(state.login.stage == LoginStage.emailVerification){
             }
           }else if(state is LoginError){

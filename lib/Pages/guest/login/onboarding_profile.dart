@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../register/steps/create_profile.dart';
 
@@ -9,7 +10,11 @@ class OnboardingProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.arrow_back_ios_new, color: Colors.black),
+        leading: InkWell(
+          onTap: () => context.go("/get_start"),
+          child: Icon(Icons.arrow_back_ios_new, color: Colors.black)
+        ),
+
       ),
       body: Container(
         padding: EdgeInsets.all(25),

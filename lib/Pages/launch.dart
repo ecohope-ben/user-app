@@ -58,19 +58,28 @@ class _LaunchPageState extends State<LaunchPage> {
       }
     } catch (e) {
       if(mounted) popSnackBar(context, "登入錯誤，請重試");
+      context.go("/get_start");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
-        child: CircularProgressIndicator(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset("assets/icon/white_logo.png", width: 180),
+            SizedBox(height: 50),
+            const CircularProgressIndicator(color: Colors.white),
+          ],
+        ),
       ),
     );
   }
 }
+
 
 
 

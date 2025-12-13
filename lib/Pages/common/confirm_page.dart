@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/components/register/action_button.dart';
+import 'package:user_app/pages/subscription/manage/list.dart';
 import 'package:user_app/style.dart';
+
+import '../../routes.dart';
 
 class SubscriptionConfirmationPage extends StatelessWidget {
   const SubscriptionConfirmationPage({super.key});
@@ -14,7 +17,7 @@ class SubscriptionConfirmationPage extends StatelessWidget {
       subTitle: 'You have successfully subscribed to our monthly recycle plan.',
       subTitle2: 'Your first recycle bag is on the way, Get Ready!',
       mainButtonTitle: "Manage Subscription",
-      mainButtonOnTap: () => context.go("/home")
+      mainButtonOnTap: () => context.go("/subscription/manage/list", extra: SubscriptionManageTarget.manage)
     );
   }
 }
@@ -30,11 +33,10 @@ class RecycleOrderConfirmationPage extends StatelessWidget {
         title: 'Your Next Recycle Pick Up Schedule is Confirmed!',
         subTitle: 'Driver will contact you within 24 hours before the scheduled pick up time via your email and phone number.',
         mainButtonTitle: "View Schedule Details",
-        mainButtonOnTap: () => context.replace("/order/details", extra: orderId)
+        mainButtonOnTap: () => context.go("/order/details", extra: orderId)
     );
   }
 }
-
 
 class ConfirmationPage extends StatelessWidget {
   final String iconPath;
@@ -88,7 +90,7 @@ class ConfirmationPage extends StatelessWidget {
               const SizedBox(height: 20),
 
               TextButton(
-                onPressed: mainButtonOnTap,
+                onPressed: () => context.go("/home"),
                 child: const Text(
                   "Back to Home",
                   style: TextStyle(

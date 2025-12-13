@@ -10,6 +10,7 @@ import 'package:user_app/style.dart';
 import '../../../blocs/subscription_plan_cubit.dart';
 import '../../../components/subscription/card.dart';
 import '../../../models/subscription_models.dart';
+import '../../../routes.dart';
 import '../../common/error_view.dart';
 
 enum SubscriptionManageTarget{
@@ -33,6 +34,7 @@ class _SubscriptionManageListPageState extends State<SubscriptionManageListPage>
     super.initState();
     // Load features after first frame to get context
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      printRouteStack(context);
       if (mounted) {
         _currentLocale = context.locale;
         _loadPlanFeatures();
@@ -113,31 +115,45 @@ class _SubscriptionManageListPageState extends State<SubscriptionManageListPage>
           BlocProvider(create: (_) => SubscriptionCubit()..getCurrentSubscription()),
           BlocProvider(create: (_) => SubscriptionPlanCubit()..loadPlans()),
         ],
-      child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: mainPurple,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                context.pop();
-              },
-            ),
-            title: const Text(
-              "Subscriptions",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+      child: PopScope(
+        canPop: context.canPop(),
+        onPopInvokedWithResult: (didPop, t){
+          if (didPop) {
+            return; // If the pop was successful, do nothing additional
+          } else{
+            context.go("/home");
+          }
+        },
+        child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: mainPurple,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  if(context.canPop()){
+                    context.pop();
+                  }else{
+                    context.go("/home");
+                  }
+                },
               ),
+              title: const Text(
+                "Subscriptions",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              centerTitle: true,
             ),
-            centerTitle: true,
-          ),
-          body: Builder(
-            builder: (context) {
-              return _buildBody(context);
-            }
-          )
+            body: Builder(
+              builder: (context) {
+                return _buildBody(context);
+              }
+            )
+        ),
       )
     );
   }

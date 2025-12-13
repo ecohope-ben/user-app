@@ -269,7 +269,6 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
 
               // 5. 確認按鈕
               ActionButton("Confirm Pick Up Schedule", onTap: onSubmit, showLoading: _isSubmitLoading),
-              // ActionButton("Confirm Pick Up Schedule", onTap: ()=> context.replace("/order/confirmation"), showLoading: _isSubmitLoading),
               const SizedBox(height: 16),
 
               // 6. 底部條款文字
