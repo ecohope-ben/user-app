@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/blocs/entitlement_cubit.dart';
 import 'package:user_app/blocs/profile_cubit.dart';
+import 'package:user_app/blocs/recycle_order_cubit.dart';
 import 'package:user_app/blocs/subscription_cubit.dart';
 import 'package:user_app/pages/subscription/manage/list.dart';
 import 'package:user_app/utils/extension.dart';
@@ -14,7 +15,8 @@ class SliverBar extends StatefulWidget {
   final ProfileLoaded profileState;
   final EntitlementLoaded entitlementState;
   final SubscriptionListLoaded subscriptionState;
-  const SliverBar({super.key, required this.profileState, required this.entitlementState, required this.subscriptionState});
+  final RecycleOrderListLoaded recycleOrderState;
+  const SliverBar({super.key, required this.profileState, required this.entitlementState, required this.subscriptionState, required this.recycleOrderState});
 
   @override
   State<SliverBar> createState() => _SliverBarState();
@@ -119,7 +121,7 @@ class _SliverBarState extends State<SliverBar> {
       children: [
         _buildPickupRemining(),
         _buildSubscription(),
-        _buildStatItem(value: "00", label: "Total collections"),
+        _buildTotalCollection()
       ],
     );
   }
@@ -130,7 +132,6 @@ class _SliverBarState extends State<SliverBar> {
         value: state.entitlements.isNotEmpty ? state.entitlements.first.quotaRemaining.toString() : "00",
         label: "Pick Up"
     );
-
   }
 
   Widget _buildSubscription() {
@@ -140,7 +141,14 @@ class _SliverBarState extends State<SliverBar> {
         label: "Subscriptions",
         onTap: () => state.subscriptions.isNotEmpty ? context.push("/subscription/manage/list", extra: SubscriptionManageTarget.manage) : context.push("/subscription/list")
     );
+  }
 
+  Widget _buildTotalCollection() {
+    final state = widget.recycleOrderState;
+    return _buildStatItem(
+        value: state.orders.isNotEmpty ? state.orders.length.toString() : "00",
+        label: "Total Collection"
+    );
   }
 
   Widget _buildStatItem({required String value, required String label, VoidCallback? onTap}) {

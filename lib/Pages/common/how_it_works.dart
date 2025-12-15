@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../blocs/subscription_cubit.dart';
 import '../../components/common/explore_banner.dart';
 
 class HowItWorksPage extends StatelessWidget {
-  const HowItWorksPage({super.key});
+  final SubscriptionListLoaded subscriptionState;
+  const HowItWorksPage(this.subscriptionState, {super.key});
 
   final Color timelineColor = const Color(0xFF005D2F); // timeline
 
@@ -82,7 +84,7 @@ class HowItWorksPage extends StatelessWidget {
               const SizedBox(height: 30),
               const Divider(thickness: 1, color: Colors.black12),
               const SizedBox(height: 30),
-              ExploreBanner(),
+              ExploreBanner(subscriptionState),
               const SizedBox(height: 20),
             ],
           ),

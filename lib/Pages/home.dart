@@ -255,26 +255,26 @@ class _HomeContentState extends State<_HomeContent> {
                   profileState: widget.profileState,
                   entitlementState: widget.entitlementState,
                   subscriptionState: widget.subscriptionState,
+                  recycleOrderState: widget.recycleOrderState,
                 ),
                 Expanded(
                   child: RefreshIndicator(
                     onRefresh: () => _refreshData(context),
                     child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics(),
+                      ),
                       child: Column(
                         children: [
                           if(widget.subscriptionState is SubscriptionDetailAndListLoaded && (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.lifecycleState == SubscriptionLifecycleState.pastDue) PaymentFailedNotificationCard((widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.id),
-                          if(widget.subscriptionState is SubscriptionDetailAndListLoaded && widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed) FinishedRecycleOrderNotificationCard(widget.subscriptionState as SubscriptionDetailAndListLoaded),
+                          if(widget.subscriptionState is SubscriptionDetailAndListLoaded && widget.recycleOrderState.orders.isNotEmpty && widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed) FinishedRecycleOrderNotificationCard(widget.subscriptionState as SubscriptionDetailAndListLoaded),
+                          // RecycleOrderCard(widget.recycleOrderState.orders.first),
                           BlocBuilder<SubscriptionCubit, SubscriptionState>(
                             builder: (context, state) {
                               // Use effective state for display
                               final displayState = widget.subscriptionState;
 
-                              print("--recycleOrderState.orders");
-                              // displayState.subscriptions.length
-
                               if(widget.recycleOrderState.orders.isNotEmpty && !availableOrderStatus.contains(widget.recycleOrderState.orders.first.status)){
-                                print("--show card 1");
 
                                 // if(widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed && widget.entitlementState.entitlements.isNotEmpty){
                                 //   print("--show card 2");
@@ -316,7 +316,7 @@ class _HomeContentState extends State<_HomeContent> {
                                       "We provide door to door collection Upcycle Your Way to a Greener Tomorrow!",
                                   imagePath: "assets/widget/how_it_work.png",
                                   icon: Icons.change_circle_outlined,
-                                  onTap: () => context.push("/how_it_works"),
+                                  onTap: () => context.push("/how_it_works", extra: widget.subscriptionState),
                                 ),
                                 const SizedBox(height: 16),
                                 RecycleInfoCard(
@@ -365,7 +365,6 @@ class _HomeSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        top: false,
         child: Stack(
           children: [
             Column(
@@ -426,7 +425,7 @@ class _SkeletonBox extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         color: Colors.grey.shade300,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.zero,
       ),
     );
   }
@@ -481,6 +480,8 @@ class CustomBottomNavBar extends StatelessWidget {
           popSnackBar(context, "請先訂閱計劃");
         }else if(!hasEntitlement){
           popSnackBar(context, "沒有有效的回收次數");
+        }else if(subscriptionDetail?.recyclingProfile?.initialBagStatus != "delivered"){
+          popSnackBar(context, "收到回收袋後, 便可安排上門回收");
         }else {
           context.push("/order/create", extra: subscriptionDetail);
         }

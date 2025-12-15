@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -58,12 +59,11 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Column(
             children: [
               const SizedBox(height: 10),
-              // 1. 綠色推廣橫幅
-              ExploreBanner(),
+              ExploreBanner(widget.subscriptionState),
 
               const SizedBox(height: 20),
 
-              // 2. 白色設置列表
+              // Settings
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -76,8 +76,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: 'Subscriptions',
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          Text('Join Now', style: TextStyle(color: Colors.grey, fontSize: 14)),
+                        children: [
+                          Text((widget.subscriptionState.subscriptions.isEmpty) ? 'Join Now' : 'Manage', style: TextStyle(color: Colors.grey, fontSize: 14)),
                           SizedBox(width: 8),
                           Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
                         ],
@@ -94,13 +94,56 @@ class _SettingsPageState extends State<SettingsPage> {
 
                     // Language
                     SettingsTile(
-                      title: 'Language',
+                      title: 'Language/語言',
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          Text('English', style: TextStyle(color: Colors.grey, fontSize: 14)),
-                          SizedBox(width: 8),
-                          Icon(Icons.keyboard_arrow_down, size: 24, color: Colors.grey),
+                        children: [
+                          // Text('English', style: TextStyle(color: Colors.grey, fontSize: 14)),
+                          SizedBox(
+                            height: 25,
+                            child: PopupMenuButton<Locale>(
+                              padding: EdgeInsets.zero,
+                              icon: Row(
+                                children: [
+                                  Text((context.locale == const Locale('en', 'US') ? "English" : "中文"), style: TextStyle(color: Colors.grey, fontSize: 14)),
+                                  const Icon(Icons.keyboard_arrow_down, size: 24, color: Colors.grey),
+                                ],
+                              ),
+                              color: Colors.white,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero,
+                              ),
+                              itemBuilder: (BuildContext context) => [
+                                PopupMenuItem<Locale>(
+                                  value: const Locale('en', 'US'),
+                                  child: Row(
+                                    children: [
+                                      const Text('English'),
+                                      const Spacer(),
+                                      if (context.locale == const Locale('en', 'US'))
+                                        const Icon(Icons.check, color: Colors.blue, size: 20),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem<Locale>(
+                                  value: const Locale('zh', 'HK'),
+                                  child: Row(
+                                    children: [
+                                      const Text('繁體中文'),
+                                      const Spacer(),
+                                      if (context.locale == const Locale('zh', 'HK'))
+                                        const Icon(Icons.check, color: Colors.blue, size: 20),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                              onSelected: (Locale locale) {
+                                context.setLocale(locale);
+                              },
+                            ),
+                          ),
+                          // const SizedBox(width: 8),
+                          // const Icon(Icons.keyboard_arrow_down, size: 24, color: Colors.grey),
                         ],
                       ),
                     ),
@@ -178,60 +221,6 @@ class _SettingsPageState extends State<SettingsPage> {
     return const Divider(height: 1, thickness: 0.5, indent: 16, endIndent: 16, color: Colors.grey);
   }
 
-  // 構建頂部的綠色推廣 Banner
-  Widget _buildPromoBanner() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF1D5A4F), Color(0xFF208C6E)], // 深綠到淺綠漸變
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-        borderRadius: BorderRadius.circular(0), // 圖片看起來像是直角或者很小的圓角
-      ),
-      child: Row(
-        children: [
-          // 左側圖標
-          const Icon(Icons.auto_awesome, color: Colors.white, size: 32),
-          const SizedBox(width: 16),
-          // 中間文字
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  'Limited Offer, Join Now',
-                  style: TextStyle(color: Colors.white, fontSize: 14),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  'Free Trial available',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // 右側按鈕
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF222222), // 深色按鈕背景
-              foregroundColor: Colors.white,
-              elevation: 0,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-            ),
-            child: const Text('Explore'),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 // 可復用的列表項組件

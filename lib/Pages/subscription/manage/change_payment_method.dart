@@ -76,6 +76,7 @@ class _ChangePaymentMethodViewState extends State<_ChangePaymentMethodView> {
           merchantDisplayName: 'Eco Hope',
           setupIntentClientSecret: setupIntentClientSecret,
           allowsDelayedPaymentMethods: true,
+          style: ThemeMode.light
         ),
       );
 

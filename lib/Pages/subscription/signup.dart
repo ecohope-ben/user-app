@@ -184,6 +184,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
         paymentIntentClientSecret: paymentIntentClientSecret,
         setupIntentClientSecret: setupIntentClientSecret,
         allowsDelayedPaymentMethods: true, // optional
+        style: ThemeMode.light
       ),
     );
 

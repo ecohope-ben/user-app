@@ -40,7 +40,7 @@ final router = GoRouter(
     GoRoute(path: '/welcome', builder: (context, state) => const IntroPage()),
     GoRoute(path: '/get_start', builder: (context, state) => const GetStartPage()),
 
-    GoRoute(path: '/how_it_works', builder: (context, state) => const HowItWorksPage()),
+    GoRoute(path: '/how_it_works', builder: (context, state) => HowItWorksPage(state.extra as SubscriptionListLoaded)),
     GoRoute(path: '/recycling_guide', builder: (context, state) => const RecyclingGuidePage()),
     GoRoute(path: '/settings', builder: (context, state) => SettingsPage(state.extra as SubscriptionListLoaded)),
     GoRoute(path: '/register', builder: (context, state) => RegisterIndex()),

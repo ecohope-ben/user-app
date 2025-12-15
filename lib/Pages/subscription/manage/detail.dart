@@ -446,8 +446,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                           ),
                         ),
                         Text("Next billing date: ${convertDateTimeToString(_subscriptionDetail?.currentPeriodEnd, "dd MMM y")}"),
-                        _buildFailedPaymentNotice(),
-
+                        if(_subscriptionDetail?.lifecycleState == SubscriptionLifecycleState.pastDue) _buildFailedPaymentNotice(),
                         (_hasScheduledCancellation || _hasScheduledPlanChange) ? const SizedBox(height: 20) : const SizedBox(height: 40),
 
 

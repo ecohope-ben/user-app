@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../blocs/subscription_cubit.dart';
 
 class ExploreBanner extends StatelessWidget {
-  const ExploreBanner({super.key});
+  final SubscriptionListLoaded subscriptionState;
+  const ExploreBanner(this.subscriptionState, {super.key});
 
   final Color bannerColor = const Color(0xFF1F7A66); // banner color
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    if(subscriptionState is SubscriptionDetailAndListLoaded && subscriptionState.subscriptions.isNotEmpty){
+      return Container();
+    }else {
+      return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -59,7 +66,7 @@ class ExploreBanner extends StatelessWidget {
 
             // Explore
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () => context.push("/subscription/list"),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 foregroundColor: Colors.white,
@@ -73,5 +80,6 @@ class ExploreBanner extends StatelessWidget {
           ],
         ),
       );
+    }
   }
 }
