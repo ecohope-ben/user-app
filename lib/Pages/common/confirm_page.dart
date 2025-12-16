@@ -6,6 +6,22 @@ import 'package:user_app/style.dart';
 
 import '../../routes.dart';
 
+class ChangPlanConfirmationPage extends StatelessWidget {
+  const ChangPlanConfirmationPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ConfirmationPage(
+        iconPath: 'assets/icon/confirmation_tick.png',
+        title: 'Your subscription is changing to Yearly Plan on 20 Nov 2025.',
+        subTitle: 'You will still be able to recycle with your current monthly plan and you can change your mind anytime before this date.',
+        // subTitle2: 'Your first recycle bag is on the way, Get Ready!',
+        mainButtonTitle: "Manage Subscription",
+        mainButtonOnTap: () => context.go("/subscription/manage/list", extra: SubscriptionManageTarget.manage)
+    );
+  }
+}
+
 class SubscriptionConfirmationPage extends StatelessWidget {
   const SubscriptionConfirmationPage({super.key});
 
@@ -14,8 +30,8 @@ class SubscriptionConfirmationPage extends StatelessWidget {
     return ConfirmationPage(
       iconPath: 'assets/icon/confirmation_subscription.png',
       title: 'Thank you for subscribing!',
-      subTitle: 'You have successfully subscribed to our monthly recycle plan.',
-      subTitle2: 'Your first recycle bag is on the way, Get Ready!',
+      subTitle: 'You have successfully subscribed to our monthly plan. The first ECO HOPE recycling bag is ready for dispatch — Courier may notify you via phone once it’s dispatched.',
+      // subTitle2: 'Your first recycle bag is on the way, Get Ready!',
       mainButtonTitle: "Manage Subscription",
       mainButtonOnTap: () => context.go("/subscription/manage/list", extra: SubscriptionManageTarget.manage)
     );
@@ -31,7 +47,7 @@ class RecycleOrderConfirmationPage extends StatelessWidget {
     return ConfirmationPage(
         iconPath: 'assets/icon/confirmation_tick.png',
         title: 'Your Next Recycle Pick Up Schedule is Confirmed!',
-        subTitle: 'Driver will contact you within 24 hours before the scheduled pick up time via your email and phone number.',
+        subTitle: 'Pick up time depends on the courier’s schedule and may be subject to change. The courier may call you shortly before arrival.',
         mainButtonTitle: "View Schedule Details",
         mainButtonOnTap: () => context.go("/order/details", extra: orderId)
     );
@@ -79,7 +95,7 @@ class ConfirmationPage extends StatelessWidget {
                 subTitle,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.white70,
+                  color: Colors.white,
                   fontSize: 15,
                   height: 1.5,
                 ),

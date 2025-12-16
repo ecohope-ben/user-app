@@ -12,6 +12,7 @@ class SubscriptionCard extends StatelessWidget {
   final List<String> features;
   final bool isCurrentPlan;
   final bool isPaymentFailed;
+  final bool isSubscriptionCanceled;
   final String? subscriptionId;
   final SubscriptionManageTarget target;
   const SubscriptionCard({
@@ -21,6 +22,7 @@ class SubscriptionCard extends StatelessWidget {
     this.target = SubscriptionManageTarget.normal,
     this.isCurrentPlan = false,
     this.isPaymentFailed = false,
+    this.isSubscriptionCanceled = false,
     this.subscriptionId,
   });
 
@@ -236,6 +238,11 @@ class SubscriptionCard extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.only(left: 20, top: 10),
           child: Text("Payment Failed", style: TextStyle(color: Colors.red),),
+        );
+      }else if (isSubscriptionCanceled){
+        return Padding(
+          padding: const EdgeInsets.only(left: 20, top: 10),
+          child: Text("Your subscription is ending soon", style: TextStyle(color: Colors.red),),
         );
       }else {
         return Row(

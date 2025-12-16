@@ -41,10 +41,10 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       backgroundColor: mainPurple,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF422883),
+        backgroundColor: mainPurple,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
           onPressed: () => context.pop(),
         ),
         title: const Text(
@@ -73,7 +73,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     // Subscriptions
                     SettingsTile(
-                      title: 'Subscriptions',
+                      title: tr("subscription.title"),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -105,7 +105,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               padding: EdgeInsets.zero,
                               icon: Row(
                                 children: [
-                                  Text((context.locale == const Locale('en', 'US') ? "English" : "中文"), style: TextStyle(color: Colors.grey, fontSize: 14)),
+                                  Text((context.locale == const Locale('en', 'US') ? "English" : "繁體中文"), style: TextStyle(color: Colors.grey, fontSize: 14)),
                                   const Icon(Icons.keyboard_arrow_down, size: 24, color: Colors.grey),
                                 ],
                               ),
@@ -150,15 +150,15 @@ class _SettingsPageState extends State<SettingsPage> {
                     _buildDivider(),
 
                     // Recycle Pick Up History
-                    SettingsTile(title: 'Recycle Pick Up History', onTap: () => context.push("/order/history")),
+                    SettingsTile(title: tr("settings.order_history"), onTap: () => context.push("/order/history")),
                     _buildDivider(),
 
                     // Transaction History
-                    SettingsTile(title: 'Transaction History', onTap: () => context.push("/payments/history"),),
+                    SettingsTile(title: tr("settings.transaction_history"), onTap: () => context.push("/payments/history"),),
                     _buildDivider(),
 
                     // FAQ & Feedback
-                    SettingsTile(title: 'FAQ & Feedback'),
+                    SettingsTile(title: tr("settings.fnq")),
                   ],
                 ),
               ),
@@ -172,11 +172,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: Column(
                   children: [
                     SettingsTile(
-                        title: 'Logout',
+                      title: tr("logout.title"),
                       onTap: (){
                           showPopup(
                               context,
-                            title: "確認登出？",
+                            title: tr("logout.confirm"),
                             onConfirm: (){
                               Auth.instance().logout();
                               context.go("/get_start");

@@ -53,7 +53,7 @@ class WelcomePage1 extends StatelessWidget {
                               color: Colors.white
                           ),
                           children: [
-                            const TextSpan(text: 'Every Pickup Creates '),
+                            const TextSpan(text: 'Recycle Smarter, Live '),
                             WidgetSpan(
                               alignment: PlaceholderAlignment.middle,
                               child: Transform.rotate(
@@ -66,7 +66,7 @@ class WelcomePage1 extends StatelessWidget {
                                   child: Transform.rotate(
                                     angle: -0.05, // rotate
                                     child: const Text(
-                                      'Change',
+                                      'Greener',
                                       style: TextStyle(
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold,
@@ -86,7 +86,7 @@ class WelcomePage1 extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   const Text(
-                    "Your bottles are upcycled into new products, giving plastic a second life.",
+                    "We collect from your door — no bins, no hassle, just impact.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,

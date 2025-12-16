@@ -1,12 +1,15 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:el_tooltip/el_tooltip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_app/components/home/promotion_banner.dart';
 import 'package:user_app/components/home/recycle_info_card.dart';
 import 'package:user_app/components/register/action_button.dart';
 import 'package:user_app/routes.dart';
 import 'package:user_app/utils/snack.dart';
+import 'package:user_app/utils/time.dart';
 
 import '../blocs/entitlement_cubit.dart';
 import '../blocs/login_cubit.dart';
@@ -17,6 +20,7 @@ import '../blocs/subscription_plan_cubit.dart';
 import '../components/home/notification_card.dart';
 import '../components/home/order_card.dart';
 import '../components/home/silver.dart';
+import '../components/home/welcome_popup.dart';
 import '../models/recycle_models.dart';
 import '../models/subscription_models.dart';
 import '../style.dart';
@@ -219,11 +223,24 @@ class _HomeContentState extends State<_HomeContent> {
       return;
     });
   }
+  Future<void> popWelcomeGift() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool hasShowedWelcomeGift = prefs.getBool('has_showed_welcome_gift') ?? false;
+    if (!hasShowedWelcomeGift) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+          context: context,
+          builder: (context) => const WelcomeGiftPopup(),
+        );
+      });
+    }
+    prefs.setBool('has_showed_welcome_gift', true);
+  }
 
   @override
   void initState() {
     super.initState();
-
+    popWelcomeGift();
   }
 
 
@@ -233,7 +250,6 @@ class _HomeContentState extends State<_HomeContent> {
     // final effectiveSubscriptionState = subscriptionState ?? context.watch<SubscriptionCubit>().state;
 
     final List<RecycleOrderStatus> availableOrderStatus = [RecycleOrderStatus.completed, RecycleOrderStatus.failed];
-
 
     return Scaffold(
       body: SafeArea(
@@ -267,8 +283,14 @@ class _HomeContentState extends State<_HomeContent> {
                       child: Column(
                         children: [
                           if(widget.subscriptionState is SubscriptionDetailAndListLoaded && (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.lifecycleState == SubscriptionLifecycleState.pastDue) PaymentFailedNotificationCard((widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.id),
-                          if(widget.subscriptionState is SubscriptionDetailAndListLoaded && widget.recycleOrderState.orders.isNotEmpty && widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed) FinishedRecycleOrderNotificationCard(widget.subscriptionState as SubscriptionDetailAndListLoaded),
+                          if(widget.subscriptionState is SubscriptionDetailAndListLoaded && (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledCancellation != null) SubscriptionCanceledNotificationCard(convertDateTimeToString(context, (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.currentPeriodEnd)),
+                          if(widget.subscriptionState is SubscriptionDetailAndListLoaded &&
+                              (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledCancellation == null &&
+                              widget.recycleOrderState.orders.isNotEmpty &&
+                              widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed
+                          ) FinishedRecycleOrderNotificationCard(widget.subscriptionState as SubscriptionDetailAndListLoaded),
                           // RecycleOrderCard(widget.recycleOrderState.orders.first),
+
                           BlocBuilder<SubscriptionCubit, SubscriptionState>(
                             builder: (context, state) {
                               // Use effective state for display
@@ -300,7 +322,6 @@ class _HomeContentState extends State<_HomeContent> {
                                 }
                               } else {
                                 return PromotionBanner(() => context.push("/subscription/list"));
-
                               }
 
                             },
@@ -311,18 +332,16 @@ class _HomeContentState extends State<_HomeContent> {
                             child: Column(
                               children: [
                                 RecycleInfoCard(
-                                  title: "How it works?",
-                                  description:
-                                      "We provide door to door collection Upcycle Your Way to a Greener Tomorrow!",
+                                  title: tr("how_it_works"),
+                                  description: tr("how_it_works_description"),
                                   imagePath: "assets/widget/how_it_work.png",
                                   icon: Icons.change_circle_outlined,
                                   onTap: () => context.push("/how_it_works", extra: widget.subscriptionState),
                                 ),
                                 const SizedBox(height: 16),
                                 RecycleInfoCard(
-                                  title: "Recycling Guide",
-                                  description:
-                                      "Dos and Don'ts we rely on you to apply the recycling guide properly!",
+                                  title: tr("recycling_guide"),
+                                  description: tr("recycling_guide_description"),
                                   imagePath: "assets/widget/recycle_guide.png",
                                   icon: Icons.list_alt,
 
@@ -439,6 +458,7 @@ class _HomeErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print("--error message: $message");
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -450,12 +470,12 @@ class _HomeErrorView extends StatelessWidget {
                 const Icon(Icons.error_outline, size: 48, color: Colors.red),
                 const SizedBox(height: 16),
                 Text(
-                  message.isEmpty ? "Something went wrong." : message,
+                  tr("error.home_page_error"),
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 24),
-                ActionButton("Retry", onTap: onRetry)
+                ActionButton(tr("error.retry"), onTap: onRetry)
               ],
             ),
           ),
@@ -477,11 +497,11 @@ class CustomBottomNavBar extends StatelessWidget {
     return InkWell(
       onTap: () {
         if(subscriptionDetail == null){
-          popSnackBar(context, "請先訂閱計劃");
+          popSnackBar(context, tr("subscription.subscribe_plan_first"));
         }else if(!hasEntitlement){
-          popSnackBar(context, "沒有有效的回收次數");
+          popSnackBar(context, tr("order.pick_up_unavailable", args: [convertDateTimeToString(context, subscriptionDetail?.currentPeriodEnd)]));
         }else if(subscriptionDetail?.recyclingProfile?.initialBagStatus != "delivered"){
-          popSnackBar(context, "收到回收袋後, 便可安排上門回收");
+          popSnackBar(context, tr("order.pick_after_receive_bag"));
         }else {
           context.push("/order/create", extra: subscriptionDetail);
         }

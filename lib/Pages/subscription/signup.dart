@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,7 @@ import '../../models/subscription_models.dart';
 import '../../style.dart';
 import '../../utils/pop_up.dart';
 import '../../utils/snack.dart';
+import '../../utils/time.dart';
 
 class SubscriptionSignUp extends StatefulWidget {
   final PlanListItem plan;
@@ -138,13 +140,13 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
     });
   }
 
-  String _formatDate(DateTime date) {
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
-  }
+  // String _formatDate(DateTime date) {
+  //   const months = [
+  //     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  //     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  //   ];
+  //   return '${date.day} ${months[date.month - 1]} ${date.year}';
+  // }
 
   String _formatAmount(int amount, String currency) {
     final formatted = (amount / 100).toStringAsFixed(2);
@@ -153,26 +155,27 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
 
   String _getBillingCycleText() {
     return widget.plan.billingCycle == BillingCycle.monthly
-        ? 'Monthly Plan'
-        : 'Yearly Plan';
+        ? tr("subscription.monthly")
+        : tr("subscription.yearly");
   }
 
   String _getRenewalText() {
-    if (_previewData == null) return 'Loading...';
-    return _formatDate(_previewData!.periodEnd);
+    if (_previewData == null) return '';
+    return convertDateTimeToString(context, _previewData!.periodEnd);
   }
 
   String _getAmountText() {
-    if (_previewData == null) return 'Loading...';
+    if (_previewData == null) return '';
     if (!_previewData!.requirePayment) {
-      return '${_formatAmount(_previewData!.amount, _previewData!.currency)} | pay nothing until ${_formatDate(_previewData!.periodEnd)}, then \$${widget.plan.priceDecimal}/Month';
+      return tr("subscription.amount_text_with_discount", args: [_formatAmount(_previewData!.amount, _previewData!.currency), convertDateTimeToString(context, _previewData!.periodEnd), widget.plan.priceDecimal]) ;
+      // return '${_formatAmount(_previewData!.amount, _previewData!.currency)} | pay nothing until ${_formatDate(_previewData!.periodEnd)}, then \$${widget.plan.priceDecimal}/Month';
     }
     return _formatAmount(_previewData!.amount, _previewData!.currency);
   }
 
   String _getAutoRenewText() {
-    final cycle = widget.plan.billingCycle == BillingCycle.monthly ? '1 month' : '1 year';
-    return 'Auto-renews every $cycle, cancel anytime.';
+    final cycle = widget.plan.billingCycle == BillingCycle.monthly ? tr("subscription.billing_cycle.monthly") : tr("subscription.billing_cycle.yearly");
+    return tr("subscription.auto_renew_text", args: [cycle]);
   }
 
   Future<void> presentSubscriptionSheet({String? paymentIntentClientSecret, String? setupIntentClientSecret}) async {
@@ -198,28 +201,28 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
 
     // Validate required fields
     if (_selectedDistrict == null) {
-      popSnackBar(context, '請選擇區域 (Region)');
+      popSnackBar(context, tr("validation.select_region"));
       return;
     }
 
     if (_selectedSubDistrict == null) {
-      popSnackBar(context, '請選擇地區 (District)');
+      popSnackBar(context, tr("validation.select_district"));
       return;
     }
 
     final address = addressController.text.trim();
     if (address.isEmpty) {
-      popSnackBar(context, '請輸入地址');
+      popSnackBar(context, tr("validation.input_address"));
       return;
     }
 
     if (!_hasAcceptedTerms) {
-      popSnackBar(context, '請先同意條款及私隱政策');
+      popSnackBar(context, tr("validation.agree_terms"));
       return;
     }
 
     if (_previewData == null) {
-      popSnackBar(context, '預覽資料尚未載入，請稍候再試',);
+      popSnackBar(context, tr("error.preview_not_load"));
       return;
     }
 
@@ -251,7 +254,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('訂閱已建立，訂閱 ID: ${response.subscriptionId}'),
+            content: Text(tr("subscription.subscription_created", args: [response.subscriptionId])),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -264,20 +267,20 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
         }on StripeException catch(e){
           if (e.error.code == FailureCode.Canceled) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('用户取消了付款')),
+              SnackBar(content: Text(tr("subscription.canceled_payment_by_user"))),
             );
           }else if(e.error.code == FailureCode.Failed){
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('付款失敗')),
+              SnackBar(content: Text(tr("subscription.payment_failed"))),
             );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('付款失败: ${e.error.localizedMessage}')),
+              SnackBar(content: Text(tr("subscription.payment_failed_with_msg", args: [?e.error.localizedMessage]))),
             );
           }
         }catch(e){
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('付款錯誤，請稍後再試')),
+            SnackBar(content: Text(tr("subscription.payment_failed_try_later"))),
           );
         }
 
@@ -291,7 +294,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
       });
 
       if (mounted) {
-        String errorMessage = '建立訂閱時發生錯誤';
+        String errorMessage = '';
         if (e is SubscriptionException) {
           errorMessage = e.message;
         } else {
@@ -300,7 +303,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
 
         await showForcePopup(
           context,
-          title: '錯誤',
+          title: 'error_text',
           message: errorMessage,
         );
       }
@@ -335,11 +338,11 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
             _isCheckingActivation = false;
           });
 
-          await showForcePopup(
-            context,
-            title: '成功',
-            message: '訂閱已成功啟動！',
-          );
+          // await showForcePopup(
+          //   context,
+          //   title: tr("success"),
+          //   message: tr("subscription.subscription_created_successful"),
+          // );
 
           // Navigate back or to home page
           if (mounted) {
@@ -355,8 +358,8 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
 
           await showForcePopup(
             context,
-            title: '錯誤',
-            message: '訂閱啟動失敗，請聯繫客服',
+            title: tr("error_text"),
+            message: tr("subscription.subscription_created_failed"),
           );
         }
         // If result is 'pending', continue polling
@@ -383,8 +386,8 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
 
         await showForcePopup(
           context,
-          title: '成功',
-          message: '訂閱已成功啟動！',
+          title: tr("success"),
+          message: tr("subscription.subscription_created_successful"),
 
         );
 
@@ -399,8 +402,8 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
 
         await showForcePopup(
           context,
-          title: '錯誤',
-          message: '訂閱啟動失敗，請聯繫客服',
+          title: tr("error_text"),
+          message: tr("subscription.subscription_created_failed"),
         );
       }
     } catch (e) {
@@ -455,7 +458,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                         onPressed: () => Navigator.pop(context),
                       ),
                       Expanded(
@@ -493,7 +496,8 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                              color: Color(0xFFfafafa),
+                              color: Colors.grey.shade100,
+                              // color: Color(0xFFfafafa),
                               border: Border.all(color: const Color(0xFFC7C7C7))
                           ),
                           child: _isLoadingPreview
@@ -505,7 +509,8 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                                   ? Padding(
                                       padding: const EdgeInsets.all(16.0),
                                       child: Text(
-                                        'Error loading preview: $_previewError',
+                                        '',
+                                        // 'Error loading preview: $_previewError',
                                         style: const TextStyle(color: Colors.red),
                                       ),
                                     )
@@ -519,13 +524,13 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                         const SizedBox(height: 15),
 
                         // Address Section
-                        const Text(
-                          "Your Address",
+                        Text(
+                         tr("your_address"),
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
-                          "This address will be used both for delivering your free recycle bag and for the pick-up address.",
+                        Text(
+                          tr("your_address_description"),
                           style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                         const SizedBox(height: 20),
@@ -540,7 +545,8 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                                 ? Padding(
                                     padding: const EdgeInsets.all(16.0),
                                     child: Text(
-                                      'Error loading districts: $_districtsError',
+                                      '',
+                                      // 'Error loading districts: $_districtsError',
                                       style: const TextStyle(color: Colors.red),
                                     ),
                                   )
@@ -558,7 +564,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text("Address line", style: TextStyle(color: Colors.black54)),
+                            Text(tr("address_line"), style: TextStyle(color: Colors.black54)),
                             const SizedBox(height: 6),
                             TextFormField(
                               maxLines: 3,
@@ -566,7 +572,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.zero,
                                   ),
-                                  contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8)
+                                  contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 8)
                               ),
                               controller: addressController,
                             ),
@@ -598,8 +604,8 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                       ),
                                     )
-                                  : const Text(
-                                      "Confirm and proceed to payment",
+                                  : Text(
+                                      tr("confirm_and_proceed"),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -631,15 +637,15 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                                 text: TextSpan(
                                   style: const TextStyle(color: Colors.black54, fontSize: 14, height: 1.5),
                                   children: [
-                                    const TextSpan(text: "By clicking here, you agree to our "),
+                                    TextSpan(text: tr("tnc_click")),
                                     TextSpan(
-                                      text: "terms",
+                                      text: tr("terms"),
                                       style: const TextStyle(decoration: TextDecoration.underline),
                                       recognizer: TapGestureRecognizer()..onTap = () {},
                                     ),
-                                    const TextSpan(text: " and have read and acknowledge our "),
+                                    TextSpan(text: tr("privacy_policy_click")),
                                     TextSpan(
-                                      text: "privacy policy.",
+                                      text: tr("privacy_policy"),
                                       style: const TextStyle(decoration: TextDecoration.underline),
                                       recognizer: TapGestureRecognizer()..onTap = () {},
                                     ),

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -25,11 +26,11 @@ class SubscriptionChangePaymentMethod extends StatelessWidget {
           backgroundColor: mainPurple,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
             onPressed: () => context.pop(),
           ),
-          title: const Text(
-            "Change Payment Method",
+          title: Text(
+            tr("change_payment_method"),
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -106,8 +107,8 @@ class _ChangePaymentMethodViewState extends State<_ChangePaymentMethodView> {
           // Other Stripe errors - show error message
           await showForcePopup(
             context,
-            title: '錯誤',
-            message: e.error.message ?? '更改付款方法失敗',
+            title: tr("error_text"),
+            message: e.error.message ?? tr("change_payment_method_failed"),
           );
         }
       }
@@ -123,8 +124,8 @@ class _ChangePaymentMethodViewState extends State<_ChangePaymentMethodView> {
           // Other errors
           await showForcePopup(
             context,
-            title: '錯誤',
-            message: '更改付款方法時發生錯誤: ${e.toString()}',
+            title: tr("error_text"),
+            message: "${tr("change_payment_method_failed")}: $e",
           );
         }
       }
@@ -147,8 +148,8 @@ class _ChangePaymentMethodViewState extends State<_ChangePaymentMethodView> {
           if (mounted) {
             showForcePopup(
               context,
-              title: '成功',
-              message: '付款方式已成功更新！',
+              title: tr("success"),
+              message: tr("change_payment_method_successful"),
               onConfirm: () {
                 context.pop(true); // Return true to indicate success
               },
@@ -159,7 +160,7 @@ class _ChangePaymentMethodViewState extends State<_ChangePaymentMethodView> {
           if (mounted && !_isProcessing) {
             showForcePopup(
               context,
-              title: '錯誤',
+              title: tr("error_text"),
               message: state.message,
             );
           }
@@ -169,13 +170,13 @@ class _ChangePaymentMethodViewState extends State<_ChangePaymentMethodView> {
         builder: (context, state) {
           if (state is SubscriptionLoading) {
             _isProcessing = true;
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircularProgressIndicator(),
                   SizedBox(height: 16),
-                  Text('處理中...'),
+                  Text(tr("change_payment_method_processing")),
                 ],
               ),
             );
@@ -195,7 +196,7 @@ class _ChangePaymentMethodViewState extends State<_ChangePaymentMethodView> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    '發生錯誤',
+                    tr("error_occurred"),
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -213,11 +214,9 @@ class _ChangePaymentMethodViewState extends State<_ChangePaymentMethodView> {
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<SubscriptionCubit>().requestPaymentMethodUpdate(
-                            widget.subscriptionId,
-                          );
+                      context.read<SubscriptionCubit>().requestPaymentMethodUpdate(widget.subscriptionId);
                     },
-                    child: const Text('重試'),
+                    child: Text(tr("retry")),
                   ),
                 ],
               ),
@@ -225,13 +224,13 @@ class _ChangePaymentMethodViewState extends State<_ChangePaymentMethodView> {
           }
 
           // Default state - show loading or waiting for payment sheet
-          return const Center(
+          return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
-                Text('準備更改付款方法...'),
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
+                Text(tr("change_payment_method_preparing")),
               ],
             ),
           );

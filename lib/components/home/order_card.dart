@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -37,7 +38,7 @@ class InitialBagDeliveryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(10),
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -208,7 +209,7 @@ class RecycleOrderCard extends StatelessWidget {
 
   const RecycleOrderCard(this.recycleOrder, {super.key});
 
-  Widget _buildCard(LogisticsOrder? logisticsOrder){
+  Widget _buildCard(BuildContext context, LogisticsOrder? logisticsOrder){
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16),
       width: double.infinity,
@@ -236,9 +237,9 @@ class RecycleOrderCard extends StatelessWidget {
                   size: 24,
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    "Pick Up Schedule Confirmed",
+                    tr("order.status.${recycleOrder.status.name}"),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -266,7 +267,7 @@ class RecycleOrderCard extends StatelessWidget {
                         children: [
                           Text("Tracking #${logisticsOrder?.trackingNo ?? ""}", style: TextStyle(fontSize: 18)),
                           const SizedBox(height: 12),
-                          Text("Pick Up on ${convertDateTimeToString(recycleOrder.pickupAt, "dd MMM y | HH:mm")}", style: TextStyle(fontSize: 16)),
+                          Text("Pick Up on ${convertDateTimeToString(context, recycleOrder.pickupAt, format: "dd MMM y | HH:mm")}", style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),
@@ -294,7 +295,7 @@ class RecycleOrderCard extends StatelessWidget {
           if(state is RecycleOrderDetailLoaded) {
             return InkWell(
                 onTap: () => context.push("/order/details", extra: recycleOrder.id),
-                child: _buildCard(state.order.logisticsOrder)
+                child: _buildCard(context, state.order.logisticsOrder)
             );
           }else if (state is RecycleOrderError){
             return Container();

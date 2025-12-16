@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -57,7 +58,7 @@ class _LaunchPageState extends State<LaunchPage> {
         if(mounted) context.push("/onboarding_profile");
       }
     } catch (e) {
-      if(mounted) popSnackBar(context, "登入錯誤，請重試");
+      if(mounted) popSnackBar(context, tr("login.error_message"));
       context.go("/get_start");
     }
   }
@@ -79,6 +80,7 @@ class _LaunchPageState extends State<LaunchPage> {
     );
   }
 }
+
 
 
 

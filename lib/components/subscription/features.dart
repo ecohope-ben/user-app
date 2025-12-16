@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class FeatureCard extends StatelessWidget {
   final List<String> features;
+  final bool isSubscriptionCanceled;
   final Color themColor;
-  const FeatureCard({required this.features, required this.themColor, super.key});
+  const FeatureCard({required this.features, required this.themColor, this.isSubscriptionCanceled = false, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +22,26 @@ class FeatureCard extends StatelessWidget {
           ]
       ),
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: features.map((feature){
-            return FeaturesListItem(feature, color: themColor);
-          }).toList()
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if(isSubscriptionCanceled) Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Text(
+              "Your subscription is ending soon",
+              style: const TextStyle(
+                fontSize: 15,
+                color: Colors.red,
+                height: 1.2,
+              ),
+            ),
+          ),
+          Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: features.map((feature){
+                return FeaturesListItem(feature, color: themColor);
+              }).toList()
+          ),
+        ],
       ),
     );
   }

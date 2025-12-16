@@ -53,7 +53,7 @@ class WelcomePage2 extends StatelessWidget {
                               color: Colors.white
                           ),
                           children: [
-                            const TextSpan(text: 'Every Pickup Creates '),
+                            const TextSpan(text: 'Reliable Pickups, '),
                             WidgetSpan(
                               alignment: PlaceholderAlignment.middle,
                               child: Transform.rotate(
@@ -66,7 +66,7 @@ class WelcomePage2 extends StatelessWidget {
                                   child: Transform.rotate(
                                     angle: -0.05, // rotate
                                     child: const Text(
-                                      'Change',
+                                      'Real-Time',
                                       style: TextStyle(
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold,
@@ -77,6 +77,7 @@ class WelcomePage2 extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            const TextSpan(text: ' Tracking'),
                           ],
                         ),
                       ),
@@ -86,7 +87,7 @@ class WelcomePage2 extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   const Text(
-                    "Your bottles are upcycled into new products,\ngiving plastic a second life.",
+                    "Partnered with SF Express the network we trust.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,

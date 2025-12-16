@@ -1,5 +1,7 @@
 
 
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 String convertToDateStringWithTz8(String? isoString) {
@@ -16,15 +18,16 @@ String convertToDateStringWithTz8(String? isoString) {
   return '$day-$month-$year';
 }
 
-String convertDateTimeToString(DateTime? dateTime, String format){
+String convertDateTimeToString(BuildContext context, DateTime? dateTime, {String format = "dd MMM y"}){
+
   if(dateTime == null) return "";
   DateTime? dateTime2 = dateTime.add(const Duration(hours: 8));
-  var formatter = DateFormat(format, 'en_US');
+  var formatter = DateFormat(format, context.locale.toStringWithSeparator());
   String formattedDate = formatter.format(dateTime2);
   return formattedDate;
 }
 
-/// 將 DateTime 轉成 yyyy-MM-dd HH:mm:ss 格式的 string
+
 String dateTimeToString(DateTime? dateTime) {
   if(dateTime == null) return "";
   String twoDigits(int n) => n.toString().padLeft(2, '0');

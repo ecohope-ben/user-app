@@ -20,7 +20,7 @@ class TransactionHistoryDetailsPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: mainPurple,
         leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
             onPressed: () => context.pop
         ),
         title: const Text(
@@ -29,12 +29,12 @@ class TransactionHistoryDetailsPage extends StatelessWidget {
         ),
         centerTitle: false,
       ),
-      body: _buildBody(history)
+      body: _buildBody(context, history)
     );
   }
 
 
-  Widget _buildBody(PaymentListItem history) {
+  Widget _buildBody(BuildContext context, PaymentListItem history) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
@@ -65,7 +65,7 @@ class TransactionHistoryDetailsPage extends StatelessWidget {
 
             _buildLabel('Transaction Date'),
             const SizedBox(height: 6),
-            _buildValue(convertDateTimeToString(history.occurredAt, "dd MMM y | HH:mm")),
+            _buildValue(convertDateTimeToString(context, history.occurredAt, format: "dd MMM y | HH:mm")),
 
             const SizedBox(height: 20),
 

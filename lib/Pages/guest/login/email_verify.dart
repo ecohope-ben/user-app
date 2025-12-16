@@ -40,7 +40,7 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
         context.push("/onboarding_profile");
       }
     } catch (e) {
-      popSnackBar(context, "登入錯誤，請重試");
+      popSnackBar(context, tr("login.error_message"));
     }
   }
 
@@ -74,7 +74,7 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
       appBar: AppBar(
         leading: InkWell(
           onTap: () => Navigator.pop(context),
-            child: Icon(Icons.arrow_back, color: Colors.black)
+            child: Icon(Icons.arrow_back_ios_new, color: Colors.black)
         ),
       ),
       body: BlocConsumer<LoginCubit, LoginState>(
@@ -83,7 +83,7 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
             if(state.login?.stage == LoginStage.failed){
               showForcePopup(
                   context,
-                  title: "登入錯誤",
+                  title: tr("login.error"),
                   message: state.message,
                   confirmText: tr("ok"),
                   onConfirm: (){

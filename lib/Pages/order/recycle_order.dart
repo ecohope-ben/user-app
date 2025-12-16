@@ -46,8 +46,8 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
     // Validate required fields
     if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('請選擇取件日期'),
+        SnackBar(
+          content: Text(tr("order.select_date")),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -56,8 +56,8 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
 
     if (_selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('請選擇取件時間'),
+        SnackBar(
+          content: Text(tr("order.select_time")),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -86,15 +86,9 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
 
       // Show success message
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('取件預約已成功建立！'),
-            behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 2),
-          ),
-        );
+
         // Navigate back after showing success message
-        context.replace("/order/confirmation", extra: response.id);
+        context.go("/order/confirmation", extra: response.id);
       }
     } on RecycleException catch (e){
       setState(() {
@@ -117,8 +111,8 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
       // Show error message
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('建立訂單失敗，請稍後再試'),
+          SnackBar(
+            content: Text(tr("order.create_failed")),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -378,11 +372,6 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
               width: 16,
               height: 16,
               child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-            SizedBox(width: 12),
-            Text(
-              'Loading...',
-              style: TextStyle(color: Colors.black54),
             ),
           ],
         ),

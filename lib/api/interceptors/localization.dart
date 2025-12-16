@@ -24,7 +24,7 @@ class ApiLocalizationInterceptor extends Interceptor {
         acceptLanguage = 'en';
         break;
       case 'HK':
-        acceptLanguage = 'zh-hk';
+        acceptLanguage = 'zh-HK';
         break;
     }
 

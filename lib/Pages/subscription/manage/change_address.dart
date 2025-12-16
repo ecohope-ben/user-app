@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -26,13 +27,13 @@ class SubscriptionChangeAddress extends StatelessWidget {
           backgroundColor: mainPurple,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
             onPressed: () {
               context.pop();
             },
           ),
-          title: const Text(
-            "Edit Your Address",
+          title: Text(
+            tr("edit_your_address"),
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -134,18 +135,18 @@ class _ChangeAddressViewState extends State<_ChangeAddressView> {
   Future<void> _handleUpdateAddress() async {
     // Validate inputs
     if (_selectedDistrict == null) {
-      popSnackBar(context, '請選擇區域 (Region)');
+      popSnackBar(context, tr("validation.select_region"));
       return;
     }
 
     if (_selectedSubDistrict == null) {
-      popSnackBar(context, '請選擇地區 (District)');
+      popSnackBar(context, tr("validation.select_district"));
       return;
     }
 
     final address = _addressController.text.trim();
     if (address.isEmpty) {
-      popSnackBar(context, '請輸入地址');
+      popSnackBar(context, tr("validation.input_address"));
       return;
     }
 
@@ -169,7 +170,7 @@ class _ChangeAddressViewState extends State<_ChangeAddressView> {
     return BlocListener<SubscriptionCubit, SubscriptionState>(
       listener: (context, state) {
         if (state is SubscriptionActionSuccess && state.action == 'update_address') {
-          popSnackBar(context, '地址已成功更新');
+          popSnackBar(context, tr("update_address_successful"));
           // Return true to indicate successful update
           context.pop(true);
         } else if (state is SubscriptionError) {
@@ -187,13 +188,13 @@ class _ChangeAddressViewState extends State<_ChangeAddressView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('載入地區資料失敗: ${districtState.message}'),
+                  Text(tr("failed_load_region_data") + districtState.message),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
                       context.read<DistrictCubit>().loadDistricts();
                     },
-                    child: const Text('重試'),
+                    child: Text(tr("error.retry")),
                   ),
                 ],
               ),
@@ -214,13 +215,13 @@ class _ChangeAddressViewState extends State<_ChangeAddressView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Your Address",
+                      Text(
+                        tr("your_address"),
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 0),
-                      const Text(
-                        "This address will be used to deliver your one-time free recycling bag and for future pick up.",
+                      Text(
+                        tr('your_address_description'),
                         style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.w400),
                       ),
                       const SizedBox(height: 30),
@@ -236,14 +237,14 @@ class _ChangeAddressViewState extends State<_ChangeAddressView> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "Address",
+                          Text(
+                            tr("address"),
                             style: TextStyle(color: Colors.black54),
                           ),
                           const SizedBox(height: 6),
                           TextField(
                             controller: _addressController,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.zero,
                               ),
@@ -251,7 +252,7 @@ class _ChangeAddressViewState extends State<_ChangeAddressView> {
                                 vertical: 12,
                                 horizontal: 8,
                               ),
-                              hintText: '請輸入詳細地址',
+                              hintText: tr("input_detail_address"),
                             ),
                             maxLines: 3,
                           ),
@@ -282,8 +283,8 @@ class _ChangeAddressViewState extends State<_ChangeAddressView> {
                                     ),
                                   ),
                                 )
-                              : const Text(
-                                  '更新地址',
+                              : Text(
+                                  tr("update_address"),
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,

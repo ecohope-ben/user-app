@@ -87,6 +87,8 @@ final router = GoRouter(
           final subscriptionId = extra['subscriptionId'] as String;
           return SubscriptionPlanChange(plan: plan, features: features, subscriptionId: subscriptionId);
         }),
+
+        GoRoute(path: 'change_plan/confirmation', builder: (context, state) => ChangPlanConfirmationPage()),
         GoRoute(
             path: 'signup',
             builder: (context, state) {

@@ -44,6 +44,7 @@ class _LoginIndexState extends State<LoginIndex>{
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        title: Text("Login", style: TextStyle(color: Colors.black)),
         leading: InkWell(
             onTap: () => context.pop(),
             child: Icon(Icons.close, color: Colors.black)

@@ -28,7 +28,7 @@ class PickUpOrderDetailsPage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: mainPurple,
           leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
             onPressed: () {
               if(context.canPop()){
                 context.pop();
@@ -49,7 +49,7 @@ class PickUpOrderDetailsPage extends StatelessWidget {
           child:  BlocBuilder<RecycleOrderCubit, RecycleOrderState>(
             builder: (context, state) {
               if(state is RecycleOrderDetailLoaded) {
-                return _buildBody(state.order);
+                return _buildBody(context, state.order);
               }else if (state is RecycleOrderError){
                 /// build error screen
                 return Container();
@@ -64,7 +64,7 @@ class PickUpOrderDetailsPage extends StatelessWidget {
   }
 
 
-  Widget _buildBody(RecycleOrderDetail order) {
+  Widget _buildBody(BuildContext context, RecycleOrderDetail order) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
@@ -82,7 +82,7 @@ class PickUpOrderDetailsPage extends StatelessWidget {
             _buildLabel('Tracking Number'),
             const SizedBox(height: 4),
             Text(
-              order.logisticsOrder?.trackingNo ?? "稍後提供",
+              order.logisticsOrder?.trackingNo ?? tr("order.provide_later"),
               style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
 
@@ -110,7 +110,7 @@ class PickUpOrderDetailsPage extends StatelessWidget {
             // 3. Pick Up Date and Time
             _buildLabel('Pick Up Date and Time'),
             const SizedBox(height: 6),
-            _buildValue('${convertDateTimeToString(order.pickupAt, "dd MMM y | HH:mm")}'),
+            _buildValue(convertDateTimeToString(context, order.pickupAt, format: "dd MMM y | HH:mm")),
 
             const SizedBox(height: 20),
 

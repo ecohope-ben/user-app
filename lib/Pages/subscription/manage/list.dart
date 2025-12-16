@@ -6,9 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/blocs/subscription_cubit.dart';
 import 'package:user_app/style.dart';
+import 'package:user_app/utils/time.dart';
 
 import '../../../blocs/subscription_plan_cubit.dart';
 import '../../../components/subscription/card.dart';
+import '../../../components/subscription/notice_banner.dart';
 import '../../../models/subscription_models.dart';
 import '../../../routes.dart';
 import '../../common/error_view.dart';
@@ -129,7 +131,7 @@ class _SubscriptionManageListPageState extends State<SubscriptionManageListPage>
               backgroundColor: mainPurple,
               elevation: 0,
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                 onPressed: () {
                   if(context.canPop()){
                     context.pop();
@@ -150,7 +152,13 @@ class _SubscriptionManageListPageState extends State<SubscriptionManageListPage>
             ),
             body: Builder(
               builder: (context) {
-                return _buildBody(context);
+                return RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<SubscriptionCubit>().getCurrentSubscription();
+                      context.read<SubscriptionPlanCubit>().loadPlans();
+                    },
+                    child: _buildBody(context)
+                );
               }
             )
         ),
@@ -176,6 +184,9 @@ class _SubscriptionManageListPageState extends State<SubscriptionManageListPage>
     if (isReady) {
       return SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -208,13 +219,13 @@ class _SubscriptionManageListPageState extends State<SubscriptionManageListPage>
   }
   List<Widget> _buildMangePlanTitle(){
     return [
-      const Text(
-        "你的訂閱",
+      Text(
+        tr("subscription.your_subscription"),
         style: TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.w500),
       ),
       const SizedBox(height: 4),
-      const Text(
-        "你可在此管理所有訂閱項目。",
+      Text(
+        tr("subscription.your_subscription_mange"),
         style: TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.w500),
       ),
       const SizedBox(height: 4),
@@ -225,13 +236,14 @@ class _SubscriptionManageListPageState extends State<SubscriptionManageListPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "您可能也會喜歡",
+        Text(
+          tr("subscription.your_subscription_may_like"),
           style: TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 4),
-        const Text(
-          "無合約約束， 隨時取消訂閱。",
+        Text(
+
+          tr("subscription.your_subscription_cancel_anytime"),
           style: TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.w500),
         ),
 
@@ -255,12 +267,36 @@ class _SubscriptionManageListPageState extends State<SubscriptionManageListPage>
             .toList();
       }
       if(currentSubscription.plan.id == plan.id){
+
         if(widget.target == SubscriptionManageTarget.manage) {
-          list.insert(0, SubscriptionCard(plan: plan, features: features, isCurrentPlan: true, isPaymentFailed: currentSubscription.lifecycleState == SubscriptionLifecycleState.pastDue, subscriptionId: currentSubscription.id));
+          // list.insert(0, SubscriptionCard(
+          //     plan: plan,
+          //     features: features,
+          //     isCurrentPlan: true,
+          //     isPaymentFailed: currentSubscription.lifecycleState == SubscriptionLifecycleState.pastDue,
+          //     isSubscriptionCanceled: currentSubscription.scheduledCancellation != null,
+          //     subscriptionId: currentSubscription.id)
+          // );
+          // if(currentSubscription.scheduledCancellation != null){
+            list.insert(0, Column(
+              children: [
+                if(currentSubscription.scheduledCancellation != null) NoticeBanner(convertDateTimeToString(context, currentSubscription.currentPeriodEnd)),
+                if(currentSubscription.scheduledCancellation != null) SizedBox(height: 12),
+                SubscriptionCard(
+                    plan: plan,
+                    features: features,
+                    isCurrentPlan: true,
+                    isPaymentFailed: currentSubscription.lifecycleState == SubscriptionLifecycleState.pastDue,
+                    isSubscriptionCanceled: currentSubscription.scheduledCancellation != null,
+                    subscriptionId: currentSubscription.id)
+              ],
+            ));
         }
+
       }else {
         list.add(SubscriptionCard(plan: plan, features: features, target: SubscriptionManageTarget.change, subscriptionId: currentSubscription.id));
       }
+
     }
 
     if(widget.target == SubscriptionManageTarget.manage) {

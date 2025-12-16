@@ -28,6 +28,7 @@ class _RegisterIndexState extends State<RegisterIndex> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text("Register Now", style: TextStyle(color: Colors.black)),
         leading: InkWell(
             onTap: () => context.pop(),
             child: Icon(Icons.close, color: Colors.black)),

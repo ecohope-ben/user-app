@@ -9,10 +9,10 @@ import '../style.dart';
 Future<void> showPopup(
     BuildContext context,
     {
-      String title = '確認',
-      String message = '請確認您的操作',
-      String confirmText = 'OK',
-      String cancelText = 'Cancel',
+      String? title,
+      String? message,
+      String? confirmText,
+      String? cancelText,
       VoidCallback? onConfirm,
       bool isShowNegativeButton = true
     }){
@@ -29,7 +29,7 @@ Future<void> showPopup(
           alignment: Alignment.center,
           padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           child: Text(
-            tr(title),
+            title ?? tr("ok"),
             style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w700),
           ),
         ),
@@ -38,12 +38,12 @@ Future<void> showPopup(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 0),
-              child: Text(message, textAlign: TextAlign.center),
+              child: Text(message ?? "", textAlign: TextAlign.center),
             ),
             SizedBox(height: 20),
-            PositiveButton(title: confirmText, onTap: onConfirm),
+            PositiveButton(title: confirmText ?? tr("ok"), onTap: onConfirm),
             SizedBox(height: 2),
-            if(isShowNegativeButton) NegativeButton(title: cancelText)
+            if(isShowNegativeButton) NegativeButton(title: cancelText ?? tr('cancel'))
           ],
         ),
       ),
@@ -53,10 +53,11 @@ Future<void> showPopup(
 
 Future<void> showForcePopup(
   BuildContext context, {
-  String title = '確認',
-  String message = '請確認您的操作',
-  String confirmText = 'OK',
-  VoidCallback? onConfirm,
+      String? title,
+      String? message,
+      String? confirmText,
+      String? cancelText,
+      VoidCallback? onConfirm,
 }) {
   return showPopup(
     context, title: title, message: message, onConfirm: onConfirm, isShowNegativeButton: false

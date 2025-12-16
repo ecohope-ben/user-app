@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io' show Platform;
 
 import 'package:dio/dio.dart';

@@ -20,7 +20,7 @@ class RecycleOrderHistoryPage extends StatelessWidget {
           backgroundColor: mainPurple,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
             onPressed: () {
               Navigator.of(context).pop();
             },

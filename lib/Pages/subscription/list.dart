@@ -115,13 +115,13 @@ class _SubscriptionListPageState extends State<SubscriptionListPage> {
                 backgroundColor: mainPurple,
                 elevation: 0,
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                   onPressed: () {
                     context.pop();
                   },
                 ),
-                title: const Text(
-                  "Subscriptions Plan",
+                title: Text(
+                  tr("subscription_plan"),
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -130,7 +130,10 @@ class _SubscriptionListPageState extends State<SubscriptionListPage> {
                 ),
                 centerTitle: true,
               ),
-              body: _buildBody(state)
+              body: RefreshIndicator(
+                onRefresh: () => _loadPlanFeatures(),
+                  child: _buildBody(state)
+              )
             );
          
         },
@@ -142,16 +145,19 @@ class _SubscriptionListPageState extends State<SubscriptionListPage> {
     if (state is SubscriptionPlansLoaded) {
       return SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Join a plan to start recycling",
+            Text(
+              tr("subscription_plan_description1"),
               style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
             const SizedBox(height: 4),
-            const Text(
-              "You can cancel anytime.",
+             Text(
+               tr("subscription_plan_description2"),
               style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
             const SizedBox(height: 24),

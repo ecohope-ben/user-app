@@ -8,6 +8,7 @@ import 'package:user_app/blocs/recycle_order_cubit.dart';
 import 'package:user_app/blocs/subscription_cubit.dart';
 import 'package:user_app/pages/subscription/manage/list.dart';
 import 'package:user_app/utils/extension.dart';
+import 'package:user_app/utils/time.dart';
 
 import '../../style.dart';
 
@@ -118,6 +119,7 @@ class _SliverBarState extends State<SliverBar> {
   Widget _buildStatColumn() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildPickupRemining(),
         _buildSubscription(),
@@ -130,8 +132,28 @@ class _SliverBarState extends State<SliverBar> {
     final state = widget.entitlementState;
     return _buildStatItem(
         value: state.entitlements.isNotEmpty ? state.entitlements.first.quotaRemaining.toString() : "00",
-        label: "Pick Up"
+        label: "Pick Up",
+
+        label2: state.entitlements.isNotEmpty ? "Expire at: ${convertDateTimeToString(context, state.entitlements.first.expiresAt, format: "dd/MM/yy")}" : null,
+
     );
+  }
+
+  String? _buildSubscriptionLabel() {
+    final state = widget.subscriptionState;
+    if(state is SubscriptionDetailAndListLoaded){
+      if(state.detail.scheduledCancellation != null){
+        return "End on: ${convertDateTimeToString(context, state.detail.currentPeriodEnd, format: "dd/MM/yy")}";
+      }else {
+        return "Renew on: ${convertDateTimeToString(context, state.detail.currentPeriodEnd, format: "dd/MM/yy")}";
+      }
+    }
+    if(state.subscriptions.isNotEmpty) {
+      return "Renew on: ${convertDateTimeToString(context, state.subscriptions.first.currentPeriodEnd, format: "dd/MM/yy")}";
+    }
+    return null;
+
+
   }
 
   Widget _buildSubscription() {
@@ -139,6 +161,8 @@ class _SliverBarState extends State<SliverBar> {
     return _buildStatItem(
         value: state.subscriptions.isNotEmpty ? tr("subscription.${state.subscriptions.first.plan.billingCycle.name}") : "No subscription",
         label: "Subscriptions",
+        label2: _buildSubscriptionLabel(),
+
         onTap: () => state.subscriptions.isNotEmpty ? context.push("/subscription/manage/list", extra: SubscriptionManageTarget.manage) : context.push("/subscription/list")
     );
   }
@@ -151,7 +175,7 @@ class _SliverBarState extends State<SliverBar> {
     );
   }
 
-  Widget _buildStatItem({required String value, required String label, VoidCallback? onTap}) {
+  Widget _buildStatItem({required String value, required String label, String? label2, VoidCallback? onTap}) {
     return InkWell(
       onTap: onTap,
       child: Column(
@@ -159,9 +183,19 @@ class _SliverBarState extends State<SliverBar> {
         children: [
           Text(
             value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white ),
+            style: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white,
+              // decoration: TextDecoration.underline,
+              // decorationColor: Colors.white70,
+
+            ),
           ),
           const SizedBox(height: 4),
+          if(label2 != null) Text(
+            label2,
+            style: TextStyle(fontSize: 11, color: Colors.white,),
+          ),
+          if(label2 != null) SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(fontSize: 13, color: Colors.white),

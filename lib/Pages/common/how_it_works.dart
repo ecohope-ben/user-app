@@ -30,8 +30,8 @@ class HowItWorksPage extends StatelessWidget {
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.white, size: 28),
-          onPressed: () => context.pop,
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 28),
+          onPressed: () => context.pop(),
         ),
         title: const Text(
           'How it Works',

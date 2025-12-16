@@ -1,4 +1,5 @@
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +7,7 @@ import 'package:user_app/utils/time.dart';
 import '../../../api/index.dart';
 import '../../../api/endpoints/subscription_api.dart';
 import '../../../components/subscription/features.dart';
+import '../../../components/subscription/notice_banner.dart';
 import '../../../components/subscription/preview.dart';
 import '../../../models/subscription_models.dart';
 import '../../../style.dart';
@@ -44,7 +46,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
   String _buildAmountText(){
     if(_subscriptionDetail?.discount != null){
       if(_subscriptionDetail!.discount?.discountType == DiscountType.freeCycles){
-        return 'Pay nothing until ${convertDateTimeToString(_subscriptionDetail?.currentPeriodEnd, "dd MMM y")}, then \$${widget.plan.priceDecimal}/Month';
+        return 'Pay nothing until ${convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y")}, then \$${widget.plan.priceDecimal}/Month';
       }else {
         return '${_subscriptionDetail?.plan.priceDecimal}';
       }
@@ -124,8 +126,8 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
       if (mounted) {
         await showForcePopup(
           context,
-          title: '成功',
-          message: '計劃變更已成功取消！',
+          title: tr("success"),
+          message: tr("cancel_plan_change_success"),
         );
       }
     } catch (e) {
@@ -134,7 +136,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
       });
 
       if (mounted) {
-        String errorMessage = '取消計劃變更時發生錯誤';
+        String errorMessage = tr("cancel_plan_change_error");
         if (e is SubscriptionException) {
           errorMessage = e.message;
         } else {
@@ -143,7 +145,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
 
         await showForcePopup(
           context,
-          title: '錯誤',
+          title: tr("error_text"),
           message: errorMessage,
         );
       }
@@ -169,8 +171,8 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
       if (mounted) {
         await showForcePopup(
           context,
-          title: '成功',
-          message: '訂閱已成功取消，將在當前週期結束後生效。',
+          title: tr("success"),
+          message: tr("subscription.cancel.success"),
         );
       }
     } catch (e) {
@@ -179,7 +181,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
       });
 
       if (mounted) {
-        String errorMessage = '取消訂閱時發生錯誤';
+        String errorMessage = tr("subscription.cancel.error");
         if (e is SubscriptionException) {
           errorMessage = e.message;
         } else {
@@ -188,7 +190,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
 
         await showForcePopup(
           context,
-          title: '錯誤',
+          title: tr("error_text"),
           message: errorMessage,
         );
       }
@@ -213,8 +215,8 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
       if (mounted) {
         await showForcePopup(
           context,
-          title: '成功',
-          message: '訂閱已成功保留，將繼續自動續訂。',
+          title: tr("success"),
+          message: tr("subscription.keep.success"),
         );
       }
     } catch (e) {
@@ -223,7 +225,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
       });
 
       if (mounted) {
-        String errorMessage = '保留訂閱時發生錯誤';
+        String errorMessage = tr("subscription.keep.error");
         if (e is SubscriptionException) {
           errorMessage = e.message;
         } else {
@@ -232,7 +234,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
 
         await showForcePopup(
           context,
-          title: '錯誤',
+          title: tr("error_text"),
           message: errorMessage,
         );
       }
@@ -283,7 +285,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                         onPressed: () => Navigator.pop(context),
                       ),
                       Expanded(
@@ -311,8 +313,11 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                         FeatureCard(
                           features: widget.features,
                           themColor: listItemGreen,
+                          isSubscriptionCanceled: _hasScheduledCancellation,
                         ),
 
+                        if(_hasScheduledCancellation) const SizedBox(height: 15),
+                        if(_hasScheduledCancellation) NoticeBanner(convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd)),
                         const SizedBox(height: 15),
                         Container(
                           width: double.infinity,
@@ -323,7 +328,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                           ),
                           child: SubscriptionPreviewCard(
                             billingRecycleType: _subscriptionDetail?.plan.billingCycle.name ?? "",
-                            renewalText: convertDateTimeToString(_subscriptionDetail?.currentPeriodEnd, "dd MMM y"),
+                            renewalText: (_hasScheduledCancellation) ? "--" : convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y"),
                             amountText: _buildAmountText(),
                             autoRenewText: _buildRenewText()
                           ),
@@ -445,7 +450,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                             ),
                           ),
                         ),
-                        Text("Next billing date: ${convertDateTimeToString(_subscriptionDetail?.currentPeriodEnd, "dd MMM y")}"),
+                        Text("Next billing date: ${convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y")}"),
                         if(_subscriptionDetail?.lifecycleState == SubscriptionLifecycleState.pastDue) _buildFailedPaymentNotice(),
                         (_hasScheduledCancellation || _hasScheduledPlanChange) ? const SizedBox(height: 20) : const SizedBox(height: 40),
 
@@ -539,19 +544,19 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                 // Keep subscription (cancel the cancellation)
                 showPopup(
                     context,
-                    title: "保留訂閱？",
-                    message: "您確定要保留訂閱嗎？\n您的訂閱將繼續自動續訂。",
+                    title: "${tr("subscription.keep.title")}?",
+                    message: tr("subscription.keep.confirm"),
                     onConfirm: () => _keepSubscription(),
-                    confirmText: "保留訂閱"
+                    confirmText: tr("subscription.keep.title"),
                 );
               } else {
                 // Cancel subscription
                 showPopup(
                     context,
-                    title: "取消訂閱？",
-                    message: "您確定要取消您的訂閱計劃嗎？\n此訂閱將在當前計費週期結束後取消。",
+                    title: "${tr("subscription.cancel.title")}?",
+                    message: "${tr("subscription.cancel.confirm")}?",
                     onConfirm: () => _cancelSubscription(),
-                    confirmText: "取消訂閱"
+                    confirmText: tr("confirm")
                 );
               }
             },
@@ -564,7 +569,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
               ),
             )
                 : Text(
-              _hasScheduledCancellation ? "保留訂閱" : "取消訂閱",
+              _hasScheduledCancellation ? tr("subscription.keep.title") : tr("subscription.cancel.title"),
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: _hasScheduledCancellation ? Colors.white : Colors.black,
@@ -590,19 +595,19 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
             // Cancel plan change
             showPopup(
                 context,
-                title: "取消變更訂閱",
-                message: "您確定要取消計劃變更嗎？",
+                title: tr("cancel_plan_change"),
+                message: tr("cancel_plan_change_confirm"),
                 onConfirm: () => _cancelPlanChange(),
-                confirmText: "確認"
+                confirmText: tr("confirm")
             );
           } else {
             // Schedule plan change
             showPopup(
                 context,
-                title: "變更訂閱",
-                message: "您確定要變更訂閱？\n您的訂閱將繼續自動續訂。",
+                title: tr("change_plan"),
+                message: tr("change_plan_confirm"),
                 onConfirm: () => _cancelPlanChange(),
-                confirmText: "確認"
+                confirmText: tr("confirm")
             );
           }
         },
@@ -618,7 +623,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
           ),
         )
             : Text(
-          _hasScheduledPlanChange ? "取消變更訂閱" : "Confirm Plan Change",
+          _hasScheduledPlanChange ? tr("cancel_plan_change") : "Confirm Plan Change",
           textAlign: TextAlign.center,
           style: TextStyle(
             color: _hasScheduledPlanChange ? Colors.black : Colors.white,

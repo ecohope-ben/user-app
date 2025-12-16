@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:user_app/components/subscription/payment_detail_row.dart';
 
@@ -12,7 +13,7 @@ class SubscriptionPreviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        PaymentDetailRow("Type", billingRecycleType, isBold: true),
+        PaymentDetailRow("Type", tr("subscription.$billingRecycleType"), isBold: true),
         const SizedBox(height: 8),
         PaymentDetailRow("Renewing on", renewalText, isBold: true),
         const SizedBox(height: 8),

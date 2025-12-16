@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/components/subscription/features.dart';
@@ -84,8 +85,8 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
 
   String _getBillingCycleText() {
     return widget.plan.billingCycle == BillingCycle.monthly
-        ? 'Monthly Plan'
-        : 'Yearly Plan';
+        ? tr("subscription.monthly")
+        : tr("subscription.yearly");
   }
 
   String _buildAmountText(){
@@ -95,9 +96,9 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
 
   String _buildRenewText(){
     if(widget.plan.billingCycle == BillingCycle.monthly){
-      return "Auto-renews every 1 month, cancel anytime.";
+      return tr("subscription.auto_renew_text", args: [tr("subscription.billing_cycle.monthly")]);
     }else if(widget.plan.billingCycle == BillingCycle.yearly) {
-      return "Auto-renews every 1 year, cancel anytime.";
+      return tr("subscription.auto_renew_text", args: [tr("subscription.billing_cycle.yearly")]);
     }
     return "";
   }
@@ -138,15 +139,10 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
       // Handle success
       if (mounted) {
         printRouteStack(context);
-        await showForcePopup(
-          context,
-          title: '成功',
-          message: '計劃變更已成功排程！',
-        );
 
         // Navigate back
         if (mounted) {
-          context.go("/");
+          context.go("/subscription/change_plan/confirmation");
         }
       }
     } catch (e) {
@@ -164,7 +160,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
 
         await showForcePopup(
           context,
-          title: '錯誤',
+          title: tr("error_text"),
           message: errorMessage,
         );
       }
@@ -261,7 +257,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                         onPressed: () => Navigator.pop(context),
                       ),
                       Expanded(
@@ -304,7 +300,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
                             ),
                             child: SubscriptionPreviewCard(
                                 billingRecycleType: widget.plan.billingCycle.name,
-                                renewalText: convertDateTimeToString(_subscriptionDetail?.currentPeriodEnd, "dd MMM y"),
+                                renewalText: convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y"),
                                 amountText: _buildAmountText(),
                                 autoRenewText: _buildRenewText()
                             ),
@@ -384,7 +380,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
 
 
                         ),
-                        Text("Next billing date: ${convertDateTimeToString(_subscriptionDetail?.currentPeriodEnd, "dd MMM y")}"),
+                        Text("Next billing date: ${convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y")}"),
 
 
 
@@ -429,19 +425,19 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
                                           // Cancel plan change
                                           showPopup(
                                             context,
-                                            title: "取消變更訂閱",
-                                            message: "您確定要取消計劃變更嗎？",
+                                            title: "${tr("cancel_plan_change")}?",
+                                            message: tr("cancel_plan_change_confirm"),
                                             onConfirm: () => _cancelPlanChange(),
-                                            confirmText: "確認"
+                                            confirmText: tr("confirm")
                                           );
                                         } else {
                                           // Schedule plan change
                                           showPopup(
                                             context,
-                                            title: "變更訂閱",
-                                            message: "您確定要變更訂閱？\n您的訂閱將繼續自動續訂。",
+                                            title: tr("change_plan"),
+                                            message: tr("change_plan_description"),
                                             onConfirm: () => _schedulePlanChange(),
-                                            confirmText: "確認"
+                                            confirmText: tr("confirm")
                                           );
                                         }
                                       },
@@ -457,7 +453,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
                                             ),
                                           )
                                           : Text(
-                                            _hasScheduledPlanChange ? "取消變更訂閱" : "Confirm Plan Change",
+                                            _hasScheduledPlanChange ? tr("cancel_plan_change") : "Confirm Plan Change",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               color: _hasScheduledPlanChange ? Colors.black : Colors.white,

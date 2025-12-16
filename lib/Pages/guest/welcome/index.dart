@@ -20,14 +20,14 @@ class _IntroPageState extends State<IntroPage> {
   // 定義頁面數據
   final List<Map<String, dynamic>> _pages = [
     {
-      "icon": Icons.recycling_rounded, // 替換為你的圖片: 'assets/bottle.png'
+      "icon": Icons.recycling_rounded,
       "titlePrefix": "Recycle Smarter, Live",
       "highlight": "Greener",
       "description": "We collect from your door — no bins, no hassle, just impact.",
       "isLastPage": false,
     },
     {
-      "icon": Icons.local_shipping_rounded, // 替換為你的圖片: 'assets/truck.png'
+      "icon": Icons.local_shipping_rounded,
       "titlePrefix": "Reliable Pickups,",
       "highlight": "Real-Time",
       "titleSuffix": " Tracking",
@@ -35,7 +35,7 @@ class _IntroPageState extends State<IntroPage> {
       "isLastPage": false,
     },
     {
-      "icon": Icons.change_history_rounded, // 替換為你的圖片: 'assets/logo.png'
+      "icon": Icons.change_history_rounded,
       "titlePrefix": "Every Pickup Creates",
       "highlight": "Change",
       "description": "Your bottles are upcycled into new products, giving plastic a second life.",

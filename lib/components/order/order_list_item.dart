@@ -39,7 +39,7 @@ class OrderListItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  convertDateTimeToString(data.pickupAt, "dd MMM y | HH:mm"),
+                  convertDateTimeToString(context, data.pickupAt, format: "dd MMM y | HH:mm"),
                   style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,

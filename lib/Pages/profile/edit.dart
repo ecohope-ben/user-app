@@ -116,7 +116,7 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
               backgroundColor: mainPurple,
               elevation: 0,
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               title: const Text(
@@ -141,7 +141,7 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
             backgroundColor: mainPurple,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
               onPressed: () => Navigator.of(context).pop(),
             ),
             title: const Text(
@@ -368,7 +368,7 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                   ),
                   onPressed: () => showPopup(
                       context,
-                      title: "確認登出？",
+                      title: tr("logout.confirm"),
                       onConfirm: (){
                         Auth.instance().logout();
                         context.go("/get_start");

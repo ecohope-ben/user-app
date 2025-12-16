@@ -28,7 +28,7 @@ extension EmojiExtension on String {
     if (!_emojiRegex.hasMatch(char)) return false;
 
     if (char == '#' || char == '*' || char == '0' || char == '1' || char == '2') {
-      return '️' == char.characters.last; // 只有帶變體選擇器的 #️⃣ 0️⃣ 才算 Emoji
+      return '️' == char.characters.last;
     }
 
     return true;

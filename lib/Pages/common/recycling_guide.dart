@@ -27,7 +27,7 @@ class RecyclingGuidePage extends StatelessWidget {
         ),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 28),
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 28),
           onPressed: () => context.pop(context),
         ),
         title: const Text(

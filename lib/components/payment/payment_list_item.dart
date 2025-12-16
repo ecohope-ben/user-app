@@ -26,7 +26,7 @@ class PaymentHistoryListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    convertDateTimeToString(data.occurredAt, "dd MMM y"),
+                    convertDateTimeToString(context, data.occurredAt, format: "dd MMM y"),
                     style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 14,

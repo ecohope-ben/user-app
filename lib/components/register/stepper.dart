@@ -26,7 +26,7 @@ class _RegisterStepperState extends State<RegisterStepper> {
         }
       },
       nodeTitles: [
-        tr("email"),
+        tr("register.email"),
 
         'Phone',
         'Profile'
