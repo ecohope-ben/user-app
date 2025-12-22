@@ -165,6 +165,9 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
               TextFormField(
                 controller: _nameController,
                 style: const TextStyle(fontSize: 16),
+                onTapOutside: (a){
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   enabledBorder: OutlineInputBorder(
@@ -244,6 +247,9 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                           SizedBox(
                             width: 80,
                             child: TextFormField(
+                              onTapOutside: (a){
+                                FocusManager.instance.primaryFocus?.unfocus();
+                              },
                               controller: TextEditingController(text: phoneCountryCode ?? '+852'),
                               textAlign: TextAlign.center,
                               readOnly: true, // 模擬不可編輯
@@ -254,6 +260,9 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: TextFormField(
+                              onTapOutside: (a){
+                                FocusManager.instance.primaryFocus?.unfocus();
+                              },
                               controller: _phoneController,
                               readOnly: true,
                               style: const TextStyle(color: Colors.grey),

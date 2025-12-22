@@ -17,6 +17,8 @@ import '../blocs/profile_cubit.dart';
 import '../blocs/recycle_order_cubit.dart';
 import '../blocs/subscription_cubit.dart';
 import '../blocs/subscription_plan_cubit.dart';
+import '../components/home/bottom_nav_bar.dart';
+import '../components/home/home_skeleton.dart';
 import '../components/home/notification_card.dart';
 import '../components/home/order_card.dart';
 import '../components/home/silver.dart';
@@ -134,7 +136,7 @@ class _HomeViewState extends State<_HomeView> {
     print("--ready: $effectiveRecycleOrderState");
     // Only show skeleton on initial load, not during refresh
     if (!isReady && !_hasInitialData) {
-      return const _HomeSkeleton();
+      return const HomeSkeleton();
     }
 
     // If we have initial data but current state is not ready, show last data
@@ -187,7 +189,7 @@ class _HomeContent extends StatefulWidget {
   final SubscriptionListLoaded subscriptionState;
   final RecycleOrderListLoaded recycleOrderState;
 
-  _HomeContent({
+  const _HomeContent({
     required this.profileState,
     required this.entitlementState,
     required this.subscriptionState,
@@ -377,78 +379,6 @@ class _HomeContentState extends State<_HomeContent> {
   }
 }
 
-class _HomeSkeleton extends StatelessWidget {
-  const _HomeSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 160,
-                  padding: const EdgeInsets.all(16),
-                  width: double.infinity,
-                  color: Colors.grey.shade200,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      _SkeletonBox(width: 120, height: 24),
-                      _SkeletonBox(width: 80, height: 16),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: const [
-                        _SkeletonBox(height: 140),
-                        SizedBox(height: 20),
-                        _SkeletonBox(height: 110),
-                        SizedBox(height: 16),
-                        _SkeletonBox(height: 110),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SkeletonBox extends StatelessWidget {
-  final double width;
-  final double height;
-
-  const _SkeletonBox({
-    this.width = double.infinity,
-    this.height = 20,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade300,
-        borderRadius: BorderRadius.zero,
-      ),
-    );
-  }
-}
 
 class _HomeErrorView extends StatelessWidget {
   final String message;
@@ -479,108 +409,6 @@ class _HomeErrorView extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class CustomBottomNavBar extends StatelessWidget {
-
-  final ElTooltipController tooltipController;
-  final SubscriptionDetail? subscriptionDetail;
-  final bool hasEntitlement;
-  const CustomBottomNavBar(this.tooltipController, {this.subscriptionDetail, required this.hasEntitlement, super.key});
-
-  Widget _buildMainLogo(BuildContext context){
-
-    return InkWell(
-      onTap: () {
-        if(subscriptionDetail == null){
-          popSnackBar(context, tr("subscription.subscribe_plan_first"));
-        }else if(!hasEntitlement){
-          popSnackBar(context, tr("order.pick_up_unavailable", args: [convertDateTimeToString(context, subscriptionDetail?.currentPeriodEnd)]));
-        }else if(subscriptionDetail?.recyclingProfile?.initialBagStatus != "delivered"){
-          popSnackBar(context, tr("order.pick_after_receive_bag"));
-        }else {
-          context.push("/order/create", extra: subscriptionDetail);
-        }
-      },
-      child: Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-          color: Colors.black, // 黑色背景
-          shape: BoxShape.circle,
-          // border: Border.all(color: Colors.white, width: 3),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Image.asset("assets/icon/nav_main.png", scale: 3),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Center(
-      child: SizedBox(
-        width: 200, // 控制導航列寬度
-        height: 70, // 總高度包含突出的按鈕
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            // 底部白色膠囊背景
-            Container(
-              height: 50,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(30),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 15,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.home_filled, color: Colors.black),
-                    onPressed: () {},
-                  ),
-                  const SizedBox(width: 40), // 中間留空給大按鈕
-                  IconButton(
-                    icon: const Icon(Icons.star_border, color: Colors.black),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            ),
-
-            // Main logo button
-            Positioned(
-              top: 0,
-              child: _buildMainLogo(context)
-              // ElTooltip(
-              //   controller: tooltipController,
-              //   content: Text("Schedule a pickup here", softWrap: true, style: TextStyle(color: Colors.white)),
-              //   radius: Radius.zero,
-              //   showModal: false,
-              //   color: Colors.black,
-              //   child: _buildMainLogo()
-              // ),
-            ),
-          ],
         ),
       ),
     );

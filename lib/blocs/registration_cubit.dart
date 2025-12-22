@@ -61,6 +61,15 @@ class RegistrationCompleted extends RegistrationState {
   List<Object> get props => [session];
 }
 
+class RegistrationCompletedWithExistingAccount extends RegistrationState {
+  final Session session;
+
+  const RegistrationCompletedWithExistingAccount({required this.session});
+
+  @override
+  List<Object> get props => [session];
+}
+
 /// error state
 class RegistrationError extends RegistrationState {
   final RegistrationSnapshot? registration;
@@ -247,7 +256,14 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         stepToken: currentState.stepToken,
         code: code,
       );
+      if(response is RegistrationExistingAccountResponse){
+        // save token
+        await saveToken(response.session);
 
+        emit(RegistrationCompletedWithExistingAccount(session: response.session));
+        return;
+      }
+      response as RegistrationSuccessResponse;
       if (response.error != null) {
         emit(RegistrationError(
           registration: response.registration,
@@ -349,10 +365,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         return;
       }
       // Save tokens to Auth
-      final auth = Auth.instance();
-      await auth.saveAccessToken(response.session.accessToken);
-      await auth.saveRefreshToken(response.session.refreshToken);
-      await auth.saveSessionId(response.session.id);
+      await saveToken(response.session);
 
       emit(RegistrationCompleted(session: response.session));
     } catch (e) {
@@ -420,6 +433,14 @@ class RegistrationCubit extends Cubit<RegistrationState> {
 
   void update(RegistrationState state) {
     emit(state);
+  }
+
+  Future<void> saveToken(Session session) async {
+    final auth = Auth.instance();
+    await auth.saveAccessToken(session.accessToken);
+    await auth.saveRefreshToken(session.refreshToken);
+    await auth.saveSessionId(session.id);
+
   }
 
   void changeStage(RegistrationStage stage) {

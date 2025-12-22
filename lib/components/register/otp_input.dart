@@ -66,6 +66,7 @@ class _OTPInputState extends State<OTPInput> {
           enabledBorderColor: purpleUnderline,
           alignment: Alignment.bottomLeft,
           showFieldAsBox: false,
+
           borderWidth: 2.0,
           //runs when a code is typed in
           onCodeChanged: (String code) {

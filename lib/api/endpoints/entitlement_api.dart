@@ -10,6 +10,8 @@ class EntitlementApi extends ApiEndpoint {
   Future<EntitlementListEnvelope> listEntitlements() async {
     try {
       final response = await http.get('/entitlements');
+      print("--entitlement list: ");
+      print(response.data);
       return EntitlementListEnvelope.fromJson(response.data);
     } on DioException catch (e) {
       throw _handleEntitlementError(e);

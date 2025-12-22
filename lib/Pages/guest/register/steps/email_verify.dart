@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:user_app/utils/pop_up.dart';
 
 import '../../../../blocs/registration_cubit.dart';
 import '../../../../components/register/otp_input.dart';
@@ -57,36 +59,53 @@ class _EmailVerificationStepState extends State<EmailVerificationStep> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Image.asset("assets/icon/register_email.png", width: 180),
-        TitleText(tr("register.check_your_email")),
-        SubTitleText(tr("register.check_email_description", args: [email ?? ""])),
-        OTPInput(validator: _validateOTP, submitOTP: _submitOTP, showLoading: context.read<RegistrationCubit>().state is RegistrationInProgressLoading),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(tr("register.dont_receive_code")),
-            ResendButton(
-              reSendOTP,
-              cubitType: ResendButtonCubitType.registration,
-              channelType: ResendButtonChannelType.email,
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-                onPressed: () => context.read<RegistrationCubit>().changeStage(RegistrationStage.emailInput),
+    return BlocConsumer<RegistrationCubit, RegistrationState>(
+      listener: (context2, state) async {
+        if(state is RegistrationCompletedWithExistingAccount){
+          await showPopup(
+            context,
+            message: "You have already registered",
+            isShowNegativeButton: false
+          ).then((v) {
+            if (!context2.mounted) return;
+            context2.go("/home");
 
-                child: Text(tr("register.edit_email", args: [email ?? ""]), style: TextStyle(color: blueRegisterText))
+          });
+        }
+      },
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Image.asset("assets/icon/register_email.png", width: 180),
+            TitleText(tr("register.check_your_email")),
+            SubTitleText(tr("register.check_email_description", args: [email ?? ""])),
+            OTPInput(validator: _validateOTP, submitOTP: _submitOTP, showLoading: context.read<RegistrationCubit>().state is RegistrationInProgressLoading),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(tr("register.dont_receive_code")),
+                ResendButton(
+                  reSendOTP,
+                  cubitType: ResendButtonCubitType.registration,
+                  channelType: ResendButtonChannelType.email,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                    onPressed: () => context.read<RegistrationCubit>().changeStage(RegistrationStage.emailInput),
+
+                    child: Text(tr("register.edit_email", args: [email ?? ""]), style: TextStyle(color: blueRegisterText))
+                ),
+              ],
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 }

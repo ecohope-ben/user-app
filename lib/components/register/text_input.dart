@@ -41,6 +41,9 @@ class _TextInputState extends State<TextInput> {
       child: TextFormField(
         controller: _controller,
         validator: widget.validator,
+        onTapOutside: (a){
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
         style: TextStyle(fontSize: 27),
         decoration: InputDecoration(
           hintText: widget.title,

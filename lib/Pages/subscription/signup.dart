@@ -567,6 +567,9 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                             Text(tr("address_line"), style: TextStyle(color: Colors.black54)),
                             const SizedBox(height: 6),
                             TextFormField(
+                              onTapOutside: (a){
+                                FocusManager.instance.primaryFocus?.unfocus();
+                              },
                               maxLines: 3,
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(

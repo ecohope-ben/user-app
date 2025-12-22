@@ -87,7 +87,7 @@ class RegisterApi extends ApiEndpoint {
   }
 
   /// Verify email OTP
-  Future<RegistrationSuccessResponse> verifyEmailOtp({
+  Future<RegistrationResponse> verifyEmailOtp({
     required String registrationId,
     required String stepToken,
     required String code,
@@ -105,6 +105,7 @@ class RegisterApi extends ApiEndpoint {
       if(response.data["session"] != null){
         print("--have session");
 
+        return RegistrationExistingAccountResponse.fromJson(response.data);
       }
 
       return RegistrationSuccessResponse.fromJson(response.data);

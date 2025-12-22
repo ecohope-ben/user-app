@@ -135,9 +135,28 @@ class FieldError {
 
   Map<String, dynamic> toJson() => _$FieldErrorToJson(this);
 }
+class RegistrationResponse {
+  const RegistrationResponse();
+}
 
 @JsonSerializable()
-class RegistrationSuccessResponse {
+class RegistrationExistingAccountResponse extends RegistrationResponse{
+  final Session session;
+  final ErrorBody? error;
+
+  const RegistrationExistingAccountResponse({
+    required this.session,
+    this.error,
+  });
+
+  factory RegistrationExistingAccountResponse.fromJson(Map<String, dynamic> json) =>
+      _$RegistrationExistingAccountResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RegistrationExistingAccountResponseToJson(this);
+}
+
+@JsonSerializable()
+class RegistrationSuccessResponse extends RegistrationResponse{
   final RegistrationSnapshot registration;
   final Session? session;
   final ErrorBody? error;

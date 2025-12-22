@@ -18,8 +18,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = SimpleBlocObserver();
   await EasyLocalization.ensureInitialized();
+
   // setup Strip
-  // String stripePublishableKey = "pk_test_51SWuMM1Jfb61gpEIzzpyPQjT6ac4QsV9G0Q1TztigtuLLNOlvrgkhpCGDY8II6GU41N94tzHBwbyGgLVmzYprQSi00wYbyrMjy";
   String stripePublishableKey = "pk_test_51SdCxZ14V5VohwSZCqKviJAEHZLVIG0u4bEXUK4F5SFAP699oJoib3Wl2Ab4ERoeJ9G4HbZkkQ5ogYYbpAnLsAPB0009ntreAD";
   Stripe.publishableKey = stripePublishableKey;
   await Stripe.instance.applySettings();

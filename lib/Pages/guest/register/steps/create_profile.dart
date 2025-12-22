@@ -11,14 +11,8 @@ import '../../widgets.dart';
 
 class CreateProfileStep extends StatelessWidget {
   const CreateProfileStep({super.key});
-  Future<void> refreshToken() async {
-    final auth = Auth.instance();
-    final session = await Api.instance().login().refreshSession();
 
-    await auth.saveAccessToken(session.accessToken);
-    await auth.saveRefreshToken(session.refreshToken);
-    await auth.saveSessionId(session.id);
-  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

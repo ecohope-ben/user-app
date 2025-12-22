@@ -34,6 +34,9 @@ class _PhoneInputState extends State<PhoneInput> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0, top: 12),
       child: TextFormField(
+        onTapOutside: (a){
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
         controller: widget.controller,
         style: TextStyle(fontSize: 30),
         validator: widget.validator,
@@ -42,6 +45,7 @@ class _PhoneInputState extends State<PhoneInput> {
         inputFormatters: <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly
         ],
+        textInputAction: TextInputAction.done,
         decoration: InputDecoration(
           hintText: tr("register.phone_number"),
           hintStyle: TextStyle(fontSize: 27, color: Colors.grey),

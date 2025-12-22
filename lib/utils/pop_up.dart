@@ -25,14 +25,14 @@ Future<void> showPopup(
         titlePadding: EdgeInsets.only(top: 10),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
         backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-        title: Container(
+        title: (title != null) ? Container(
           alignment: Alignment.center,
           padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           child: Text(
-            title ?? tr("ok"),
+            title,
             style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w700),
           ),
-        ),
+        ) : null,
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

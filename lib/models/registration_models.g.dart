@@ -112,6 +112,19 @@ FieldError _$FieldErrorFromJson(Map<String, dynamic> json) => FieldError(
 Map<String, dynamic> _$FieldErrorToJson(FieldError instance) =>
     <String, dynamic>{'code': instance.code, 'message': instance.message};
 
+RegistrationExistingAccountResponse
+_$RegistrationExistingAccountResponseFromJson(Map<String, dynamic> json) =>
+    RegistrationExistingAccountResponse(
+      session: Session.fromJson(json['session'] as Map<String, dynamic>),
+      error: json['error'] == null
+          ? null
+          : ErrorBody.fromJson(json['error'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$RegistrationExistingAccountResponseToJson(
+  RegistrationExistingAccountResponse instance,
+) => <String, dynamic>{'session': instance.session, 'error': instance.error};
+
 RegistrationSuccessResponse _$RegistrationSuccessResponseFromJson(
   Map<String, dynamic> json,
 ) => RegistrationSuccessResponse(
