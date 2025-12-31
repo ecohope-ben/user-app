@@ -191,7 +191,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 20),
               // App version and build number
               Text(
-                'Version $_version ($_buildNumber)',
+                '${tr("version")} $_version ($_buildNumber)',
                 style: const TextStyle(
                   color: Colors.white70,
                   fontSize: 12,
@@ -201,8 +201,8 @@ class _SettingsPageState extends State<SettingsPage> {
               // 3. 底部鏈接
               TextButton(
                 onPressed: () {},
-                child: const Text(
-                  'Terms & Privacy policy',
+                child: Text(
+                  tr("terms_n_pp"),
                   style: TextStyle(
                     color: Colors.white70,
                   ),

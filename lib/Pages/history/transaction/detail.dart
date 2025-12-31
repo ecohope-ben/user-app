@@ -23,8 +23,8 @@ class TransactionHistoryDetailsPage extends StatelessWidget {
             icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
             onPressed: () => context.pop
         ),
-        title: const Text(
-          'Transaction Details',
+        title: Text(
+          tr("transaction.details"),
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
         ),
         centerTitle: false,
@@ -42,7 +42,7 @@ class TransactionHistoryDetailsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 1. Order Number Section
-            _buildLabel('Transaction ID'),
+            _buildLabel(tr("transaction.id")),
             const SizedBox(height: 4),
             Text(
               history.id,
@@ -53,17 +53,18 @@ class TransactionHistoryDetailsPage extends StatelessWidget {
             const Divider(thickness: 1, color: Colors.black12),
             const SizedBox(height: 16),
 
-            _buildLabel('Type'),
+            _buildLabel(tr("transaction.type")),
             const SizedBox(height: 6),
             _buildValue(history.description),
 
             const SizedBox(height: 16),
-            _buildLabel('Amount'),
+
+            _buildLabel(tr("transaction.amount")),
             const SizedBox(height: 6),
             _buildValue("${history.currency} ${history.amountDecimal}"),
             const SizedBox(height: 16),
 
-            _buildLabel('Transaction Date'),
+            _buildLabel(tr("transaction.date")),
             const SizedBox(height: 6),
             _buildValue(convertDateTimeToString(context, history.occurredAt, format: "dd MMM y | HH:mm")),
 

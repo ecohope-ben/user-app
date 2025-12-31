@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:user_app/components/register/action_button.dart';
 class PromotionBanner extends StatelessWidget {
@@ -35,8 +36,8 @@ class PromotionBanner extends StatelessWidget {
         ),
         child: Column(
           children: [
-            const Text(
-              "SUBSCRIBE NOW TO EARN WELCOME GIFT",
+            Text(
+              tr("promote.subscription_to_earn_gift"),
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black,
@@ -53,7 +54,7 @@ class PromotionBanner extends StatelessWidget {
                     fontSize: 14,
                     fontWeight: FontWeight.w400),
                 children: [
-                  const TextSpan(text: "Join our monthly plan with "),
+                  TextSpan(text: tr("promote.join_our_monthly_plan")),
                   WidgetSpan(
                     alignment: PlaceholderAlignment.middle,
                     child: Transform.rotate(
@@ -75,18 +76,19 @@ class PromotionBanner extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const TextSpan(text: " now to earn\nfree welcome gift!"),
+                  TextSpan(text: tr("promote.now_to_earn_free_welcome_gift")),
+
                 ],
               ),
             ),
             const SizedBox(height: 10),
-            Text("Limited Offer, First come first served!", style: TextStyle(color: Colors.black54),),
+            Text(tr("promote.limited_offer_first_come_first_served"), style: TextStyle(color: Colors.black54),),
             const SizedBox(height: 20),
 
             // Subscribe
             SizedBox(
               width: 280,
-              child: ActionButton("Subscribe", onTap: onTap, needPadding: false)
+              child: ActionButton(tr("subscribe"), onTap: onTap, needPadding: false)
             ),
           ],
         ),

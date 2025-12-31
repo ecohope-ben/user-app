@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class NoticeBanner extends StatelessWidget {
@@ -19,7 +20,7 @@ class NoticeBanner extends StatelessWidget {
           Expanded(
             flex: 9,
             child: Text(
-                "Your subscription will end on $date. You can change your mind anytime before this date.",
+              tr("subscription.your_subscription_will_end", args: [date]),
               style: TextStyle(color: Colors.white),
             ),
           )

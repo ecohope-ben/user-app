@@ -139,10 +139,9 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
       // Handle success
       if (mounted) {
         printRouteStack(context);
-
         // Navigate back
         if (mounted) {
-          context.go("/subscription/change_plan/confirmation");
+          context.go("/subscription/change_plan/confirmation", extra: tr("subscription.${widget.plan.billingCycle.name}"));
         }
       }
     } catch (e) {
@@ -151,7 +150,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
       });
 
       if (mounted) {
-        String errorMessage = '排程計劃變更時發生錯誤';
+        String errorMessage = '';
         if (e is SubscriptionException) {
           errorMessage = e.message;
         } else {
@@ -187,8 +186,8 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
       if (mounted) {
         await showForcePopup(
           context,
-          title: '成功',
-          message: '計劃變更已成功取消！',
+          title: tr("success"),
+          message: tr("cancel_plan_change_success"),
         );
       }
     } catch (e) {
@@ -197,7 +196,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
       });
 
       if (mounted) {
-        String errorMessage = '取消計劃變更時發生錯誤';
+        String errorMessage = '';
         if (e is SubscriptionException) {
           errorMessage = e.message;
         } else {
@@ -206,7 +205,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
 
         await showForcePopup(
           context,
-          title: '錯誤',
+          title: tr("error_text"),
           message: errorMessage,
         );
       }
@@ -262,7 +261,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
                       ),
                       Expanded(
                         child: Text(
-                         "Change Plan | ${_getBillingCycleText()}",
+                         "${tr("change_plan")} | ${_getBillingCycleText()}",
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Colors.white,
@@ -307,13 +306,13 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
                         ),
 
                         const SizedBox(height: 20),
-                        const Text(
-                          "Your Address",
+                        Text(
+                          tr("your_address"),
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 0),
-                        const Text(
-                          "This address will be used to deliver your one-time free recycling bag and for future pick up.",
+                        Text(
+                          tr("your_address_description"),
                           style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                         const SizedBox(height: 10),
@@ -345,12 +344,12 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
                         ),
 
                         const SizedBox(height: 20),
-                        const Text(
-                          "Payment Method",
+                        Text(
+                          tr("payment_method"),
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                        const Text(
-                          "Your credit or debit card",
+                        Text(
+                          tr("your_credit_debit_card"),
                           style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                         const SizedBox(height: 10),
@@ -380,7 +379,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
 
 
                         ),
-                        Text("Next billing date: ${convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y")}"),
+                        Text("${tr("next_billing_date")}: ${convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y")}"),
 
 
 
@@ -397,13 +396,14 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          '載入訂閱詳情時發生錯誤: $_errorMessage',
+                                          '${tr("error_occurred")}: $_errorMessage',
+
                                           style: const TextStyle(color: Colors.red),
                                         ),
                                         const SizedBox(height: 8),
                                         TextButton(
                                           onPressed: _loadSubscriptionDetail,
-                                          child: const Text('重試'),
+                                          child: Text(tr("error.retry")),
                                         ),
                                       ],
                                     ),

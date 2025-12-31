@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -39,12 +40,12 @@ class ExploreBanner extends StatelessWidget {
             ),
             const SizedBox(width: 16),
 
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Limited Offer, Join Now',
+                    tr("limited_offer_join_now"),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 14,
@@ -53,7 +54,7 @@ class ExploreBanner extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'Free Trial available',
+                    tr("free_trial"),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -75,7 +76,7 @@ class ExploreBanner extends StatelessWidget {
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
               ),
-              child: const Text('Explore'),
+              child: Text(tr("explore")),
             ),
           ],
         ),

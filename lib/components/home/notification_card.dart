@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,7 +21,7 @@ class SubscriptionCanceledNotificationCard extends StatelessWidget {
         child: TextButton(
           onPressed:() => context.push("/subscription/manage/list", extra: SubscriptionManageTarget.manage),
           child: Text(
-            "Update",
+            tr("update"),
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: Colors.white,
@@ -35,7 +36,7 @@ class SubscriptionCanceledNotificationCard extends StatelessWidget {
     return NotificationCard(
       iconData: Icons.info_outline,
       title: null,
-      description: "Your subscription will end on $expiredDate. You can change your mind anytime before this date.",
+      description: tr("subscription.your_subscription_will_end", args: [expiredDate]),
       action: _buildButton(context),
     );
   }
@@ -56,7 +57,7 @@ class PaymentFailedNotificationCard extends StatelessWidget {
         child: TextButton(
           onPressed:() => context.push("/subscription/manage/list", extra: SubscriptionManageTarget.manage),
           child: Text(
-            "Update Now",
+            tr("update_now"),
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: Colors.white,
@@ -70,8 +71,8 @@ class PaymentFailedNotificationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return NotificationCard(
       iconData: Icons.info_outline,
-      title: "Payment Failed",
-      description: "Update your payment method",
+      title: tr("subscription.payment_failed"),
+      description: tr("subscription.update_your_payment_method"),
       action: _buildButton(context),
     );
   }
@@ -86,9 +87,8 @@ class FinishedRecycleOrderNotificationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return NotificationCard(
       iconData: Icons.check_circle_outline_outlined,
-      title: "Great Job! Thanks for recycling.",
-      description: "Wait until ${convertDateTimeToString(context, subscriptionState.detail.currentPeriodEnd, format: "dd MMM y")} for you next recycle.",
-
+      title: tr("order.thanks_for_recycling"),
+      description: tr("order.wait_for_next_recycling", args: [convertDateTimeToString(context, subscriptionState.detail.currentPeriodEnd, format: "dd MMM y")])
     );
   }
 }

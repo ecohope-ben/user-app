@@ -8,6 +8,8 @@ enum BillingCycle {
   monthly,
   @JsonValue('yearly')
   yearly,
+  @JsonValue('quarterly')
+  quarterly,
 }
 
 /// Current lifecycle state for a subscription

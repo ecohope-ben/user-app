@@ -65,6 +65,7 @@ Map<String, dynamic> _$PlanListItemToJson(PlanListItem instance) =>
 const _$BillingCycleEnumMap = {
   BillingCycle.monthly: 'monthly',
   BillingCycle.yearly: 'yearly',
+  BillingCycle.quarterly: 'quarterly',
 };
 
 PlanDetail _$PlanDetailFromJson(Map<String, dynamic> json) => PlanDetail(

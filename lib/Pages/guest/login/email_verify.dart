@@ -35,12 +35,12 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
     try {
       final result = await Api.instance().onboarding().getStatus();
       if (result.onboarding.status == OnboardingStatus.completed) {
-        context.go("/home");
+        if(mounted) context.go("/home");
       } else {
-        context.push("/onboarding_profile");
+        if(mounted) context.push("/onboarding_profile");
       }
     } catch (e) {
-      popSnackBar(context, tr("login.error_message"));
+      if(mounted) popSnackBar(context, tr("login.error_message"));
     }
   }
 

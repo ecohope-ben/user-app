@@ -46,7 +46,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
   String _buildAmountText(){
     if(_subscriptionDetail?.discount != null){
       if(_subscriptionDetail!.discount?.discountType == DiscountType.freeCycles){
-        return 'Pay nothing until ${convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y")}, then \$${widget.plan.priceDecimal}/Month';
+        return tr("subscription.amount_text_with_discount_without_original_price", args: [convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y"), widget.plan.priceDecimal]);
       }else {
         return '${_subscriptionDetail?.plan.priceDecimal}';
       }
@@ -58,9 +58,9 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
 
   String _buildRenewText(){
     if(_subscriptionDetail?.plan.billingCycle == BillingCycle.monthly){
-      return "Auto-renews every 1 month, cancel anytime.";
+      return tr("auto_renew_text", args: [tr("subscription.billing_cycle.monthly")]);
     }else if(_subscriptionDetail?.plan.billingCycle == BillingCycle.yearly) {
-      return "Auto-renews every 1 year, cancel anytime.";
+      return tr("auto_renew_text", args: [tr("subscription.billing_cycle.yearly")]);
     }
     return "";
   }
@@ -336,13 +336,13 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
 
 
                         const SizedBox(height: 20),
-                        const Text(
-                          "Your Address",
+                        Text(
+                          tr("your_address"),
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 0),
-                        const Text(
-                          "This address will be used to deliver your one-time free recycling bag and for future pick up.",
+                        Text(
+                          tr("your_address_description"),
                           style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                         const SizedBox(height: 10),
@@ -394,12 +394,12 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                         ),
 
                         const SizedBox(height: 20),
-                        const Text(
-                          "Payment Method",
+                        Text(
+                          tr("payment_method"),
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                        const Text(
-                          "Your credit or debit card",
+                        Text(
+                          tr("your_credit_debit_card"),
                           style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                         const SizedBox(height: 10),
@@ -450,7 +450,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                             ),
                           ),
                         ),
-                        Text("Next billing date: ${convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y")}"),
+                        Text("${tr("next_billing_date")}: ${convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y")}"),
                         if(_subscriptionDetail?.lifecycleState == SubscriptionLifecycleState.pastDue) _buildFailedPaymentNotice(),
                         (_hasScheduledCancellation || _hasScheduledPlanChange) ? const SizedBox(height: 20) : const SizedBox(height: 40),
 
@@ -467,7 +467,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                             child: TextButton(
                               onPressed:() => context.push("/subscription/manage/list", extra: SubscriptionManageTarget.change),
                               child: Text(
-                                "Change Plan",
+                                tr("change_plan"),
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   color: Colors.black,
@@ -495,13 +495,13 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          '載入訂閱詳情時發生錯誤: $_errorMessage',
+                                          "${tr("error_occurred")}: $_errorMessage",
                                           style: const TextStyle(color: Colors.red),
                                         ),
                                         const SizedBox(height: 8),
                                         TextButton(
                                           onPressed: _loadSubscriptionDetail,
-                                          child: const Text('重試'),
+                                          child: Text(tr("error.retry")),
                                         ),
                                       ],
                                     ),
@@ -623,7 +623,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
           ),
         )
             : Text(
-          _hasScheduledPlanChange ? tr("cancel_plan_change") : "Confirm Plan Change",
+          _hasScheduledPlanChange ? tr("cancel_plan_change") : tr("confirm_plan_change"),
           textAlign: TextAlign.center,
           style: TextStyle(
             color: _hasScheduledPlanChange ? Colors.black : Colors.white,

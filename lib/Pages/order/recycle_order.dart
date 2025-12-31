@@ -183,8 +183,8 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
             context.pop();
           },
         ),
-        title: const Text(
-          "Recycle Now | Schedule Pick Up",
+        title: Text(
+          tr("order.schedule_pickup_now"),
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -204,9 +204,9 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
 
               // 3. 標題區域
               Row(
-                children: const [
+                children: [
                   Text(
-                    "Pick Up Details",
+                    tr("order.pickup_details"),
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -218,26 +218,26 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
                 ],
               ),
               const SizedBox(height: 8),
-              const Text(
-                "Please fill in the information for smooth pick up.",
+              Text(
+                tr("order.fill_information"),
                 style: TextStyle(color: Colors.black54, fontSize: 14),
               ),
               const SizedBox(height: 20),
 
               // 4. 表單區域
               // Pick Up Date
-              _buildLabel("Pick Up Date *"),
+              _buildLabel("${tr("order.pickup_date")} *"),
               _buildDateDropdown(),
               const SizedBox(height: 16),
 
               // Pick Up Time
-              _buildLabel("Pick Up Time *"),
+              _buildLabel("${tr("order.pickup_time")} *"),
               _buildTimeDropdown(),
               const SizedBox(height: 16),
 
 
               // Address
-              _buildLabel("Address"),
+              _buildLabel(tr("order.address")),
               Container(
                 color: Colors.black12,
                 child: TextField(
@@ -263,23 +263,23 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
               const SizedBox(height: 30),
 
               // 5. 確認按鈕
-              ActionButton("Confirm Pick Up Schedule", onTap: onSubmit, showLoading: _isSubmitLoading),
+              ActionButton(tr("order.confirm_pickup_schedule"), onTap: onSubmit, showLoading: _isSubmitLoading),
               const SizedBox(height: 16),
 
               // 6. 底部條款文字
               RichText(
                 textAlign: TextAlign.center,
-                text: const TextSpan(
+                text: TextSpan(
                   style: TextStyle(color: Colors.grey, fontSize: 12),
                   children: [
-                    TextSpan(text: "By clicking here, you agree to our "),
+                    TextSpan(text: tr("order.by_clicking_to_agree")),
                     TextSpan(
-                      text: "terms",
+                      text: tr("order.terms"),
                       style: TextStyle(decoration: TextDecoration.underline),
                     ),
-                    TextSpan(text: " and have read and acknowledge our "),
+                    TextSpan(text: tr("order.have_read_acknowledge")),
                     TextSpan(
-                      text: "privacy policy.",
+                      text: tr("order.privacy_policy"),
                       style: TextStyle(decoration: TextDecoration.underline),
                     ),
                   ],
@@ -432,8 +432,8 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
         color: Colors.black54,
       ),
       isExpanded: true,
-      hint: const Text(
-        "Select Date",
+      hint: Text(
+        tr("order.select_date"),
         style: TextStyle(fontSize: 14, color: Colors.grey),
       ),
       items: dateItems,
@@ -461,11 +461,6 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
               width: 16,
               height: 16,
               child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-            SizedBox(width: 12),
-            Text(
-              'Loading...',
-              style: TextStyle(color: Colors.black54),
             ),
           ],
         ),
@@ -519,7 +514,7 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
       ),
       isExpanded: true,
       hint: Text(
-        "Select Time",
+        tr("order.select_time"),
         style: TextStyle(
           fontSize: 14,
           color: _selectedDate != null ? Colors.grey : Colors.grey.shade400,

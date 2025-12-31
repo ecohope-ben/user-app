@@ -463,7 +463,8 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                       ),
                       Expanded(
                         child: Text(
-                          _getBillingCycleText(),
+                          widget.plan.name,
+                          // _getBillingCycleText(),
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Colors.white,

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeGiftPopup extends StatelessWidget {
@@ -40,8 +41,8 @@ class WelcomeGiftPopup extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 // 標題
-                const Text(
-                  "Welcome Gifts",
+                Text(
+                  tr("promote.welcome_gift"),
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -54,14 +55,14 @@ class WelcomeGiftPopup extends StatelessWidget {
                 // 中間描述文字 (包含粗體 $0)
                 RichText(
                   textAlign: TextAlign.center,
-                  text: const TextSpan(
+                  text: TextSpan(
                     style: TextStyle(
                       fontSize: 15,
                       color: Colors.black87,
                       height: 1.4,
                     ),
                     children: [
-                      TextSpan(text: "Join our monthly plan with "),
+                      TextSpan(text: tr("promote.join_our_monthly_plan")),
                       TextSpan(
                         text: "\$0",
                         style: TextStyle(
@@ -69,16 +70,16 @@ class WelcomeGiftPopup extends StatelessWidget {
                           fontSize: 18,
                         ),
                       ),
-                      TextSpan(text: " now to earn free welcome gift!"),
+                      TextSpan(text: tr("promote.now_to_earn_free_welcome_gift")),
                     ],
                   ),
                 ),
 
                 const SizedBox(height: 8),
 
-                // 灰色小字
-                const Text(
-                  "Limited offers, first come first served.",
+
+                Text(
+                  tr("promote.limited_offer_first_come_first_served"),
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey,
@@ -104,8 +105,8 @@ class WelcomeGiftPopup extends StatelessWidget {
                       ),
                       elevation: 0,
                     ),
-                    child: const Text(
-                      "Join Now",
+                    child: Text(
+                      tr("subscription.join_now"),
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -118,8 +119,8 @@ class WelcomeGiftPopup extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text(
-                    "Maybe Later",
+                  child: Text(
+                    tr("maybe_later"),
                     style: TextStyle(
                       color: Colors.blueAccent,
                       fontWeight: FontWeight.w500,

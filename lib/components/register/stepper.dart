@@ -27,10 +27,10 @@ class _RegisterStepperState extends State<RegisterStepper> {
       },
       nodeTitles: [
         tr("register.email"),
-
-        'Phone',
-        'Profile'
+        tr("register.phone"),
+        tr("register.profile"),
       ],
+
       padding: const EdgeInsets.all(18),
 
       theme: const StepProgressThemeData(
@@ -48,6 +48,7 @@ class _RegisterStepperState extends State<RegisterStepper> {
           defualtColor: Colors.black,
           titleStyle: TextStyle(fontWeight: FontWeight.bold),
           margin: EdgeInsets.only(top: 6),
+          maxWidth: 60
         ),
         stepNodeStyle: StepNodeStyle(
           activeIcon: null,

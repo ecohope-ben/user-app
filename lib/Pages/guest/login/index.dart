@@ -44,7 +44,7 @@ class _LoginIndexState extends State<LoginIndex>{
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text("Login", style: TextStyle(color: Colors.black)),
+        title: Text(tr("login.title"), style: TextStyle(color: Colors.black)),
         leading: InkWell(
             onTap: () => context.pop(),
             child: Icon(Icons.close, color: Colors.black)
@@ -53,19 +53,12 @@ class _LoginIndexState extends State<LoginIndex>{
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if(state is LoginInProgress){
-            print("--login inprogrss");
-            print(state);
-            if(state.login.stage == LoginStage.emailVerification){
-            }
+            if(state.login.stage == LoginStage.emailVerification){}
           }else if(state is LoginError){
-            print("--login error index");
-
             final login = state.login;
             if(login != null){
-              print("--login error index2");
               context.read<LoginCubit>().update(LoginInProgress(login: login, stepToken: login.tokens.step));
             }else {
-              print("--login error index3");
               context.read<LoginCubit>().reset();
               context.read<LoginCubit>().startLogin();
             }
@@ -91,16 +84,12 @@ class _LoginIndexState extends State<LoginIndex>{
                       tr("login.login_with_otp"),
                       showLoading: context.read<LoginCubit>().state is LoginLoading || context.read<LoginCubit>().state is LoginInProgressLoading,
                       onTap: () async {
-                        print("--login on tap");
                         if (_formKey.currentState!.validate()) {
-                          print("--login on tap2");
                           // If validation passes, get the email and update registration
                           final email = _emailController.text;
 
                           final bloc = context.read<LoginCubit>();
                           final result = await bloc.updateEmail(email: email);
-                          print("--result: $result");
-                          print(result);
 
                           if(mounted) {
                             if(result) {
@@ -122,35 +111,39 @@ class _LoginIndexState extends State<LoginIndex>{
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      GestureDetector(
-                        onTap: () async {
-                          final Uri emailLaunchUri = Uri(
-                            scheme: 'mailto',
-                            path: 'support@ecohopeltd.com',
-                          );
-                          if (await canLaunchUrl(emailLaunchUri)) {
-                            await launchUrl(emailLaunchUri);
-                          }
-                        },
-                        child: Text.rich(
-                          TextSpan(
-                            text: tr("please_contact_at"),
-                            children: [
-                              TextSpan(
-                                text: "support@ecohopeltd.com",
-                                style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: Theme
-                                      .of(context)
-                                      .colorScheme
-                                      .primary,
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () async {
+                            final Uri emailLaunchUri = Uri(
+                              scheme: 'mailto',
+                              path: 'support@ecohopeltd.com',
+                            );
+                            if (await canLaunchUrl(emailLaunchUri)) {
+                              await launchUrl(emailLaunchUri);
+                            }
+                          },
+                          child: Text.rich(
+                            TextSpan(
+                              text: tr("please_contact_at"),
+                              children: [
+                                TextSpan(
+                                  text: "support@ecohopeltd.com",
+                                  style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: Theme
+                                        .of(context)
+                                        .colorScheme
+                                        .primary,
+                                  ),
                                 ),
-                              ),
-                            ],
+
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
+
                     ],
                   ),
                   Row(

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -33,8 +34,8 @@ class HowItWorksPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 28),
           onPressed: () => context.pop(),
         ),
-        title: const Text(
-          'How it Works',
+        title: Text(
+          tr("how_it_works.title"),
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -49,8 +50,8 @@ class HowItWorksPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'How it works?',
+              Text(
+                tr("how_it_works.title"),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -61,23 +62,23 @@ class HowItWorksPage extends StatelessWidget {
 
               // Timeline
               _buildTimelineStep(
-                text: 'Join a subscription plan',
+                text: tr("how_it_works.items.join_subscription"),
                 isFirst: true,
               ),
               _buildTimelineStep(
-                text: 'Receive a FREE brand new Eco Hope recycle bag',
+                text: tr("how_it_works.items.receive_recycle_bag"),
               ),
               _buildTimelineStep(
-                text: 'Schedule a pick up time',
+                text: tr("how_it_works.items.schedule_pickup_time"),
               ),
               _buildTimelineStep(
-                text: 'Clean and pack the plastic bottles with Eco Hope recycle bag. (please pour out all liquid)',
+                text: tr("how_it_works.items.clean_bottles"),
               ),
               _buildTimelineStep(
-                text: 'Courier will come to collect the bag. Start Tracking your recycle impact! One foe One****',
+                text: tr("how_it_works.items.collect_bag"),
               ),
               _buildTimelineStep(
-                text: 'We upcycle your plastic bottles into new products, giving plastic a second life.',
+                text: tr("how_it_works.items.upcycle"),
                 isLast: true,
               ),
 

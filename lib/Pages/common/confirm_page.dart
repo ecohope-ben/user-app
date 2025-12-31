@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/components/register/action_button.dart';
@@ -7,16 +8,17 @@ import 'package:user_app/style.dart';
 import '../../routes.dart';
 
 class ChangPlanConfirmationPage extends StatelessWidget {
-  const ChangPlanConfirmationPage({super.key});
+  final String planName;
+  const ChangPlanConfirmationPage(this.planName, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return ConfirmationPage(
         iconPath: 'assets/icon/confirmation_tick.png',
-        title: 'Your subscription is changing to Yearly Plan on 20 Nov 2025.',
-        subTitle: 'You will still be able to recycle with your current monthly plan and you can change your mind anytime before this date.',
+        title: tr("subscription.changing_plan_to") + planName,
+        subTitle: tr("subscription.change_plan_confirmation"),
         // subTitle2: 'Your first recycle bag is on the way, Get Ready!',
-        mainButtonTitle: "Manage Subscription",
+        mainButtonTitle: tr("subscription.manage_subscription"),
         mainButtonOnTap: () => context.go("/subscription/manage/list", extra: SubscriptionManageTarget.manage)
     );
   }
@@ -29,10 +31,10 @@ class SubscriptionConfirmationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConfirmationPage(
       iconPath: 'assets/icon/confirmation_subscription.png',
-      title: 'Thank you for subscribing!',
-      subTitle: 'You have successfully subscribed to our monthly plan. The first ECO HOPE recycling bag is ready for dispatch — Courier may notify you via phone once it’s dispatched.',
+      title: tr("subscription.confirmation_info"),
+      subTitle: tr("subscription.confirmation_info2"),
       // subTitle2: 'Your first recycle bag is on the way, Get Ready!',
-      mainButtonTitle: "Manage Subscription",
+      mainButtonTitle: tr("subscription.manage_subscription"),
       mainButtonOnTap: () => context.go("/subscription/manage/list", extra: SubscriptionManageTarget.manage)
     );
   }
@@ -46,9 +48,9 @@ class RecycleOrderConfirmationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConfirmationPage(
         iconPath: 'assets/icon/confirmation_tick.png',
-        title: 'Your Next Recycle Pick Up Schedule is Confirmed!',
-        subTitle: 'Pick up time depends on the courier’s schedule and may be subject to change. The courier may call you shortly before arrival.',
-        mainButtonTitle: "View Schedule Details",
+        title: tr("order.pickup_order_confirmed"),
+        subTitle: tr("order.pickup_order_confirmed2"),
+        mainButtonTitle: tr("order.view_schedule_detail"),
         mainButtonOnTap: () => context.go("/order/details", extra: orderId)
     );
   }
@@ -107,8 +109,8 @@ class ConfirmationPage extends StatelessWidget {
 
               TextButton(
                 onPressed: () => context.go("/home"),
-                child: const Text(
-                  "Back to Home",
+                child: Text(
+                  tr("back_to_home"),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,

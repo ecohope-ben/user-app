@@ -13,16 +13,16 @@ class SubscriptionPreviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        PaymentDetailRow("Type", tr("subscription.$billingRecycleType"), isBold: true),
+        PaymentDetailRow(tr("subscription.type"), tr("subscription.$billingRecycleType"), isBold: true),
         const SizedBox(height: 8),
-        PaymentDetailRow("Renewing on", renewalText, isBold: true),
+        PaymentDetailRow(tr("subscription.renew_on"), renewalText, isBold: true),
         const SizedBox(height: 8),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
+            SizedBox(
               width: 100,
-              child: Text("Amount", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700)),
+              child: Text(tr("amount"), style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700)),
             ),
             Expanded(
               child: Column(

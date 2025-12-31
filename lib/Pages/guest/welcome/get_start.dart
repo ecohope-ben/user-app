@@ -111,7 +111,7 @@ class _GetStartPageState extends State<GetStartPage> {
                               color: Colors.white
                           ),
                           children: [
-                            const TextSpan(text: 'Every Pickup Creates '),
+                            TextSpan(text: tr("welcome.page3.title1")),
                             WidgetSpan(
                               alignment: PlaceholderAlignment.middle,
                               child: Transform.rotate(
@@ -123,8 +123,8 @@ class _GetStartPageState extends State<GetStartPage> {
                                   ),
                                   child: Transform.rotate(
                                     angle: -0.05, // rotate
-                                    child: const Text(
-                                      'Change',
+                                    child: Text(
+                                      tr("welcome.page3.highlight"),
                                       style: TextStyle(
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold,
@@ -143,8 +143,8 @@ class _GetStartPageState extends State<GetStartPage> {
 
                   const SizedBox(height: 16),
 
-                  const Text(
-                    "Your bottles are upcycled into new products,\ngiving plastic a second life.",
+                  Text(
+                    tr("welcome.page3.title2"),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
@@ -188,7 +188,7 @@ class _GetStartPageState extends State<GetStartPage> {
                     text: TextSpan(
                       style: const TextStyle(fontSize: 14, color: Colors.white),
                       children: [
-                        const TextSpan(text: "Already have an account? "),
+                        TextSpan(text: tr("login.already_have_account")),
                         WidgetSpan(
                           alignment: PlaceholderAlignment.middle,
                           child: InkWell(
@@ -196,7 +196,7 @@ class _GetStartPageState extends State<GetStartPage> {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 4),
                               child: Text(
-                                " Login ",
+                                tr("login.title"),
                                 style: TextStyle(
                                 color: Colors.blueAccent,
                                 fontWeight: FontWeight.bold,
@@ -231,7 +231,7 @@ class _GetStartPageState extends State<GetStartPage> {
                               _agreeToTerms = !_agreeToTerms;
                             });
                           },
-                          child: const Text(
+                          child: Text(
                             "I agree to the Terms and Conditions",
                             style: TextStyle(
                               fontSize: 14,

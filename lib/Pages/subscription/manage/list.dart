@@ -140,8 +140,8 @@ class _SubscriptionManageListPageState extends State<SubscriptionManageListPage>
                   }
                 },
               ),
-              title: const Text(
-                "Subscriptions",
+              title: Text(
+                tr("subscriptions"),
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,

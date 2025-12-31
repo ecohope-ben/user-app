@@ -106,7 +106,7 @@ class _SliverBarState extends State<SliverBar> {
       text: TextSpan(
         style: TextStyle(fontSize: 24, color: Colors.white),
         children: [
-          TextSpan(text: "Hello, "),
+          TextSpan(text: "${tr("hello")}, "),
           TextSpan(
             text: widget.profileState.profile.name,
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -132,9 +132,9 @@ class _SliverBarState extends State<SliverBar> {
     final state = widget.entitlementState;
     return _buildStatItem(
         value: state.entitlements.isNotEmpty ? state.entitlements.first.quotaRemaining.toString() : "00",
-        label: "Pick Up",
+        label: tr("remaining_pickups"),
 
-        label2: state.entitlements.isNotEmpty ? "Expire at: ${convertDateTimeToString(context, state.entitlements.first.expiresAt, format: "dd/MM/yy")}" : null,
+        label2: state.entitlements.isNotEmpty ? "${tr("Expired")} ${convertDateTimeToString(context, state.entitlements.first.expiresAt, format: "dd/MM/yy")}" : null,
 
     );
   }
@@ -143,13 +143,13 @@ class _SliverBarState extends State<SliverBar> {
     final state = widget.subscriptionState;
     if(state is SubscriptionDetailAndListLoaded){
       if(state.detail.scheduledCancellation != null){
-        return "End on: ${convertDateTimeToString(context, state.detail.currentPeriodEnd, format: "dd/MM/yy")}";
+        return "${tr("Expired")} ${convertDateTimeToString(context, state.detail.currentPeriodEnd, format: "dd/MM/yy")}";
       }else {
-        return "Renew on: ${convertDateTimeToString(context, state.detail.currentPeriodEnd, format: "dd/MM/yy")}";
+        return "${tr("renew")} ${convertDateTimeToString(context, state.detail.currentPeriodEnd, format: "dd/MM/yy")}";
       }
     }
     if(state.subscriptions.isNotEmpty) {
-      return "Renew on: ${convertDateTimeToString(context, state.subscriptions.first.currentPeriodEnd, format: "dd/MM/yy")}";
+      return "${tr("renew")} ${convertDateTimeToString(context, state.subscriptions.first.currentPeriodEnd, format: "dd/MM/yy")}";
     }
     return null;
 
@@ -159,8 +159,8 @@ class _SliverBarState extends State<SliverBar> {
   Widget _buildSubscription() {
    final state = widget.subscriptionState;
     return _buildStatItem(
-        value: state.subscriptions.isNotEmpty ? tr("subscription.${state.subscriptions.first.plan.billingCycle.name}") : "No subscription",
-        label: "Subscriptions",
+        value: state.subscriptions.isNotEmpty ? tr("subscription.${state.subscriptions.first.plan.billingCycle.name}") : tr("no_subscriptions"),
+        label: tr("subscriptions"),
         label2: _buildSubscriptionLabel(),
 
         onTap: () => state.subscriptions.isNotEmpty ? context.push("/subscription/manage/list", extra: SubscriptionManageTarget.manage) : context.push("/subscription/list")
@@ -171,7 +171,7 @@ class _SliverBarState extends State<SliverBar> {
     final state = widget.recycleOrderState;
     return _buildStatItem(
         value: state.orders.isNotEmpty ? state.orders.length.toString() : "00",
-        label: "Total Collection"
+        label: tr("total_collection")
     );
   }
 

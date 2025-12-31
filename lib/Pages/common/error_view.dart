@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/register/action_button.dart';
@@ -21,12 +22,12 @@ class CommonErrorView extends StatelessWidget {
                 const Icon(Icons.error_outline, size: 48, color: Colors.red),
                 const SizedBox(height: 16),
                 Text(
-                  message.isEmpty ? "Something went wrong." : message,
+                  message.isEmpty ? tr("error_text") : message,
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 24),
-                ActionButton("Retry", onTap: onRetry)
+                ActionButton(tr("error.retry"), onTap: onRetry)
               ],
             ),
           ),

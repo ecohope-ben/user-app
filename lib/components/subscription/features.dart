@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class FeatureCard extends StatelessWidget {
@@ -27,7 +28,7 @@ class FeatureCard extends StatelessWidget {
           if(isSubscriptionCanceled) Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Text(
-              "Your subscription is ending soon",
+              tr("subscription.ending_soon"),
               style: const TextStyle(
                 fontSize: 15,
                 color: Colors.red,

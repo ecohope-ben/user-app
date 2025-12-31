@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -30,8 +31,8 @@ class RecyclingGuidePage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 28),
           onPressed: () => context.pop(context),
         ),
-        title: const Text(
-          'Recycling Guide',
+        title: Text(
+          tr("recycle_guide.title"),
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -47,8 +48,8 @@ class RecyclingGuidePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 1. "How?" Title
-              const Text(
-                'How?',
+              Text(
+                tr("recycle_guide.how"),
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -61,7 +62,7 @@ class RecyclingGuidePage extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'Empty',
+                    tr("recycle_guide.empty"),
                     style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -72,7 +73,7 @@ class RecyclingGuidePage extends StatelessWidget {
                     child: Icon(Icons.arrow_forward, size: 20, color: textDark),
                   ),
                   Text(
-                    'Clean',
+                    tr("recycle_guide.clean"),
                     style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -83,7 +84,7 @@ class RecyclingGuidePage extends StatelessWidget {
                     child: Icon(Icons.arrow_forward, size: 20, color: textDark),
                   ),
                   Text(
-                    'Squash',
+                    tr("recycle_guide.sqush"),
                     style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -113,11 +114,11 @@ class RecyclingGuidePage extends StatelessWidget {
               const SizedBox(height: 20),
 
               // 4. Green Check List
-              _buildCheckItem('Transparent plastic bottles Only'),
-              _buildCheckItem('Empty bottles completely, clean with water'),
-              _buildCheckItem('Squash bottles lengthwise to save space'),
-              _buildCheckItem('keep the cap on'),
-              _buildCheckItem('Close up the bag (Close the bag properly)'),
+              _buildCheckItem(tr("recycle_guide.items.transparent_bottles")),
+              _buildCheckItem(tr("recycle_guide.items.empty_bottles")),
+              _buildCheckItem(tr("recycle_guide.items.squash_bottles")),
+              _buildCheckItem(tr("recycle_guide.items.keep_cap_on")),
+              _buildCheckItem(tr("recycle_guide.items.close_up")),
 
               const SizedBox(height: 30),
 
@@ -136,8 +137,8 @@ class RecyclingGuidePage extends StatelessWidget {
               const SizedBox(height: 20),
 
               // 6. Red Cross List
-              _buildCrossItem('Do not attach items on the outside of the bag'),
-              _buildCrossItem('Do not attach items on the outside of the bag'),
+              _buildCrossItem(tr("recycle_guide.items.dont_overfill")),
+              _buildCrossItem(tr("recycle_guide.items.dont_attach_item")),
 
               const SizedBox(height: 30),
 

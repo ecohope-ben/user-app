@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -30,8 +31,8 @@ class OrderListItem extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  "Pick Up Date and Time",
+                Text(
+                  tr("order.pickup_date_time"),
                   style: TextStyle(
                     color: Colors.black87,
                     fontSize: 14,

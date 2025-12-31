@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:step_progress/step_progress.dart';
@@ -26,50 +27,55 @@ class _RegisterIndexState extends State<RegisterIndex> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Register Now", style: TextStyle(color: Colors.black)),
-        leading: InkWell(
-            onTap: () => context.pop(),
-            child: Icon(Icons.close, color: Colors.black)),
-      ),
-      body: BlocProvider(
-        create: (context) => RegistrationCubit()..startRegistration(),
-        child: BlocConsumer<RegistrationCubit, RegistrationState>(
-          listener: (context, state){
-            if(state is RegistrationInProgress && (state.registration.stage == RegistrationStage.phoneInput || state.registration.stage == RegistrationStage.phoneVerification)){
-              stepProgressController.setCurrentStep(1);
-            }else if(state is RegistrationCompleted){
-              stepProgressController.setCurrentStep(2);
-            }else if (state is RegistrationError){
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(tr("register.register_now"), style: TextStyle(color: Colors.black)),
+          leading: InkWell(
+              onTap: () => context.pop(),
+              child: Icon(Icons.close, color: Colors.black)),
+        ),
+        body: BlocProvider(
+          create: (context) => RegistrationCubit()..startRegistration(),
+          child: BlocConsumer<RegistrationCubit, RegistrationState>(
+            listener: (context, state){
+              if(state is RegistrationInProgress && (state.registration.stage == RegistrationStage.phoneInput || state.registration.stage == RegistrationStage.phoneVerification)){
+                stepProgressController.setCurrentStep(1);
+              }else if(state is RegistrationCompleted){
+                stepProgressController.setCurrentStep(2);
+              }else if (state is RegistrationError){
 
-              popSnackBar(context, state.message);
+                popSnackBar(context, state.message);
 
-              if(state.registration != null){
-                context.read<RegistrationCubit>().update(RegistrationInProgress(
-                  registration: state.registration!,
-                  stepToken: state.registration!.tokens.step
-                ));
-              }else if(state.httpCode == 401 || state.httpCode == 404){
-                context.read<RegistrationCubit>().update(RegistrationInitial());
+                if(state.registration != null){
+                  context.read<RegistrationCubit>().update(RegistrationInProgress(
+                    registration: state.registration!,
+                    stepToken: state.registration!.tokens.step
+                  ));
+                }else if(state.httpCode == 401 || state.httpCode == 404){
+                  context.read<RegistrationCubit>().update(RegistrationInitial());
+                }
               }
-            }
-          },
-          builder: (context, state) {
-            return SingleChildScrollView(
-              child: Column(
-                spacing: 48,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RegisterStepper(stepProgressController),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 25),
-                    child:  (state is RegistrationInProgress || state is RegistrationCompleted) ? _buildRegisterSection(context, state) : _buildLoading(),
-                  )
-                ],
-              ),
-            );
-          },
+            },
+            builder: (context, state) {
+              return SingleChildScrollView(
+                child: Column(
+                  spacing: 48,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RegisterStepper(stepProgressController),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 25),
+                      child:  (state is RegistrationInProgress || state is RegistrationCompleted) ? _buildRegisterSection(context, state) : _buildLoading(),
+                    )
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

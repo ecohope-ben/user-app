@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_app/style.dart';
@@ -24,8 +25,8 @@ class TransactionHistoryPage extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ),
-          title: const Text(
-            'Transaction History',
+          title: Text(
+            tr("transaction.history"),
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -59,11 +60,11 @@ class TransactionHistoryPage extends StatelessWidget {
         ),
 
         child: historyList.isEmpty
-            ? const Center(
+            ? Center(
           child: Padding(
             padding: EdgeInsets.all(32.0),
             child: Text(
-              'No transaction history found',
+              tr("transaction.no_history_found"),
               style: TextStyle(
                 color: Colors.grey,
                 fontSize: 16,
@@ -110,8 +111,8 @@ class TransactionHistoryPage extends StatelessWidget {
               size: 48,
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Error loading transaction history',
+            Text(
+              tr("error_occurred"),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,

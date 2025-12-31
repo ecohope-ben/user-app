@@ -17,32 +17,6 @@ class _IntroPageState extends State<IntroPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  // 定義頁面數據
-  final List<Map<String, dynamic>> _pages = [
-    {
-      "icon": Icons.recycling_rounded,
-      "titlePrefix": "Recycle Smarter, Live",
-      "highlight": "Greener",
-      "description": "We collect from your door — no bins, no hassle, just impact.",
-      "isLastPage": false,
-    },
-    {
-      "icon": Icons.local_shipping_rounded,
-      "titlePrefix": "Reliable Pickups,",
-      "highlight": "Real-Time",
-      "titleSuffix": " Tracking",
-      "description": "Partnered with SF Express the network we trust.",
-      "isLastPage": false,
-    },
-    {
-      "icon": Icons.change_history_rounded,
-      "titlePrefix": "Every Pickup Creates",
-      "highlight": "Change",
-      "description": "Your bottles are upcycled into new products, giving plastic a second life.",
-      "isLastPage": true,
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,8 +80,7 @@ class _IntroPageState extends State<IntroPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
-                _pages.length,
-                    (index) => buildDot(index),
+                3, (index) => buildDot(index),
               ),
             ),
           ),

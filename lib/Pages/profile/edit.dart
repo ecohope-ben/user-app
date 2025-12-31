@@ -99,8 +99,8 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
           _loadProfileData(state);
         } else if (state is ProfileUpdateSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Profile updated successfully'),
+            SnackBar(
+              content: Text(tr("profile.update_success")),
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -119,8 +119,8 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                 icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                 onPressed: () => Navigator.of(context).pop(),
               ),
-              title: const Text(
-                'Edit Profile',
+              title: Text(
+                tr("profile.edit_profile"),
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -144,8 +144,8 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
               icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            title: const Text(
-              'Edit Profile',
+            title: Text(
+              tr("profile.edit_profile"),
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -287,10 +287,10 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
               const SizedBox(height: 20),
 
               // 7. Info Text
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Change of Account Information",
+                  tr("profile.change_account_info"),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.grey,
@@ -299,11 +299,11 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                 ),
               ),
               const SizedBox(height: 6),
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text.rich(
                   TextSpan(
-                    text: "Please contact our customer support\nat ",
+                    text:  tr("profile.contact_our_customer_support"),
                     style: TextStyle(color: Colors.grey, height: 1.4),
                     children: [
                       TextSpan(
@@ -312,7 +312,7 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                           decoration: TextDecoration.underline,
                         ),
                       ),
-                      TextSpan(text: " for assistance during office hour."),
+                      TextSpan(text: tr("profile.for_assistance")),
                     ],
                   ),
                 ),
@@ -353,8 +353,8 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                               ),
                             )
-                          : const Text(
-                              "Update My Profile",
+                          : Text(
+                              tr("profile.update_my_profile"),
                               style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                     ),
@@ -383,22 +383,22 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                         context.go("/get_start");
                       }
                   ),
-                  child: const Text(
-                    "Log Out",
+                  child: Text(
+                    tr("logout.title"),
                     style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
               const SizedBox(height: 30),
 
-              // 10. Delete Account
-              TextButton(
-                onPressed: () {},
-                child: const Text(
-                  "Delete Account",
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                // 10. Delete Account
+                TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    tr("profile.delete_ac"),
+                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                  ),
                 ),
-              ),
                   const SizedBox(height: 20),
                 ],
               ),

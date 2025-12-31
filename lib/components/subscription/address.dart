@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/logistics_models.dart';
@@ -37,7 +38,7 @@ class AddressDistrictSelect extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Region", style: TextStyle(color: Colors.black54)),
+              Text(tr("region"), style: TextStyle(color: Colors.black54)),
               const SizedBox(height: 6),
               DropdownButtonFormField<District>(
                 value: selectedDistrict,
@@ -66,7 +67,7 @@ class AddressDistrictSelect extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("District", style: TextStyle(color: Colors.black54)),
+              Text(tr("district"), style: TextStyle(color: Colors.black54)),
               const SizedBox(height: 6),
               DropdownButtonFormField<SubDistrict>(
                 value: selectedSubDistrict,

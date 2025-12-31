@@ -27,8 +27,13 @@ class SubscriptionCard extends StatelessWidget {
   });
 
   String calCurrentPrice(){
+    print("--plan price");
+    print(plan.priceDecimal);
     String currentPrice = plan.priceDecimal;
     if (plan.discount != null) {
+
+      print("--plan discount != null");
+
       final discount = plan.discount!;
       if (discount.discountType == DiscountType.percentage) {
         // Calculate percentage discount (price is in cents)
@@ -98,8 +103,8 @@ class SubscriptionCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
-                              "Subscription",
+                            Text(
+                              tr("subscription.title"),
                               style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w800),
                             ),
                             const SizedBox(height: 4),
@@ -131,7 +136,7 @@ class SubscriptionCard extends StatelessWidget {
                                 ),
                                 Flexible(
                                   child: Text(
-                                    (plan.discount?.discountType == DiscountType.freeCycles && target == SubscriptionManageTarget.normal) ? "1 Month Free Trial" : plan.name,
+                                    (plan.discount?.discountType == DiscountType.freeCycles && target == SubscriptionManageTarget.normal) ? tr("promote.1_month_free_trial") : plan.name,
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -142,7 +147,7 @@ class SubscriptionCard extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            if(plan.discount?.discountType == DiscountType.freeCycles && target == SubscriptionManageTarget.normal) Text("(Limited Offer)", style: TextStyle(color: Colors.white))
+                            if(plan.discount?.discountType == DiscountType.freeCycles && target == SubscriptionManageTarget.normal) Text(tr("promote.limited_offer"), style: TextStyle(color: Colors.white))
                           ],
                         ),
                       ),
@@ -156,7 +161,7 @@ class SubscriptionCard extends StatelessWidget {
                               if (subscriptionId == null) {
                                 // Show error if subscriptionId is missing
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('訂閱 ID 不存在')),
+                                  SnackBar(content: Text(tr("subscription.id_no_exist"))),
                                 );
                                 return;
                               }
@@ -170,7 +175,7 @@ class SubscriptionCard extends StatelessWidget {
                                 if (subscriptionId == null) {
                                   // Show error if subscriptionId is missing
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('訂閱 ID 不存在')),
+                                    SnackBar(content: Text(tr("subscription.id_no_exist"))),
                                   );
                                   return;
                                 }
@@ -237,12 +242,12 @@ class SubscriptionCard extends StatelessWidget {
       if(isPaymentFailed){
         return Padding(
           padding: const EdgeInsets.only(left: 20, top: 10),
-          child: Text("Payment Failed", style: TextStyle(color: Colors.red),),
+          child: Text(tr("subscription.payment_failed"), style: TextStyle(color: Colors.red),),
         );
       }else if (isSubscriptionCanceled){
         return Padding(
           padding: const EdgeInsets.only(left: 20, top: 10),
-          child: Text("Your subscription is ending soon", style: TextStyle(color: Colors.red),),
+          child: Text(tr("subscription.ending_soon"), style: TextStyle(color: Colors.red),),
         );
       }else {
         return Row(
@@ -258,7 +263,7 @@ class SubscriptionCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 10.0),
-            child: Text("Active", style: TextStyle(color: listItemGreen),),
+            child: Text(tr("active"), style: TextStyle(color: listItemGreen),),
           )
         ],
       );

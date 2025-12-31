@@ -17,15 +17,16 @@ class InitialBagDeliveryCard extends StatelessWidget {
   const InitialBagDeliveryCard(this.trackingNumber, {super.key});
 
   final String bullet = "\u2022";
+
   Widget _buildItemForSF() {
     return RichText(
       text: TextSpan(
         style: TextStyle(fontSize: 16, color: Colors.black),
         children: [
-          TextSpan(text: "$bullet Please use the "),
-          TextSpan(text: "SF Express App", style: TextStyle(fontWeight: FontWeight.bold)),
+          TextSpan(text: "$bullet ${tr("please_use")}"),
+          TextSpan(text: tr("sf_app"), style: TextStyle(fontWeight: FontWeight.bold)),
           TextSpan(
-            text: " for latest tracking updates.",
+            text: tr("for_the_tracking_updates"),
           ),
         ],
       ),
@@ -66,9 +67,9 @@ class InitialBagDeliveryCard extends StatelessWidget {
                   size: 24,
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    "Recycle bag is Delivering ...",
+                    "${tr("recycle_bag_is_delivering")} ...",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -87,7 +88,7 @@ class InitialBagDeliveryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Tracking #${trackingNumber ?? ""}",
+                  "${tr("tracking")} #${trackingNumber ?? ""}",
                   style: const TextStyle(
                     fontSize: 18,
                     color: Colors.black87,
@@ -96,14 +97,14 @@ class InitialBagDeliveryCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 _buildItemForSF(),
-                _buildMessage("Please refresh this page once you’ve received the bag and tap on the button below to schedule a pick up."),
+                _buildMessage(""),
 
-                ActionButton("Schedule a recycle pick up", disable: true),
+                ActionButton(tr("refresh_page_to_update"), disable: true),
                 RichText(
                   text: TextSpan(
                     style: TextStyle(fontSize: 16, color: Colors.black),
                     children: [
-                      TextSpan(text: "Please"),
+                      TextSpan(text: tr("please")),
                       WidgetSpan(
                         alignment: PlaceholderAlignment.middle,
                         child: InkWell(
@@ -111,12 +112,12 @@ class InitialBagDeliveryCard extends StatelessWidget {
                           onTap: () {},
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Text(" contact us ", style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                            child: Text(tr("contact_us"), style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
                           ),
                         ),
                       ),
                       TextSpan(
-                        text: "is something is wrong",
+                        text: tr("is_something_wrong"),
                       ),
                     ],
                   ),
@@ -265,9 +266,9 @@ class RecycleOrderCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Tracking #${logisticsOrder?.trackingNo ?? ""}", style: TextStyle(fontSize: 18)),
+                          Text("${tr("tracking")} #${logisticsOrder?.trackingNo ?? ""}", style: TextStyle(fontSize: 18)),
                           const SizedBox(height: 12),
-                          Text("Pick Up on ${convertDateTimeToString(context, recycleOrder.pickupAt, format: "dd MMM y | HH:mm")}", style: TextStyle(fontSize: 16)),
+                          Text(tr("pick_up_on", args: [convertDateTimeToString(context, recycleOrder.pickupAt, format: "dd MMM y | HH:mm")]), style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),

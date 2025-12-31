@@ -334,8 +334,8 @@ class _HomeContentState extends State<_HomeContent> {
                             child: Column(
                               children: [
                                 RecycleInfoCard(
-                                  title: tr("how_it_works"),
-                                  description: tr("how_it_works_description"),
+                                  title: tr("how_it_works.title"),
+                                  description: tr("how_it_works.description"),
                                   imagePath: "assets/widget/how_it_work.png",
                                   icon: Icons.change_circle_outlined,
                                   onTap: () => context.push("/how_it_works", extra: widget.subscriptionState),
@@ -388,7 +388,6 @@ class _HomeErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print("--error message: $message");
     return Scaffold(
       body: SafeArea(
         child: Center(

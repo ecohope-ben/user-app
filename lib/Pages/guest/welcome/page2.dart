@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:go_router/go_router.dart';
@@ -30,77 +31,79 @@ class WelcomePage2 extends StatelessWidget {
 
           // 2. Main Content
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                children: [
-                  const Spacer(flex: 3),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  children: [
+                    const Spacer(flex: 3),
 
-                  Image.asset("assets/icon/welcome/logistic.png", width: 300),
+                    Image.asset("assets/icon/welcome/logistic.png", width: 300),
 
-                  const Spacer(flex: 1),
+                    const Spacer(flex: 1),
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          style: const TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white
-                          ),
-                          children: [
-                            const TextSpan(text: 'Reliable Pickups, '),
-                            WidgetSpan(
-                              alignment: PlaceholderAlignment.middle,
-                              child: Transform.rotate(
-                                angle: 0.05, // rotate
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
-                                  decoration: BoxDecoration(
-                                    color: welcomeWordsBg,
-                                  ),
-                                  child: Transform.rotate(
-                                    angle: -0.05, // rotate
-                                    child: const Text(
-                                      'Real-Time',
-                                      style: TextStyle(
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            style: const TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white
+                            ),
+                            children: [
+                              TextSpan(text: tr("welcome.page2.title1")),
+                              WidgetSpan(
+                                alignment: PlaceholderAlignment.middle,
+                                child: Transform.rotate(
+                                  angle: 0.05, // rotate
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
+                                    decoration: BoxDecoration(
+                                      color: welcomeWordsBg,
+                                    ),
+                                    child: Transform.rotate(
+                                      angle: -0.05, // rotate
+                                      child: Text(
+                                        tr("welcome.page2.highlight"),
+                                        style: TextStyle(
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const TextSpan(text: ' Tracking'),
-                          ],
+                              TextSpan(text: tr("welcome.page2.title2")),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                  const Text(
-                    "Partnered with SF Express the network we trust.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      height: 1.5,
+                    Text(
+                      tr("welcome.page2.title3"),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        height: 1.5,
+                      ),
                     ),
-                  ),
 
-                  const Spacer(flex: 2),
+                    const Spacer(flex: 2),
 
-                  const Spacer(flex: 1),
-                  const SizedBox(height: 20),
-                ],
+                    const Spacer(flex: 1),
+                    const SizedBox(height: 20),
+                  ],
+                ),
               ),
             ),
           ),

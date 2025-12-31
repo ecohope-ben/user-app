@@ -37,8 +37,8 @@ class PickUpOrderDetailsPage extends StatelessWidget {
               }
             },
           ),
-          title: const Text(
-            'Recycle Pick Up Details',
+          title: Text(
+            tr("order.pick_up_detail"),
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
           ),
           centerTitle: false,
@@ -72,7 +72,7 @@ class PickUpOrderDetailsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 1. Order Number Section
-            _buildLabel('Order Number'),
+            _buildLabel(tr("order_number")),
             const SizedBox(height: 4),
             Text(
               order.recycleOrderNo,
@@ -108,14 +108,14 @@ class PickUpOrderDetailsPage extends StatelessWidget {
             const SizedBox(height: 16),
 
             // 3. Pick Up Date and Time
-            _buildLabel('Pick Up Date and Time'),
+            _buildLabel(tr("order.pickup_date_time")),
             const SizedBox(height: 6),
             _buildValue(convertDateTimeToString(context, order.pickupAt, format: "dd MMM y | HH:mm")),
 
             const SizedBox(height: 20),
 
             // 4. Pick Up Address
-            _buildLabel('Pick Up Address'),
+            _buildLabel(tr("order.pickup_address")),
             const SizedBox(height: 6),
             _buildValue(order.deliveryAddress.address),
 
@@ -123,46 +123,46 @@ class PickUpOrderDetailsPage extends StatelessWidget {
             const Divider(thickness: 1, color: Colors.black12),
             const SizedBox(height: 16),
 
-            // 6. CO2 Reduction Banner
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              color: lightGreenBg,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'You have helped to reduce CO2 0.80kg',
-                    style: TextStyle(
-                      color: darkGreenWord,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  RichText(
-                    text: TextSpan(
-                      style: const TextStyle(fontSize: 14, color: Colors.black87, height: 1.4),
-                      children: [
-                        const TextSpan(text: 'Product Carbon Footprint Study for Plastic Bottle Recycling by '),
-                        const TextSpan(
-                          text: 'Ecohope',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        const TextSpan(text: '\n0.809 kg CO2 eq. | '),
-                        TextSpan(
-                          text: 'Verified by SGS',
-                          style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            color: Colors.black.withOpacity(0.8),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // 6. SGS
+            // Container(
+            //   width: double.infinity,
+            //   padding: const EdgeInsets.all(16),
+            //   color: lightGreenBg,
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       Text(
+            //         'You have helped to reduce CO2 0.80kg',
+            //         style: TextStyle(
+            //           color: darkGreenWord,
+            //           fontWeight: FontWeight.bold,
+            //           fontSize: 15,
+            //         ),
+            //       ),
+            //       const SizedBox(height: 8),
+            //       RichText(
+            //         text: TextSpan(
+            //           style: const TextStyle(fontSize: 14, color: Colors.black87, height: 1.4),
+            //           children: [
+            //             const TextSpan(text: 'Product Carbon Footprint Study for Plastic Bottle Recycling by '),
+            //             const TextSpan(
+            //               text: 'Ecohope',
+            //               style: TextStyle(fontWeight: FontWeight.bold),
+            //             ),
+            //             const TextSpan(text: '\n0.809 kg CO2 eq. | '),
+            //             TextSpan(
+            //               text: 'Verified by SGS',
+            //               style: TextStyle(
+            //                 decoration: TextDecoration.underline,
+            //                 color: Colors.black.withOpacity(0.8),
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
 
             const SizedBox(height: 60),
 
@@ -192,8 +192,8 @@ class PickUpOrderDetailsPage extends StatelessWidget {
             Center(
               child: TextButton(
                 onPressed: () {},
-                child: const Text(
-                  'Report an issue',
+                child: Text(
+                  tr("report_issus"),
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,

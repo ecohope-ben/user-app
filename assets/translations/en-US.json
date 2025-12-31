@@ -11,7 +11,6 @@
     "edit_email": "Edit email {}",
     "edit_phone": "Edit phone {}",
     "register_now": "Register Now",
-
     "dont_receive_code": "Didn’t receive code?",
     "resend": "Resend",
     "resend_at": "Resend ({}s)",
@@ -26,7 +25,18 @@
     "date_of_birth": "Date of Birth",
     "confirm_and_login": "Confirm and Login"
   },
+  "profile": {
+    "update_success": "Profile updated successfully",
+    "edit_profile": "Edit Profile",
+    "update_my_profile": "Update My Profile",
+    "change_account_info": "Change of Account Information",
+    "contact_our_customer_support": "Please contact our customer support\nat",
+    "for_assistance": " for assistance during office hour.",
+    "delete_ac": "Delete Account"
+  },
   "login": {
+    "title": " Login ",
+    "already_have_account": "Already have an account? ",
     "email_description": "Please login with your email address with OTP here.",
     "your_email_address": "Your Email Address",
     "welcome": "Welcome",
@@ -39,6 +49,116 @@
     "title": "Logout",
     "confirm": "Are you sure you want to logout?"
   },
+  "subscription_plan": "Subscriptions Plan",
+  "subscription_plan_description1": "Join a plan to start recycling",
+  "subscription_plan_description2": "You can cancel anytime",
+  "subscribe": "Subscribe",
+  "subscriptions": "Subscriptions",
+  "no_subscriptions": "No Subscriptions",
+  "subscription": {
+    "title": "Subscription",
+    "monthly": "Monthly Plan",
+    "yearly": "Yearly Plan",
+    "join_now": "Join Now",
+    "change_plan": "Change Plan",
+    "manage": "Manage",
+    "manage_subscription": "Manage Subscription",
+    "billing_cycle": {
+      "monthly": "1 Month",
+      "yearly": "1 Year"
+    },
+    "type": "Type",
+    "renew_on": "Renewing on",
+    "amount": "Amount",
+    "id_no_exist": "Subscription ID no available",
+    "your_subscription": "Your Subscriptions",
+    "your_subscription_mange": "You can manage your subscriptions here.",
+    "your_subscription_may_like": "You might also like",
+    "your_subscription_cancel_anytime": "No commitment, cancel anytime.",
+    "auto_renew_text": "Auto-renews every {}, cancel anytime.",
+    "amount_text_with_discount": "{} | pay nothing until {}, then ${}/Month",
+    "amount_text_with_discount_without_original_price": "pay nothing until {}, then ${}/Month",
+    "subscribe_plan_first": "Please subscribe to a plan first",
+    "subscription_created": "Subscription created, ID: {}",
+    "subscription_created_successful": "Subscription created successfully",
+    "subscription_created_failed": "Subscription created failed, please contact customer service",
+    "canceled_payment_by_user": "User canceled the payment.",
+    "payment_failed": "Payment failed",
+    "update_your_payment_method": "Update your payment method",
+    "payment_failed_try_later": "Payment failed, please try later",
+    "payment_failed_with_msg": "Payment failed: {}",
+    "ending_soon": "Your subscription is ending soon",
+    "confirmation_info": "Thank you for subscribing!",
+    "confirmation_info2": "You have successfully subscribed to our monthly plan. The first ECO HOPE recycling bag is ready for dispatch — Courier may notify you via phone once it’s dispatched.",
+    "changing_plan_to": "Your subscription is changing to ",
+    "change_plan_confirmation": "You will still be able to recycle with your current monthly plan and you can change your mind anytime before this date.",
+    "your_subscription_will_end": "Your subscription will end on {}. You can change your mind anytime before this date.",
+    "cancel": {
+      "title": "Cancel Subscription",
+      "confirm": "Are you sure you want to cancel your subscription plan?\nThis subscription will be canceled at the end of the current billing period",
+      "success": "Your subscription has been successfully. \nThis subscription will be cancelled until the end of your billing period.",
+      "error":"An error occurred while canceling the subscription."
+    },
+    "keep": {
+      "title": "Keep Subscription",
+      "success": "Subscription has been successfully kept and will continue to auto-renew.",
+      "error": "An error occurred while keeping the subscription.",
+      "confirm": "Are you sure you want to keep the subscription?\nYour subscription will continue to auto-renew"
+    }
+  },
+  "order": {
+    "pick_after_receive_bag": "You can schedule a pick up once you have received the recycle bag.",
+    "pick_up_unavailable": "Pick Up Unavailable\n, Please wait until {} to schedule your next recycle pick up.",
+    "provide_later": "Provide Later",
+    "select_date": "Please select pickup date",
+    "select_time": "Please select pickup time",
+    "create_failed": "Create pickup order failed, please try again later",
+    "pick_up_detail": "Recycle Pick Up Details",
+    "order_number": "Order Number",
+    "tracking_number": "Tracking Number",
+    "pickup_date_time": "Pick Up Date and Time",
+    "pickup_date": "Pick Up Date",
+    "pickup_time": "Pick Up Time",
+    "address": "Address",
+    "pickup_address": "Pick Up Address",
+    "schedule_pickup_now": "Recycle Now | Schedule Pick Up",
+    "pickup_details": "Pick Up Details",
+    "fill_information": "Please fill in the information for smooth pick up.",
+    "confirm_pickup_schedule": "Confirm Pick Up Schedule",
+    "by_clicking_to_agree": "By clicking here, you agree to our ",
+    "terms": "terms",
+    "have_read_acknowledge": " and have read and acknowledge our ",
+    "privacy_policy": "privacy policy.",
+    "pickup_history": "Recycle Pick Up History",
+    "no_orders_found": "No orders found",
+    "pickup_order_confirmed": "Your Next Recycle Pick Up Schedule is Confirmed!",
+    "pickup_order_confirmed2": "Pick up time depends on the courier’s schedule and may be subject to change. The courier may call you shortly before arrival.",
+    "view_schedule_detail": "View Schedule Details",
+    "thanks_for_recycling": "Great Job! Thanks for recycling",
+    "wait_for_next_recycling": "Wait until {} for you next recycle.",
+    "status": {
+      "pending": "Pick Up Schedule Confirmed",
+      "processing": "Pick Up Schedule Confirmed",
+      "pickedUp": "Picked Up by Courier",
+      "completed": "Delivery completed / Delivered Successfully",
+      "failed": "Failed"
+    }
+  },
+  "transaction": {
+    "history": "Transaction History",
+    "details": "Transaction Details",
+    "id": "Transaction ID",
+    "type": "Type",
+    "amount": "Amount",
+    "date": "Transaction Date",
+    "no_history_found": "No transaction history found"
+  },
+  "please_use": "Please use the ",
+  "sf_app": "SF Express App",
+  "for_the_tracking_updates": " for latest tracking updates.",
+  "recycle_bag_is_delivering": "Recycle bag is Delivering",
+  "tracking": "Tracking",
+  "refresh_page_to_update": "Please refresh this page once you’ve received the bag and tap on the button below to schedule a pick up.",
   "month": "Month",
   "date": "Date",
   "month_to_words": {
@@ -93,62 +213,6 @@
     "agree_terms": "Please agree to the terms and privacy policy first."
 
   },
-  "subscription_plan": "Subscriptions Plan",
-  "subscription_plan_description1": "Join a plan to start recycling",
-  "subscription_plan_description2": "You can cancel anytime",
-  "subscription": {
-    "title": "Subscription",
-    "monthly": "Monthly Plan",
-    "yearly": "Yearly Plan",
-    "join_now": "Join Now",
-    "change_plan": "Change Plan",
-    "manage": "Manage",
-    "billing_cycle": {
-      "monthly": "1 Month",
-      "yearly": "1 Year"
-    },
-    "your_subscription": "Your Subscriptions",
-    "your_subscription_mange": "You can manage your subscriptions here.",
-    "your_subscription_may_like": "You might also like",
-    "your_subscription_cancel_anytime": "No commitment, cancel anytime.",
-    "auto_renew_text": "Auto-renews every {}, cancel anytime.",
-    "amount_text_with_discount": "{} | pay nothing until {}, then ${}/Month",
-    "subscribe_plan_first": "Please subscribe to a plan first",
-    "subscription_created": "Subscription created, ID: {}",
-    "subscription_created_successful": "Subscription created successfully",
-    "subscription_created_failed": "Subscription created failed, please contact customer service",
-    "canceled_payment_by_user": "User canceled the payment.",
-    "payment_failed": "Payment failed",
-    "payment_failed_try_later": "Payment failed, please try later",
-    "payment_failed_with_msg": "Payment failed: {}",
-    "cancel": {
-      "title": "Cancel Subscription",
-      "confirm": "Are you sure you want to cancel your subscription plan?\nThis subscription will be canceled at the end of the current billing period",
-      "success": "Your subscription has been successfully. \nThis subscription will be cancelled until the end of your billing period.",
-      "error":"An error occurred while canceling the subscription."
-    },
-    "keep": {
-      "title": "Keep Subscription",
-      "success": "Subscription has been successfully kept and will continue to auto-renew.",
-      "error": "An error occurred while keeping the subscription.",
-      "confirm": "Are you sure you want to keep the subscription?\nYour subscription will continue to auto-renew"
-    }
-   },
-  "order": {
-    "pick_after_receive_bag": "You can schedule a pick up once you have received the recycle bag.",
-    "pick_up_unavailable": "Pick Up Unavailable\n, Please wait until {} to schedule your next recycle pick up.",
-    "provide_later": "Provide Later",
-    "select_date": "Please select pickup date",
-    "select_time": "Please select pickup time",
-    "create_failed": "Create pickup order failed, please try again later",
-    "status": {
-      "pending": "Pick Up Schedule Confirmed",
-      "processing": "Pick Up Schedule Confirmed",
-      "pickedUp": "Picked Up by Courier",
-      "completed": "Delivery completed / Delivered Successfully",
-      "failed": "Failed"
-    }
-  },
   "edit_your_address": "Edit Your Address",
   "update_address_successful": "Update address successfully",
   "update_address": "Update address",
@@ -159,17 +223,46 @@
   "input_detail_address": "Please input detail address",
   "your_address_description": "This address will be used both for delivering your free recycle bag and for the pick-up address.",
   "confirm_and_proceed": "Confirm and proceed to payment",
-  "how_it_works": "How it works?",
-  "how_it_works_description": "Door to door collection Upcycle Your Way to a Greener Tomorrow!",
-  "how_it_works_items": {
+  "how_it_works": {
+    "title": "How it works?",
+    "description": "Door to door collection Upcycle Your Way to a Greener Tomorrow!",
+    "items": {
+      "join_subscription": "Join a subscription plan",
+      "receive_recycle_bag": "Receive a FREE brand new Eco Hope recycle bag",
+      "schedule_pickup_time": "Schedule a pick up time",
+      "clean_bottles": "Clean and pack the plastic bottles with Eco Hope recycle bag. (please pour out all liquid)",
+      "collect_bag": "Courier will come to collect the bag. Start Tracking your recycle impact! One foe One****",
+      "upcycle": "We upcycle your plastic bottles into new products, giving plastic a second life"
+    }
+  },
+  "recycle_guide": {
+    "title": "Recycling Guide",
+    "how": "How?",
+    "empty": "Empty",
+    "clean": "Clean",
+    "sqush": "Squash",
+    "items": {
+      "transparent_bottles": "Transparent plastic bottles Only",
+      "empty_bottles": "Empty bottles completely, clean with water",
+      "squash_bottles": "Squash bottles lengthwise to save space",
+      "keep_cap_on": "keep the cap on",
+      "close_up": "Close up the bag",
+      "dont_overfill": "Do not overfill plastic bottles, to avoid the bag bursting or bottles sticking out",
+      "dont_attach_item": "Do not attach items on the outside of the bag"
 
+    }
   },
   "recycling_guide": "Recycling Guide",
   "recycling_guide_description": "Dos and Don’ts We rely on you to apply the recycling guide properly!",
   "tnc_click": "By clicking here, you agree to our ",
   "terms": "terms",
   "privacy_policy": "privacy policy",
+  "terms_n_pp": "Terms & Privacy Policy",
   "privacy_policy_click": " and have read and acknowledge our ",
+  "report_issus": "Report an issue",
+  "payment_method": "Payment Method",
+  "next_billing_date": "Next billing date",
+  "your_credit_debit_card": "Your credit or debit card",
   "change_payment_method": "Change Payment Method",
   "change_payment_method_failed": "Change Payment Method Failed",
   "change_payment_method_successful": "Change Payment Method Successful!",
@@ -181,9 +274,10 @@
   "cancel_plan_change_error": "An error occurred while canceling the plan change",
   "cancel_plan_change_confirm": "Are you sure you want to cancel plan change?",
   "change_plan": "Change Plan",
+  "confirm_plan_change": "Confirm Plan Change",
   "change_plan_confirm": "Are you sure you want to change your subscription? \nYour subscription will continue to auto-renew.",
   "change_plan_description": "Are you sure you want to change your subscription? \nYour subscription will continue to auto-renew.",
-
+  "hello": "Hello",
   "last_name": "Last Name",
   "first_name": "First Name",
   "your_name": "Your Name",
@@ -197,7 +291,52 @@
   "confirm": "Confirm",
   "cancel": "Cancel",
   "please_contact_at": "Please contact us at ",
+  "please": "Please",
+  "contact_us": " contact us ",
+  "pick_up_on": "Pick Up on {}",
+  "is_something_wrong": "is something is wrong",
   "if_need_help": "if you need help with your account",
+  "back_to_home": "Back to Home",
+  "limited_offer_join_now": "Limited Offer, Join Now",
+  "free_trial": "Free Trial available",
+  "explore": "Explore",
+  "update": "Update",
+  "update_now": "Update Now",
+  "remaining_pickups": "Remaining Pickups",
+  "expired": "Expired",
+  "renew": "Renew",
+  "total_collection": "Total Collection",
+  "maybe_later": "Maybe Later",
+  "region": "Region",
+  "district": "District",
+  "active": "Active",
+  "welcome": {
+    "page1": {
+      "title1": "Recycle Smarter, Live ",
+      "highlight": "Greener",
+      "title2": "We collect from your door — no bins, no hassle, just impact."
+    },
+    "page2": {
+      "title1": "Reliable Pickups, ",
+      "highlight": "Real-Time",
+      "title2": " Tracking",
+      "title3": "Partnered with SF Express the network we trust."
+    },
+    "page3": {
+      "title1": "Every Pickup Creates ",
+      "highlight": "Change",
+      "title2": "Your bottles are upcycled into new products,\ngiving plastic a second life."
+    }
+  },
+  "promote": {
+    "subscription_to_earn_gift": "SUBSCRIBE NOW TO EARN WELCOME GIFT",
+    "join_our_monthly_plan": "Join our monthly plan with",
+    "now_to_earn_free_welcome_gift": " now to earn free welcome gift!",
+    "limited_offer_first_come_first_served": "Limited Offer, First come first served!",
+    "welcome_gift": "Welcome Gifts",
+    "1_month_free_trial": "1 Month Free Trial",
+    "limited_offer": "(Limited Offer)"
+  },
   "settings": {
     "order_history": "Recycle Pick Up History",
     "transaction_history": "Transaction History",
@@ -208,5 +347,6 @@
     "network_error": "Network Error, Please try later",
     "retry": "Retry",
     "preview_not_load": "Preview data has not loaded yet, please try again"
-  }
+  },
+  "version": "Version"
 }
