@@ -44,8 +44,9 @@ enum DiscountType {
 
 /// Discount information for plans
 @JsonSerializable()
-class PlanDiscount {
-  final String id;
+class PromotionCode {
+
+  final String code;
   final String name;
   final String description;
   @JsonKey(name: 'discount_type')
@@ -55,8 +56,8 @@ class PlanDiscount {
   @JsonKey(name: 'ended_at')
   final DateTime? endedAt;
 
-  const PlanDiscount({
-    required this.id,
+  const PromotionCode({
+    required this.code,
     required this.name,
     required this.description,
     required this.discountType,
@@ -64,10 +65,10 @@ class PlanDiscount {
     this.endedAt,
   });
 
-  factory PlanDiscount.fromJson(Map<String, dynamic> json) =>
-      _$PlanDiscountFromJson(json);
+  factory PromotionCode.fromJson(Map<String, dynamic> json) =>
+      _$PromotionCodeFromJson(json);
 
-  Map<String, dynamic> toJson() => _$PlanDiscountToJson(this);
+  Map<String, dynamic> toJson() => _$PromotionCodeToJson(this);
 }
 
 /// Plan list item for subscription plan list
@@ -86,7 +87,6 @@ class PlanListItem {
   @JsonKey(name: 'price_decimal')
   final String priceDecimal;
   final String currency;
-  final PlanDiscount? discount;
 
   const PlanListItem({
     required this.id,
@@ -97,8 +97,7 @@ class PlanListItem {
     required this.billingCycle,
     required this.price,
     required this.priceDecimal,
-    required this.currency,
-    this.discount,
+    required this.currency
   });
 
   factory PlanListItem.fromJson(Map<String, dynamic> json) =>
@@ -123,7 +122,6 @@ class PlanDetail {
   @JsonKey(name: 'price_decimal')
   final String priceDecimal;
   final String currency;
-  final PlanDiscount? discount;
 
   const PlanDetail({
     required this.id,
@@ -134,8 +132,7 @@ class PlanDetail {
     required this.billingCycle,
     required this.price,
     required this.priceDecimal,
-    required this.currency,
-    this.discount,
+    required this.currency
   });
 
   factory PlanDetail.fromJson(Map<String, dynamic> json) =>
@@ -458,13 +455,13 @@ class PreviewSubscriptionCreationRequest {
   // @JsonKey(name: 'sub_district_id')
   // final String subDistrictId;
   // final String address;
-  @JsonKey(name: 'discount_id')
-  final String? discountId;
+  @JsonKey(name: 'promotion_code')
+  final String? promotionCode;
 
   const PreviewSubscriptionCreationRequest({
     required this.planId,
     required this.planVersionId,
-    this.discountId,
+    this.promotionCode,
   });
 
   factory PreviewSubscriptionCreationRequest.fromJson(
@@ -489,12 +486,16 @@ class PreviewSubscriptionResponse {
   @JsonKey(name: 'period_end')
   final DateTime periodEnd;
 
+  @JsonKey(name: 'promotion_code')
+  final PromotionCode? promotionCode;
+
   const PreviewSubscriptionResponse({
     required this.amount,
     required this.currency,
     required this.requirePayment,
     required this.periodStart,
     required this.periodEnd,
+    this.promotionCode
   });
 
   factory PreviewSubscriptionResponse.fromJson(Map<String, dynamic> json) =>
@@ -520,6 +521,9 @@ class CreateSubscriptionRequest {
   final int amount;
   final String currency;
 
+  @JsonKey(name: 'promotion_code')
+  final String? promotionCode;
+
   const CreateSubscriptionRequest({
     required this.planId,
     required this.planVersionId,
@@ -529,6 +533,7 @@ class CreateSubscriptionRequest {
     this.discountId,
     required this.amount,
     required this.currency,
+    this.promotionCode
   });
 
   factory CreateSubscriptionRequest.fromJson(Map<String, dynamic> json) =>

@@ -46,12 +46,12 @@ class NegativeButton extends StatelessWidget {
           },
           style: TextButton.styleFrom(
             backgroundColor: Colors.transparent,
-            foregroundColor: blueRegisterText,
+            foregroundColor: Colors.white,
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.zero
             ),
           ),
-          child: Text(title ?? tr("cancel"))
+          child: Text(title ?? tr("cancel"), style: TextStyle(color: blueRegisterText))
       ),
     );
   }

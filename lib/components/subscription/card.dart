@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/pages/subscription/manage/list.dart';
 
+import '../../models/discount/index.dart';
 import '../../models/subscription_models.dart';
 import '../../style.dart';
 import 'features.dart';
@@ -14,11 +15,13 @@ class SubscriptionCard extends StatelessWidget {
   final bool isPaymentFailed;
   final bool isSubscriptionCanceled;
   final String? subscriptionId;
+  final bool hasDiscount;
   final SubscriptionManageTarget target;
   const SubscriptionCard({
     super.key,
     required this.plan,
     required this.features,
+    this.hasDiscount = false,
     this.target = SubscriptionManageTarget.normal,
     this.isCurrentPlan = false,
     this.isPaymentFailed = false,
@@ -27,29 +30,11 @@ class SubscriptionCard extends StatelessWidget {
   });
 
   String calCurrentPrice(){
+    if(hasDiscount) return Discount.instance().amount.toString();
     print("--plan price");
     print(plan.priceDecimal);
     String currentPrice = plan.priceDecimal;
-    if (plan.discount != null) {
 
-      print("--plan discount != null");
-
-      final discount = plan.discount!;
-      if (discount.discountType == DiscountType.percentage) {
-        // Calculate percentage discount (price is in cents)
-        final discountAmount = (plan.price * discount.discountValue / 100).round();
-        final discountedPrice = plan.price - discountAmount;
-        // Convert cents to decimal string
-        currentPrice = (discountedPrice / 100).toStringAsFixed(2);
-      } else if (discount.discountType == DiscountType.fixedAmount) {
-        // Calculate fixed amount discount (discountValue is in cents)
-        final discountedPrice = plan.price - discount.discountValue;
-        // Ensure price doesn't go negative
-        final finalPrice = discountedPrice > 0 ? discountedPrice : 0;
-        // Convert cents to decimal string
-        currentPrice = (finalPrice / 100).toStringAsFixed(2);
-      }
-    }
     return currentPrice;
   }
 
@@ -136,7 +121,7 @@ class SubscriptionCard extends StatelessWidget {
                                 ),
                                 Flexible(
                                   child: Text(
-                                    (plan.discount?.discountType == DiscountType.freeCycles && target == SubscriptionManageTarget.normal) ? tr("promote.1_month_free_trial") : plan.name,
+                                    (false) ? tr("promote.1_month_free_trial") : plan.name,
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -147,7 +132,7 @@ class SubscriptionCard extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            if(plan.discount?.discountType == DiscountType.freeCycles && target == SubscriptionManageTarget.normal) Text(tr("promote.limited_offer"), style: TextStyle(color: Colors.white))
+                            if(plan.id == Discount.instance().planId) Text(tr("promote.limited_offer"), style: TextStyle(color: Colors.white))
                           ],
                         ),
                       ),

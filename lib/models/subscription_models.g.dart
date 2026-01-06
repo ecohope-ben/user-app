@@ -6,20 +6,21 @@ part of 'subscription_models.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-PlanDiscount _$PlanDiscountFromJson(Map<String, dynamic> json) => PlanDiscount(
-  id: json['id'] as String,
-  name: json['name'] as String,
-  description: json['description'] as String,
-  discountType: $enumDecode(_$DiscountTypeEnumMap, json['discount_type']),
-  discountValue: (json['discount_value'] as num).toInt(),
-  endedAt: json['ended_at'] == null
-      ? null
-      : DateTime.parse(json['ended_at'] as String),
-);
+PromotionCode _$PromotionCodeFromJson(Map<String, dynamic> json) =>
+    PromotionCode(
+      code: json['code'] as String,
+      name: json['name'] as String,
+      description: json['description'] as String,
+      discountType: $enumDecode(_$DiscountTypeEnumMap, json['discount_type']),
+      discountValue: (json['discount_value'] as num).toInt(),
+      endedAt: json['ended_at'] == null
+          ? null
+          : DateTime.parse(json['ended_at'] as String),
+    );
 
-Map<String, dynamic> _$PlanDiscountToJson(PlanDiscount instance) =>
+Map<String, dynamic> _$PromotionCodeToJson(PromotionCode instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'code': instance.code,
       'name': instance.name,
       'description': instance.description,
       'discount_type': _$DiscountTypeEnumMap[instance.discountType]!,
@@ -43,9 +44,6 @@ PlanListItem _$PlanListItemFromJson(Map<String, dynamic> json) => PlanListItem(
   price: (json['price'] as num).toInt(),
   priceDecimal: json['price_decimal'] as String,
   currency: json['currency'] as String,
-  discount: json['discount'] == null
-      ? null
-      : PlanDiscount.fromJson(json['discount'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$PlanListItemToJson(PlanListItem instance) =>
@@ -59,7 +57,6 @@ Map<String, dynamic> _$PlanListItemToJson(PlanListItem instance) =>
       'price': instance.price,
       'price_decimal': instance.priceDecimal,
       'currency': instance.currency,
-      'discount': instance.discount?.toJson(),
     };
 
 const _$BillingCycleEnumMap = {
@@ -78,9 +75,6 @@ PlanDetail _$PlanDetailFromJson(Map<String, dynamic> json) => PlanDetail(
   price: (json['price'] as num).toInt(),
   priceDecimal: json['price_decimal'] as String,
   currency: json['currency'] as String,
-  discount: json['discount'] == null
-      ? null
-      : PlanDiscount.fromJson(json['discount'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$PlanDetailToJson(PlanDetail instance) =>
@@ -94,7 +88,6 @@ Map<String, dynamic> _$PlanDetailToJson(PlanDetail instance) =>
       'price': instance.price,
       'price_decimal': instance.priceDecimal,
       'currency': instance.currency,
-      'discount': instance.discount?.toJson(),
     };
 
 PlanListEnvelope _$PlanListEnvelopeFromJson(Map<String, dynamic> json) =>
@@ -381,7 +374,7 @@ PreviewSubscriptionCreationRequest _$PreviewSubscriptionCreationRequestFromJson(
 ) => PreviewSubscriptionCreationRequest(
   planId: json['plan_id'] as String,
   planVersionId: json['plan_version_id'] as String,
-  discountId: json['discount_id'] as String?,
+  promotionCode: json['promotion_code'] as String?,
 );
 
 Map<String, dynamic> _$PreviewSubscriptionCreationRequestToJson(
@@ -389,7 +382,7 @@ Map<String, dynamic> _$PreviewSubscriptionCreationRequestToJson(
 ) => <String, dynamic>{
   'plan_id': instance.planId,
   'plan_version_id': instance.planVersionId,
-  'discount_id': instance.discountId,
+  'promotion_code': instance.promotionCode,
 };
 
 PreviewSubscriptionResponse _$PreviewSubscriptionResponseFromJson(
@@ -400,6 +393,9 @@ PreviewSubscriptionResponse _$PreviewSubscriptionResponseFromJson(
   requirePayment: json['require_payment'] as bool,
   periodStart: DateTime.parse(json['period_start'] as String),
   periodEnd: DateTime.parse(json['period_end'] as String),
+  promotionCode: json['promotion_code'] == null
+      ? null
+      : PromotionCode.fromJson(json['promotion_code'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$PreviewSubscriptionResponseToJson(
@@ -410,6 +406,7 @@ Map<String, dynamic> _$PreviewSubscriptionResponseToJson(
   'require_payment': instance.requirePayment,
   'period_start': instance.periodStart.toIso8601String(),
   'period_end': instance.periodEnd.toIso8601String(),
+  'promotion_code': instance.promotionCode,
 };
 
 CreateSubscriptionRequest _$CreateSubscriptionRequestFromJson(
@@ -423,6 +420,7 @@ CreateSubscriptionRequest _$CreateSubscriptionRequestFromJson(
   discountId: json['discount_id'] as String?,
   amount: (json['amount'] as num).toInt(),
   currency: json['currency'] as String,
+  promotionCode: json['promotion_code'] as String?,
 );
 
 Map<String, dynamic> _$CreateSubscriptionRequestToJson(
@@ -436,6 +434,7 @@ Map<String, dynamic> _$CreateSubscriptionRequestToJson(
   'discount_id': instance.discountId,
   'amount': instance.amount,
   'currency': instance.currency,
+  'promotion_code': instance.promotionCode,
 };
 
 CreateSubscriptionResponse _$CreateSubscriptionResponseFromJson(

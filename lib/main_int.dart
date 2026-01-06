@@ -28,6 +28,9 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp
   ]); // Only allow portrait modes
+
+
+
   runApp(
     EasyLocalization(
         supportedLocales: [Locale('en', 'US'), Locale('zh', 'HK')],

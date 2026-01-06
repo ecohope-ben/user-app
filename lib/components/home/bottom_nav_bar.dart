@@ -20,9 +20,11 @@ class CustomBottomNavBar extends StatelessWidget {
       onTap: () {
         if(subscriptionDetail == null){
           popSnackBar(context, tr("subscription.subscribe_plan_first"));
-        }else if(!hasEntitlement){
-          popSnackBar(context, tr("order.pick_up_unavailable", args: [convertDateTimeToString(context, subscriptionDetail?.currentPeriodEnd)]));
-        }else if(subscriptionDetail?.recyclingProfile?.initialBagStatus != "delivered"){
+        }
+        // else if(!hasEntitlement){
+        //   popSnackBar(context, tr("order.pick_up_unavailable", args: [convertDateTimeToString(context, subscriptionDetail?.currentPeriodEnd)]));
+        // }
+        else if(subscriptionDetail?.recyclingProfile?.initialBagStatus != "delivered"){
           popSnackBar(context, tr("order.pick_after_receive_bag"));
         }else {
           context.push("/order/create", extra: subscriptionDetail);
@@ -80,7 +82,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     icon: const Icon(Icons.home_filled, color: Colors.black),
                     onPressed: () {},
                   ),
-                  const SizedBox(width: 40), // 中間留空給大按鈕
+                  const SizedBox(width: 40),
                   IconButton(
                     icon: const Icon(Icons.star_border, color: Colors.black),
                     onPressed: () {},

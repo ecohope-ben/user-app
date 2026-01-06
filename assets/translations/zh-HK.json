@@ -32,7 +32,10 @@
     "change_account_info": "更改帳戶資料",
     "contact_our_customer_support": "請於辦公時間內聯絡我們的客戶服務\n",
     "for_assistance": " 以獲協助。",
-    "delete_ac": "刪除帳戶"
+    "delete_ac": "刪除帳戶",
+    "delete_account_confirm_title": "刪除帳戶",
+    "delete_account_confirm_message": "您確定要刪除帳戶嗎？\n此操作將會刪除你所有資料，及取消你的所有訂閱",
+    "delete_account": "刪除"
   },
   "login": {
 
@@ -66,6 +69,7 @@
     "manage_subscription": "管理訂閱",
     "billing_cycle": {
       "monthly": "1個月",
+      "quarterly": "3個月",
       "yearly": "1年"
     },
     "type": "類型",
@@ -123,6 +127,11 @@
     "address": "地址",
     "pickup_address": "回收地址",
     "schedule_pickup_now": "立即回收 | 安排上門回收",
+    "schedule_recycle_pickup": "立即安排上門回收送中",
+    "schedule_recycle_pickup_again": "再次安排上門回收",
+    "recycle_bag_received_successfully": "回收袋已成功接收！",
+    "congratulations": "恭喜!",
+    "you_may_now_start_scheduling": "您現在可以開始安排第一次上門回收了。",
     "pickup_details": "回收詳情",
     "fill_information": "請填寫資料以確保回收順利。",
     "confirm_pickup_schedule": "確認回收安排",
@@ -142,7 +151,14 @@
       "processing": "回收安排已確認",
       "pickedUp": "快遞已取件",
       "completed": "送達完成 / 已成功送達",
-      "failed": "失敗"
+      "failed": "失敗",
+      "short": {
+        "pending": "已確認",
+        "processing": "已確認",
+        "pickedUp": "已取件",
+        "completed": "已完成",
+        "failed": "失敗"
+      }
     }
   },
   "transaction": {
@@ -162,19 +178,28 @@
   "refresh_page_to_update": "請在收到回收袋後刷新本頁，並點擊下方按鈕安排回收。",
   "month": "月",
   "date": "日",
+  "weekday": {
+    "1": "星期一",
+    "2": "星期二",
+    "3": "星期三",
+    "4": "星期四",
+    "5": "星期五",
+    "6": "星期六",
+    "7": "星期日"
+  },
   "month_to_words": {
-    "1": "一月",
-    "2": "二月",
-    "3": "三月",
-    "4": "四月",
-    "5": "五月",
-    "6": "六月",
-    "7": "七月",
-    "8": "八月",
-    "9": "九月",
-    "10": "十月",
-    "11": "十一月",
-    "12": "十二月"
+    "1": "1月",
+    "2": "2月",
+    "3": "3月",
+    "4": "4月",
+    "5": "5月",
+    "6": "6月",
+    "7": "7月",
+    "8": "8月",
+    "9": "9月",
+    "10": "10月",
+    "11": "11月",
+    "12": "12月"
   },
   "month_to_words_short": {
     "1": "1月",
@@ -288,11 +313,12 @@
   "ok": "確定",
   "confirm": "確認",
   "cancel": "取消",
+  "apply": "使用",
   "please_contact_at": "請聯絡我們：",
   "please": "請",
   "contact_us": " 聯絡我們 ",
   "pick_up_on": "回收日期 {}",
-  "is_something_wrong": "有什麼問題",
+  "if_something_wrong": "，如果有問題",
   "if_need_help": "如需帳戶協助",
   "back_to_home": "返回主頁",
   "limited_offer_join_now": "限時優惠，立即加入",
@@ -302,7 +328,8 @@
   "update_now": "立即更新",
   "remaining_pickups": "剩餘回收次數",
   "expired": "已過期",
-  "renew": "續訂",
+  "expired_date": "到期日",
+  "renew": "續訂日",
   "total_collection": "總回收量",
   "maybe_later": "稍後再說",
   "region": "地區",
@@ -340,11 +367,17 @@
     "transaction_history": "交易記錄",
     "fnq": "常見問題及意見反饋"
   },
+  "format": {
+    "date": "yyyy年MMMdd日",
+    "date_day": "MMMd日",
+    "date_time": "yyyy年MMMdd日 | HH:mm"
+  },
   "error": {
     "home_page_error": "主頁資料錯誤",
     "network_error": "網絡錯誤，請稍後再試",
     "retry": "重試",
-    "preview_not_load": "預覽資料尚未載入，請再試一次"
+    "preview_not_load": "預覽資料尚未載入，請再試一次",
+    "pending_account_deletion": "您的帳戶正在等待刪除"
   },
   "version": "版本"
 }

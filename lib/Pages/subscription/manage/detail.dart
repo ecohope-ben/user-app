@@ -46,7 +46,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
   String _buildAmountText(){
     if(_subscriptionDetail?.discount != null){
       if(_subscriptionDetail!.discount?.discountType == DiscountType.freeCycles){
-        return tr("subscription.amount_text_with_discount_without_original_price", args: [convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y"), widget.plan.priceDecimal]);
+        return tr("subscription.amount_text_with_discount_without_original_price", args: [convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd), widget.plan.priceDecimal]);
       }else {
         return '${_subscriptionDetail?.plan.priceDecimal}';
       }
@@ -328,7 +328,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                           ),
                           child: SubscriptionPreviewCard(
                             billingRecycleType: _subscriptionDetail?.plan.billingCycle.name ?? "",
-                            renewalText: (_hasScheduledCancellation) ? "--" : convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y"),
+                            renewalText: (_hasScheduledCancellation) ? "--" : convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd),
                             amountText: _buildAmountText(),
                             autoRenewText: _buildRenewText()
                           ),
@@ -450,7 +450,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                             ),
                           ),
                         ),
-                        Text("${tr("next_billing_date")}: ${convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y")}"),
+                        Text("${tr("next_billing_date")}: ${convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd)}"),
                         if(_subscriptionDetail?.lifecycleState == SubscriptionLifecycleState.pastDue) _buildFailedPaymentNotice(),
                         (_hasScheduledCancellation || _hasScheduledPlanChange) ? const SizedBox(height: 20) : const SizedBox(height: 40),
 

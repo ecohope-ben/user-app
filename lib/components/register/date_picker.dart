@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:user_app/utils/time.dart';
 
 import '../../style.dart';
 import 'dob_select.dart';
@@ -27,7 +28,10 @@ class _DatePickerState extends State<DatePicker> {
 
         int? month = result?['month'];
         int? day = result?['day'];
-        _controller.text = "${tr("month_to_words.$month")} $day";
+        if(month != null && day != null){
+          DateTime selectedDateTime = DateTime(2025, month, day);
+          _controller.text = convertDateTimeToString(context, selectedDateTime, format: tr("format.date_day"));
+        }
       });
 
       print(result?['month']);

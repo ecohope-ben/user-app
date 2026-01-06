@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:user_app/components/register/action_button.dart';
+import 'package:user_app/models/discount/index.dart';
 class PromotionBanner extends StatelessWidget {
   final VoidCallback onTap;
   const PromotionBanner(this.onTap, {super.key});
@@ -81,6 +82,9 @@ class PromotionBanner extends StatelessWidget {
                 ],
               ),
             ),
+            if(Discount.instance().promotionCode != null) const SizedBox(height: 10),
+            if(Discount.instance().promotionCode != null) Text(Discount.instance().promotionCode!, style: TextStyle(color: Colors.black54),),
+
             const SizedBox(height: 10),
             Text(tr("promote.limited_offer_first_come_first_served"), style: TextStyle(color: Colors.black54),),
             const SizedBox(height: 20),

@@ -13,7 +13,7 @@ class SubscriptionPreviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        PaymentDetailRow(tr("subscription.type"), tr("subscription.$billingRecycleType"), isBold: true),
+        PaymentDetailRow(tr("subscription.type"), billingRecycleType, isBold: true),
         const SizedBox(height: 8),
         PaymentDetailRow(tr("subscription.renew_on"), renewalText, isBold: true),
         const SizedBox(height: 8),
@@ -22,7 +22,7 @@ class SubscriptionPreviewCard extends StatelessWidget {
           children: [
             SizedBox(
               width: 100,
-              child: Text(tr("amount"), style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700)),
+              child: Text(tr("subscription.amount"), style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700)),
             ),
             Expanded(
               child: Column(

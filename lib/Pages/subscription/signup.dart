@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:user_app/components/common/promotion_code.dart';
 import 'package:user_app/components/subscription/address.dart';
 import 'package:user_app/components/subscription/features.dart';
 
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:user_app/components/subscription/preview.dart';
+import 'package:user_app/models/discount/index.dart';
 import 'package:user_app/routes.dart';
 import '../../api/index.dart';
 import '../../api/endpoints/subscription_api.dart';
@@ -37,12 +40,15 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   // Loading states
   bool _isLoadingDistricts = true;
   bool _isLoadingPreview = true;
+  bool _isLoadingPreviewWithPromotionCode = false;
   bool _isCreatingSubscription = false;
   bool _isCheckingActivation = false;
   String? _districtsError;
   String? _previewError;
+  bool hasPreviewError = false;
   bool _hasAcceptedTerms = false;
-
+  PromotionCode? _promotionCode;
+  bool _showPromotionName = true;
   // Timer for polling activation status
   Timer? _activationCheckTimer;
 
@@ -55,6 +61,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   PreviewSubscriptionResponse? _previewData;
 
   final TextEditingController addressController = TextEditingController(text: "");
+  final TextEditingController promotionCodeController = TextEditingController(text: "");
 
   @override
   void initState() {
@@ -96,30 +103,82 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
     }
   }
 
-  Future<void> _loadPreview() async {
+
+  Future<void> _loadPreviewWithPromotionCode(String promotionCode) async {
     setState(() {
-      _isLoadingPreview = true;
+      _isLoadingPreviewWithPromotionCode = true;
       _previewError = null;
+      hasPreviewError = false;
     });
 
     try {
       final request = PreviewSubscriptionCreationRequest(
-        planId: widget.plan.id,
-        planVersionId: widget.plan.versionId,
-        discountId: widget.plan.discount?.id,
+        planId: Discount.instance().planId ?? "",
+        planVersionId: Discount.instance().versionId ?? "",
+        promotionCode: promotionCode,
       );
       print("--preview request");
       print(widget.plan.id);
       print(widget.plan.versionId);
-      print(widget.plan.discount?.id);
+      final preview = await _subscriptionApi.previewSubscription(request: request);
+      setState(() {
+        _previewData = preview;
+        _isLoadingPreviewWithPromotionCode = false;
+
+        _promotionCode = preview.promotionCode;
+        _showPromotionName = true;
+      });
+    } on SubscriptionException catch (e) {
+      setState(() {
+
+        _isLoadingPreviewWithPromotionCode = false;
+        hasPreviewError = true;
+        _previewError = e.message;
+      });
+    }catch (e) {
+      setState(() {
+
+        _isLoadingPreviewWithPromotionCode = false;
+        hasPreviewError = true;
+        _previewError = e.toString();
+      });
+    }
+  }
+
+  Future<void> _loadPreview([String? promotionCode]) async {
+    setState(() {
+      _isLoadingPreview = true;
+      _previewError = null;
+      hasPreviewError = false;
+    });
+
+    try {
+      final request = PreviewSubscriptionCreationRequest(
+        planId: Discount.instance().planId ?? "",
+        planVersionId: Discount.instance().versionId ?? "",
+        promotionCode: promotionCode,
+      );
+      print("--preview request");
+      print(widget.plan.id);
+      print(widget.plan.versionId);
       final preview = await _subscriptionApi.previewSubscription(request: request);
       setState(() {
         _previewData = preview;
         _isLoadingPreview = false;
+        hasPreviewError = false;
       });
-    } catch (e) {
+    } on SubscriptionException catch (e) {
       setState(() {
+
         _isLoadingPreview = false;
+        hasPreviewError = true;
+        _previewError = e.message;
+      });
+    }catch (e) {
+      setState(() {
+
+        _isLoadingPreview = false;
+        hasPreviewError = true;
         _previewError = e.toString();
       });
     }
@@ -167,14 +226,20 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   String _getAmountText() {
     if (_previewData == null) return '';
     if (!_previewData!.requirePayment) {
-      return tr("subscription.amount_text_with_discount", args: [_formatAmount(_previewData!.amount, _previewData!.currency), convertDateTimeToString(context, _previewData!.periodEnd), widget.plan.priceDecimal]) ;
-      // return '${_formatAmount(_previewData!.amount, _previewData!.currency)} | pay nothing until ${_formatDate(_previewData!.periodEnd)}, then \$${widget.plan.priceDecimal}/Month';
+      if(widget.plan.id == Discount.instance().planId) {
+        return tr("subscription.amount_text_with_discount", args: [
+          _formatAmount(_previewData!.amount, _previewData!.currency),
+          convertDateTimeToString(context, _previewData!.periodEnd),
+          widget.plan.priceDecimal
+        ]);
+      }else return '${_formatAmount(_previewData!.amount, _previewData!.currency)}';
     }
     return _formatAmount(_previewData!.amount, _previewData!.currency);
   }
 
   String _getAutoRenewText() {
-    final cycle = widget.plan.billingCycle == BillingCycle.monthly ? tr("subscription.billing_cycle.monthly") : tr("subscription.billing_cycle.yearly");
+    final cycle = tr("subscription.billing_cycle.${widget.plan.billingCycle.name}");
+
     return tr("subscription.auto_renew_text", args: [cycle]);
   }
 
@@ -182,7 +247,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
 
     await Stripe.instance.initPaymentSheet(
       paymentSheetParameters: SetupPaymentSheetParameters(
-        merchantDisplayName: 'Eco Hope',
+        merchantDisplayName: 'ECOHOPE',
         // This is a PaymentIntent flow for the first subscription invoice:
         paymentIntentClientSecret: paymentIntentClientSecret,
         setupIntentClientSecret: setupIntentClientSecret,
@@ -197,8 +262,6 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   }
 
   Future<void> _createSubscription() async {
-
-
     // Validate required fields
     if (_selectedDistrict == null) {
       popSnackBar(context, tr("validation.select_region"));
@@ -237,9 +300,9 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
         districtId: _selectedDistrict!.id,
         subDistrictId: _selectedSubDistrict!.id,
         address: address,
-        discountId: widget.plan.discount?.id,
         amount: _previewData!.amount,
         currency: _previewData!.currency,
+        promotionCode: _promotionCode?.code
       );
 
       final response = await _subscriptionApi.createSubscription(request: request);
@@ -264,7 +327,12 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
           } else if (response.nextAction == PaymentNextAction.pay) {
             await presentSubscriptionSheet(paymentIntentClientSecret: response.clientSecret);
           }
+
+          print("--after payment");
+          _checkSubscriptionStatus(response.subscriptionId);
+
         }on StripeException catch(e){
+          print("--StripeException");
           if (e.error.code == FailureCode.Canceled) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(tr("subscription.canceled_payment_by_user"))),
@@ -279,13 +347,13 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
             );
           }
         }catch(e){
+
+          print("--StripeException2");
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(tr("subscription.payment_failed_try_later"))),
           );
         }
 
-        print("--after payment");
-        _checkSubscriptionStatus(response.subscriptionId);
 
       }
     } catch (e) {
@@ -497,7 +565,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                              color: Colors.grey.shade100,
+                              color: Colors.grey.shade200,
                               // color: Color(0xFFfafafa),
                               border: Border.all(color: const Color(0xFFC7C7C7))
                           ),
@@ -506,22 +574,38 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                                   padding: EdgeInsets.all(16.0),
                                   child: Center(child: CircularProgressIndicator()),
                                 )
-                              : _previewError != null
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Text(
-                                        '',
-                                        // 'Error loading preview: $_previewError',
-                                        style: const TextStyle(color: Colors.red),
-                                      ),
-                                    )
-                                  : SubscriptionPreviewCard(
+                              : SubscriptionPreviewCard(
                                       billingRecycleType: _getBillingCycleText(),
                                       renewalText: _getRenewalText(),
                                       amountText: _getAmountText(),
                                       autoRenewText: _getAutoRenewText())
                         ),
 
+                        const SizedBox(height: 15),
+                        Text("優惠代碼（如有）"),
+
+                        const SizedBox(height: 10),
+                        PromotionCodeInput(
+                          onTap: (){
+                            print("--promotion code: ${promotionCodeController.text}");
+                            if(promotionCodeController.text.isNotEmpty){
+                              _loadPreviewWithPromotionCode(promotionCodeController.text);
+                            }
+                          },
+                          isLoading: _isLoadingPreviewWithPromotionCode,
+                          controller: promotionCodeController,
+                        ),
+                        if(hasPreviewError) Text(_previewError ?? "promotion code error", style: TextStyle(color: Colors.red)),
+
+                        const SizedBox(height: 15),
+                        if(_promotionCode != null && _showPromotionName) PromotionCodeName(_promotionCode!.name, onClose: (){
+                          setState(() {
+                            _showPromotionName = false;
+                            hasPreviewError = false;
+                            promotionCodeController.clear();
+                            _loadPreview();
+                          });
+                        }),
                         const SizedBox(height: 15),
 
                         // Address Section

@@ -64,6 +64,21 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
     }
   }
 
+
+
+  void _handleDeleteAccount(BuildContext context) {
+    showPopup(
+      context,
+      title: tr("profile.delete_account_confirm_title"),
+      message: tr("profile.delete_account_confirm_message"),
+      confirmText: tr("profile.delete_account"),
+      cancelText: tr("cancel"),
+      onConfirm: () {
+        context.read<ProfileCubit>().deleteAccount();
+      },
+    );
+  }
+
   void _loadProfileData(ProfileLoaded state) {
     final profile = state.profile;
     
@@ -106,6 +121,10 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
           );
           // Reload profile after successful update
           context.read<ProfileCubit>().loadProfile();
+        } else if (state is ProfileDeleteSuccess) {
+          // Logout and navigate to get_start page after successful deletion
+          Auth.instance().logout();
+          context.go("/get_start");
         }
       },
       builder: (context, state) {
@@ -393,7 +412,10 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
 
                 // 10. Delete Account
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () => _handleDeleteAccount(context),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                  ),
                   child: Text(
                     tr("profile.delete_ac"),
                     style: TextStyle(color: Colors.grey, fontSize: 14),

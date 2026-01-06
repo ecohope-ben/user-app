@@ -18,8 +18,8 @@ String convertToDateStringWithTz8(String? isoString) {
   return '$day-$month-$year';
 }
 
-String convertDateTimeToString(BuildContext context, DateTime? dateTime, {String format = "dd MMM y"}){
-
+String convertDateTimeToString(BuildContext context, DateTime? dateTime, {String? format}){
+  format ??= context.tr("format.date");
   if(dateTime == null) return "";
   DateTime? dateTime2 = dateTime.add(const Duration(hours: 8));
   var formatter = DateFormat(format, context.locale.toStringWithSeparator());

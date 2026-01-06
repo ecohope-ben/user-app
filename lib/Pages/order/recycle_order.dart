@@ -6,12 +6,14 @@ import 'package:user_app/components/register/action_button.dart';
 import 'package:user_app/models/recycle_models.dart';
 import 'package:user_app/models/subscription_models.dart';
 import 'package:user_app/style.dart';
+import 'package:user_app/utils/time.dart';
 
 import '../../api/endpoints/recycle_api.dart';
 
 class SchedulePickUpOrderPage extends StatefulWidget {
+  final bool isExtraOrder;
   final SubscriptionDetail subscriptionDetail;
-  const SchedulePickUpOrderPage(this.subscriptionDetail, {super.key});
+  const SchedulePickUpOrderPage(this.subscriptionDetail, {this.isExtraOrder = false, super.key});
 
   @override
   State<SchedulePickUpOrderPage> createState() => _SchedulePickUpOrderPageState();
@@ -161,11 +163,8 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
   String _formatDateForDisplay(String date) {
     try {
       final dateTime = DateTime.parse(date);
-      // Format: "Mon, Jan 15, 2024" or similar
-      final weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-      final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      return '${weekdays[dateTime.weekday - 1]}, ${months[dateTime.month - 1]} ${dateTime.day}, ${dateTime.year}';
+
+      return '${tr("weekday.${dateTime.weekday}")}, ${convertDateTimeToString(context, dateTime)}';
     } catch (e) {
       return date;
     }

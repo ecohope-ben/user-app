@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:el_tooltip/el_tooltip.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_app/components/home/promotion_banner.dart';
 import 'package:user_app/components/home/recycle_info_card.dart';
 import 'package:user_app/components/register/action_button.dart';
+import 'package:user_app/models/discount/index.dart';
 import 'package:user_app/routes.dart';
 import 'package:user_app/utils/snack.dart';
 import 'package:user_app/utils/time.dart';
@@ -37,6 +39,7 @@ class HomePage extends StatelessWidget {
         BlocProvider(create: (_) => ProfileCubit()..loadProfile()),
         BlocProvider(create: (_) => EntitlementCubit()..loadEntitlements()),
         BlocProvider(create: (_) => SubscriptionCubit()..getCurrentSubscription()),
+        BlocProvider(create: (_) => PreviewSubscriptionCubit()..previewSubscription()),
         BlocProvider(create: (_) => RecycleOrderCubit()..listOrders()),
       ],
       child: _HomeView(),
@@ -56,6 +59,7 @@ class _HomeViewState extends State<_HomeView> {
   ProfileState? _lastProfileState;
   EntitlementState? _lastEntitlementState;
   SubscriptionState? _lastSubscriptionState;
+  SubscriptionState? _lastPreviewSubscriptionState;
   RecycleOrderState? _lastRecycleOrderState;
 
   @override
@@ -63,6 +67,7 @@ class _HomeViewState extends State<_HomeView> {
     final profileState = context.watch<ProfileCubit>().state;
     final entitlementState = context.watch<EntitlementCubit>().state;
     final subscriptionState = context.watch<SubscriptionCubit>().state;
+    final previewSubscriptionState = context.watch<PreviewSubscriptionCubit>().state;
     final recycleOrderState = context.watch<RecycleOrderCubit>().state;
 
     // Save successful states for refresh
@@ -75,6 +80,9 @@ class _HomeViewState extends State<_HomeView> {
     if (subscriptionState is SubscriptionListLoaded) {
       _lastSubscriptionState = subscriptionState;
     }
+    if (previewSubscriptionState is SubscriptionPreviewReady || previewSubscriptionState is SubscriptionPreviewUnavailable) {
+      _lastPreviewSubscriptionState = previewSubscriptionState;
+    }
     if (recycleOrderState is RecycleOrderListLoaded) {
       _lastRecycleOrderState = recycleOrderState;
     }
@@ -84,6 +92,7 @@ class _HomeViewState extends State<_HomeView> {
       final hasData = profileState is ProfileLoaded &&
           entitlementState is EntitlementLoaded &&
           subscriptionState is SubscriptionListLoaded &&
+          (previewSubscriptionState is SubscriptionPreviewReady || previewSubscriptionState is SubscriptionPreviewUnavailable) &&
           recycleOrderState is RecycleOrderListLoaded;
       if (hasData) {
         _hasInitialData = true;
@@ -101,6 +110,10 @@ class _HomeViewState extends State<_HomeView> {
         ? _lastSubscriptionState!
         : subscriptionState;
 
+    final effectivePreviewSubscriptionState = (previewSubscriptionState is SubscriptionPreviewReady || previewSubscriptionState is SubscriptionPreviewUnavailable)
+        ? _lastPreviewSubscriptionState!
+        : previewSubscriptionState;
+
     final effectiveRecycleOrderState = (recycleOrderState is RecycleOrderLoading && _lastRecycleOrderState != null)
         ? _lastRecycleOrderState!
         : recycleOrderState;
@@ -109,16 +122,18 @@ class _HomeViewState extends State<_HomeView> {
       effectiveProfileState,
       effectiveEntitlementState,
       effectiveSubscriptionState,
-      effectiveRecycleOrderState,
+      effectiveRecycleOrderState
     );
 
     if (errorMessage != null) {
+
       return _HomeErrorView(
         message: errorMessage,
         onRetry: () {
           context.read<ProfileCubit>().loadProfile();
           context.read<EntitlementCubit>().loadEntitlements();
           context.read<SubscriptionCubit>().getCurrentSubscription();
+          context.read<PreviewSubscriptionCubit>().previewSubscription();
           context.read<RecycleOrderCubit>().listOrders();
         },
       );
@@ -128,6 +143,7 @@ class _HomeViewState extends State<_HomeView> {
         effectiveProfileState is ProfileLoaded &&
         effectiveEntitlementState is EntitlementLoaded &&
         effectiveSubscriptionState is SubscriptionListLoaded &&
+        (effectivePreviewSubscriptionState is SubscriptionPreviewReady || effectivePreviewSubscriptionState is SubscriptionPreviewUnavailable) &&
         effectiveRecycleOrderState is RecycleOrderListLoaded;
     print("--ready: $isReady | $_hasInitialData");
     print("--ready: $effectiveProfileState");
@@ -145,6 +161,7 @@ class _HomeViewState extends State<_HomeView> {
         profileState: _lastProfileState as ProfileLoaded,
         entitlementState: _lastEntitlementState as EntitlementLoaded,
         subscriptionState: _lastSubscriptionState as SubscriptionListLoaded,
+        previewSubscriptionState: _lastPreviewSubscriptionState as SubscriptionState,
         recycleOrderState: _lastRecycleOrderState as RecycleOrderListLoaded,
       );
     }
@@ -153,6 +170,7 @@ class _HomeViewState extends State<_HomeView> {
       profileState: effectiveProfileState as ProfileLoaded,
       entitlementState: effectiveEntitlementState as EntitlementLoaded,
       subscriptionState: effectiveSubscriptionState as SubscriptionListLoaded,
+      previewSubscriptionState: effectivePreviewSubscriptionState,
       recycleOrderState: effectiveRecycleOrderState as RecycleOrderListLoaded,
     );
   }
@@ -163,22 +181,32 @@ class _HomeViewState extends State<_HomeView> {
     SubscriptionState subscriptionState,
     RecycleOrderState recycleOrderState,
   ) {
+
     if (profileState is ProfileError) {
+
       print("--ProfileError");
-      return profileState.message;
+      if(profileState.code == "http_guard.customer_pending_deletion"){
+        return tr("error.pending_account_deletion");
+      }
+      return tr("error.home_page_error");
+      // return profileState.message;
     }
     if (entitlementState is EntitlementError) {
       print("--EntitlementError");
-      return entitlementState.message;
+      return tr("error.home_page_error");
+      // return entitlementState.message;
     }
     if (subscriptionState is SubscriptionError) {
       print("--SubscriptionError");
-      return subscriptionState.message;
+      return tr("error.home_page_error");
+      // return subscriptionState.message;
     }
     if (recycleOrderState is RecycleOrderError) {
       print("--RecycleOrderError");
-      return recycleOrderState.message;
+      return tr("error.home_page_error");
+      // return recycleOrderState.message;
     }
+
     return null;
   }
 }
@@ -187,12 +215,14 @@ class _HomeContent extends StatefulWidget {
   final ProfileLoaded profileState;
   final EntitlementLoaded entitlementState;
   final SubscriptionListLoaded subscriptionState;
+  final SubscriptionState previewSubscriptionState;
   final RecycleOrderListLoaded recycleOrderState;
 
   const _HomeContent({
     required this.profileState,
     required this.entitlementState,
     required this.subscriptionState,
+    required this.previewSubscriptionState,
     required this.recycleOrderState,
   });
 
@@ -203,16 +233,19 @@ class _HomeContent extends StatefulWidget {
 class _HomeContentState extends State<_HomeContent> {
   final ElTooltipController tooltipController = ElTooltipController();
 
+
   Future<void> _refreshData(BuildContext context) async {
     final profileCubit = context.read<ProfileCubit>();
     final entitlementCubit = context.read<EntitlementCubit>();
     final subscriptionCubit = context.read<SubscriptionCubit>();
+    final previewSubscriptionCubit = context.read<PreviewSubscriptionCubit>();
     final recycleOrderCubit = context.read<RecycleOrderCubit>();
 
     await Future.wait([
       profileCubit.loadProfile(),
       entitlementCubit.loadEntitlements(),
       subscriptionCubit.getCurrentSubscription(),
+      previewSubscriptionCubit.previewSubscription(),
       recycleOrderCubit.listOrders(),
     ]);
   }
@@ -225,6 +258,7 @@ class _HomeContentState extends State<_HomeContent> {
       return;
     });
   }
+  
   Future<void> popWelcomeGift() async {
     final prefs = await SharedPreferences.getInstance();
     bool hasShowedWelcomeGift = prefs.getBool('has_showed_welcome_gift') ?? false;
@@ -238,6 +272,8 @@ class _HomeContentState extends State<_HomeContent> {
     }
     prefs.setBool('has_showed_welcome_gift', true);
   }
+
+
 
   @override
   void initState() {
@@ -298,16 +334,15 @@ class _HomeContentState extends State<_HomeContent> {
                               // Use effective state for display
                               final displayState = widget.subscriptionState;
 
-                              if(widget.recycleOrderState.orders.isNotEmpty && !availableOrderStatus.contains(widget.recycleOrderState.orders.first.status)){
-
-                                // if(widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed && widget.entitlementState.entitlements.isNotEmpty){
-                                //   print("--show card 2");
-                                //   _showTooltip();
-                                // }
-                                return RecycleOrderCard(widget.recycleOrderState.orders.first);
-                              }
-
                               if (displayState is SubscriptionDetailAndListLoaded && displayState.subscriptions.isNotEmpty) {
+                                if(widget.recycleOrderState.orders.isNotEmpty && !availableOrderStatus.contains(widget.recycleOrderState.orders.first.status)){
+                                  return RecycleOrderCard(widget.recycleOrderState.orders.first, displayState.detail);
+                                }
+                                // && widget.entitlementState.entitlements.isNotEmpty
+                                if(widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed ){
+                                  return RecycleOrderCard(widget.recycleOrderState.orders.first, displayState.detail);
+                                }
+
                                 if (displayState.detail.recyclingProfile != null && displayState.detail.recyclingProfile?.initialBagStatus == "delivered") {
                                   print("--show card 3");
 
@@ -323,7 +358,11 @@ class _HomeContentState extends State<_HomeContent> {
                                   return InitialBagDeliveryCard(displayState.detail.recyclingProfile?.initialBagDeliveryTrackingNo);
                                 }
                               } else {
-                                return PromotionBanner(() => context.push("/subscription/list"));
+                                if(widget.previewSubscriptionState is SubscriptionPreviewReady && Discount.instance().promotionCode != null) {
+                                  return PromotionBanner(() => context.push("/subscription/list"));
+                                }else{
+                                  return Container();
+                                }
                               }
 
                             },
@@ -399,7 +438,8 @@ class _HomeErrorView extends StatelessWidget {
                 const Icon(Icons.error_outline, size: 48, color: Colors.red),
                 const SizedBox(height: 16),
                 Text(
-                  tr("error.home_page_error"),
+                  // tr("error.home_page_error"),
+                  message,
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 16),
                 ),

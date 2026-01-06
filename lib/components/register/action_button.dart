@@ -10,7 +10,8 @@ class ActionButton extends StatefulWidget {
   final bool showLoading;
   final bool disable;
   final bool needPadding;
-  const ActionButton(this.title, {this.showLoading = false, this.needPadding = true, this.disable = false, this.onTap, super.key});
+  final Widget? icon;
+  const ActionButton(this.title, {this.showLoading = false, this.needPadding = true, this.disable = false, this.onTap, this.icon, super.key});
 
   @override
   State<ActionButton> createState() => _ActionButtonState();
@@ -32,7 +33,8 @@ class _ActionButtonState extends State<ActionButton> {
                 ),
               ),
             ),
-            child: TextButton(
+            child: TextButton.icon(
+
               style: TextButton.styleFrom(
                 backgroundColor: widget.disable ? Colors.black26 : Colors.black,
                 foregroundColor: Colors.white,
@@ -41,20 +43,23 @@ class _ActionButtonState extends State<ActionButton> {
                 ),
               ),
               onPressed: widget.showLoading ? null : widget.onTap,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if(widget.showLoading)
-                    Container(
-                      height: 20.0,
-                      width: 20.0,
-                      margin: EdgeInsets.symmetric(horizontal: 10),
-                      child: Center(
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+              icon: widget.icon,
+              label: FittedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if(widget.showLoading)
+                      Container(
+                        height: 20.0,
+                        width: 20.0,
+                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        child: Center(
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        ),
                       ),
-                    ),
-                  Text(widget.title, style: TextStyle(color: Colors.white)),
-                ],
+                    Text(widget.title, style: TextStyle(color: Colors.white)),
+                  ],
+                ),
               ),
             )
         )

@@ -97,9 +97,10 @@ class InitialBagDeliveryCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 _buildItemForSF(),
-                _buildMessage(""),
+                _buildMessage(tr("refresh_page_to_update")),
+                _buildMessage(tr("order.pick_after_receive_bag")),
 
-                ActionButton(tr("refresh_page_to_update"), disable: true),
+                ActionButton(tr("order.schedule_recycle_pickup"), disable: true),
                 RichText(
                   text: TextSpan(
                     style: TextStyle(fontSize: 16, color: Colors.black),
@@ -112,12 +113,12 @@ class InitialBagDeliveryCard extends StatelessWidget {
                           onTap: () {},
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Text(tr("contact_us"), style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                            child: Text(tr("contact_us"), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
                           ),
                         ),
                       ),
                       TextSpan(
-                        text: tr("is_something_wrong"),
+                        text: tr("if_something_wrong"),
                       ),
                     ],
                   ),
@@ -168,9 +169,9 @@ class ScheduleRecycleOrderCard extends StatelessWidget {
                   size: 24,
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    "Recycle bag received successfully",
+                    tr("order.recycle_bag_received_successfully"),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -188,13 +189,13 @@ class ScheduleRecycleOrderCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Congratulations!", style: TextStyle(fontSize: 18)),
+                Text(tr("order.congratulations"), style: TextStyle(fontSize: 18)),
 
                 const SizedBox(height: 12),
-                Text("You may now start scheduling your first recycle pick up here.", style: TextStyle(fontSize: 16)),
+                Text(tr("order.you_may_now_start_scheduling"), style: TextStyle(fontSize: 16)),
                 const SizedBox(height: 24),
 
-                ActionButton("Schedule a recycle pick up", onTap: () => context.push("/order/create", extra: subscriptionDetail))
+                ActionButton(tr("order.schedule_recycle_pickup"), onTap: () => context.push("/order/create", extra: subscriptionDetail))
               ],
             ),
           ),
@@ -207,8 +208,8 @@ class ScheduleRecycleOrderCard extends StatelessWidget {
 
 class RecycleOrderCard extends StatelessWidget {
   final RecycleOrderListItem recycleOrder;
-
-  const RecycleOrderCard(this.recycleOrder, {super.key});
+  final SubscriptionDetail subscriptionDetail;
+  const RecycleOrderCard(this.recycleOrder, this.subscriptionDetail, {super.key});
 
   Widget _buildCard(BuildContext context, LogisticsOrder? logisticsOrder){
     return Container(
@@ -268,7 +269,7 @@ class RecycleOrderCard extends StatelessWidget {
                         children: [
                           Text("${tr("tracking")} #${logisticsOrder?.trackingNo ?? ""}", style: TextStyle(fontSize: 18)),
                           const SizedBox(height: 12),
-                          Text(tr("pick_up_on", args: [convertDateTimeToString(context, recycleOrder.pickupAt, format: "dd MMM y | HH:mm")]), style: TextStyle(fontSize: 16)),
+                          Text(tr("pick_up_on", args: [convertDateTimeToString(context, recycleOrder.pickupAt, format: tr("format.date_time"))]), style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),
@@ -282,6 +283,19 @@ class RecycleOrderCard extends StatelessWidget {
               )
             ],
           ),
+
+          // if order complete then show
+          if(recycleOrder.status == RecycleOrderStatus.completed) Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: ActionButton(
+              tr("order.schedule_recycle_pickup_again"),
+              icon: Image.asset("assets/icon/nav_main.png", scale: 3),
+              onTap: (){
+                context.push("/order/create", extra: subscriptionDetail);
+
+              },
+            ),
+          )
         ],
       ),
     );

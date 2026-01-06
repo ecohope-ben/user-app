@@ -88,7 +88,7 @@ class FinishedRecycleOrderNotificationCard extends StatelessWidget {
     return NotificationCard(
       iconData: Icons.check_circle_outline_outlined,
       title: tr("order.thanks_for_recycling"),
-      description: tr("order.wait_for_next_recycling", args: [convertDateTimeToString(context, subscriptionState.detail.currentPeriodEnd, format: "dd MMM y")])
+      description: tr("order.wait_for_next_recycling", args: [convertDateTimeToString(context, subscriptionState.detail.currentPeriodEnd)])
     );
   }
 }
@@ -105,7 +105,7 @@ class NotificationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(12),
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       width: double.infinity,
       color: Colors.black.withValues(alpha: 0.7),
       child: Row(
@@ -127,7 +127,7 @@ class NotificationCard extends StatelessWidget {
             ],
           )),
           if(action != null) Expanded(
-            flex: 3,
+            flex: 4,
             child: action!
           ),
           if(action != null) SizedBox(width: 8),

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:user_app/style.dart';
+import 'package:user_app/utils/time.dart';
 
 
 class BirthdayOneStepPicker {
@@ -73,7 +74,8 @@ class _BirthdayOneStepDialogState extends State<_BirthdayOneStepDialog> {
               style: TextStyle(color: Colors.white, fontSize: 16),
             ),
             Text(
-              "${tr("month_to_words.$selectedMonth")} $selectedDay",
+              convertDateTimeToString(context, DateTime(2025, selectedMonth, selectedDay), format: tr("format.date_day")),
+              // "${tr("month_to_words.$selectedMonth")} $selectedDay",
               style: TextStyle(color: Colors.white, fontSize: 16),
             ),
           ],

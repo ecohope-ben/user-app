@@ -72,14 +72,14 @@ class PickUpOrderDetailsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 1. Order Number Section
-            _buildLabel(tr("order_number")),
+            _buildLabel(tr("order.order_number")),
             const SizedBox(height: 4),
             Text(
               order.recycleOrderNo,
               style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
             const SizedBox(height: 16),
-            _buildLabel('Tracking Number'),
+            _buildLabel(tr("order.tracking_number")),
             const SizedBox(height: 4),
             Text(
               order.logisticsOrder?.trackingNo ?? tr("order.provide_later"),
@@ -110,7 +110,7 @@ class PickUpOrderDetailsPage extends StatelessWidget {
             // 3. Pick Up Date and Time
             _buildLabel(tr("order.pickup_date_time")),
             const SizedBox(height: 6),
-            _buildValue(convertDateTimeToString(context, order.pickupAt, format: "dd MMM y | HH:mm")),
+            _buildValue(convertDateTimeToString(context, order.pickupAt, format: tr("format.date_time"))),
 
             const SizedBox(height: 20),
 

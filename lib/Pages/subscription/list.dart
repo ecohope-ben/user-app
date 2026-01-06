@@ -10,6 +10,7 @@ import 'package:user_app/style.dart';
 
 import '../../blocs/subscription_plan_cubit.dart';
 import '../../components/subscription/card.dart';
+import '../../models/discount/index.dart';
 import '../../models/subscription_models.dart';
 
 
@@ -187,7 +188,7 @@ class _SubscriptionListPageState extends State<SubscriptionListPage> {
             .toList();
       }
       
-      return SubscriptionCard(plan: plan, features: features);
+      return SubscriptionCard(plan: plan, features: features, hasDiscount: plan.id == Discount.instance().planId);
     }).toList();
   }
 }

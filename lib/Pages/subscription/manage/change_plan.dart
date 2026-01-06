@@ -299,7 +299,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
                             ),
                             child: SubscriptionPreviewCard(
                                 billingRecycleType: widget.plan.billingCycle.name,
-                                renewalText: convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y"),
+                                renewalText: convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd),
                                 amountText: _buildAmountText(),
                                 autoRenewText: _buildRenewText()
                             ),
@@ -379,7 +379,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
 
 
                         ),
-                        Text("${tr("next_billing_date")}: ${convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd, format: "dd MMM y")}"),
+                        Text("${tr("next_billing_date")}: ${convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd)}"),
 
 
 

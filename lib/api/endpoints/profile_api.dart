@@ -27,6 +27,14 @@ class ProfileApi extends ApiEndpoint {
     }
   }
 
+  Future<void> deleteAccount() async {
+    try {
+      await http.post('/me/deletion');
+    } on DioException catch (e) {
+      throw _handleProfileDioError(e);
+    }
+  }
+
   Future<void> patchProfile({
     // required String accessToken,
     required ProfilePatchRequest request,
@@ -40,9 +48,6 @@ class ProfileApi extends ApiEndpoint {
 
   /// Handle Dio errors for profile
   Exception _handleProfileDioError(DioException e) {
-    print('Profile API Error: ${e.message}');
-    print('Response: ${e.response?.data}');
-
     if (e.response?.data != null) {
       try {
         final errorBody = ProfileErrorBody.fromJson(e.response!.data);

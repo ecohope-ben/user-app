@@ -38,7 +38,8 @@ class MyApp extends StatelessWidget {
             ),
           ),
           colorScheme: ColorScheme.fromSeed(
-            seedColor: backgroundColor,
+            // seedColor: backgroundColor,
+            seedColor: Colors.white,
             brightness: Brightness.light,
           ),
           appBarTheme: const AppBarTheme(
@@ -46,6 +47,12 @@ class MyApp extends StatelessWidget {
             backgroundColor: backgroundColor, // Set your desired color here
             foregroundColor: Colors.white, // Color for icons and text in the app bar
             // You can also set other properties like elevation, iconTheme, etc.
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: ButtonStyle(
+              // Use WidgetStateProperty.all to set the color for all states
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+            ),
           ),
           scaffoldBackgroundColor: backgroundColor
       ),

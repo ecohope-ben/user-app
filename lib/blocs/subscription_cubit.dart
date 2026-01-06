@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../api/endpoints/subscription_api.dart';
 import '../api/index.dart';
+import '../models/discount/index.dart';
 import '../models/subscription_models.dart';
 
 /// Base state for subscription cubit
@@ -45,6 +46,23 @@ class SubscriptionPreviewReady extends SubscriptionState {
 
   @override
   List<Object?> get props => [preview];
+}
+
+class SubscriptionPreviewUnavailable extends SubscriptionState {
+  final String message;
+  final String? code;
+  final int? httpStatus;
+  final Map<String, List<FieldViolation>>? fieldErrors;
+
+  const SubscriptionPreviewUnavailable({
+    required this.message,
+    this.code,
+    this.httpStatus,
+    this.fieldErrors,
+  });
+
+  @override
+  List<Object?> get props => [message, code, httpStatus, fieldErrors];
 }
 
 class SubscriptionCreationSuccess extends SubscriptionState {
@@ -126,6 +144,46 @@ class SubscriptionError extends SubscriptionState {
 }
 
 /// Cubit that orchestrates subscription workflows
+class PreviewSubscriptionCubit extends Cubit<SubscriptionState> {
+  final SubscriptionApi _api;
+
+  PreviewSubscriptionCubit({SubscriptionApi? api})
+      : _api = api ?? Api.instance().subscription(),
+        super(const SubscriptionInitial());
+
+  Future<void> previewSubscription() async {
+    emit(const SubscriptionLoading('preview'));
+
+
+    try {
+      final preview = await _api.previewSubscription(request: PreviewSubscriptionCreationRequest(
+          promotionCode: Discount.instance().promotionCode,
+          planId: Discount.instance().planId ?? "",
+          planVersionId: Discount.instance().versionId ?? ""
+      ));
+      Discount.instance().setAmount(preview.amount);
+      emit(SubscriptionPreviewReady(preview: preview));
+    } catch (error) {
+      _handleError(error);
+    }
+  }
+
+  void _handleError(Object error) {
+    if (error is SubscriptionException) {
+      emit(SubscriptionPreviewUnavailable(
+        message: error.message,
+        code: error.code,
+        httpStatus: error.httpStatus,
+        fieldErrors: error.fieldErrors,
+      ));
+    } else {
+      emit(SubscriptionPreviewUnavailable(message: error.toString()));
+    }
+  }
+
+}
+
+/// Cubit that orchestrates subscription workflows
 class SubscriptionCubit extends Cubit<SubscriptionState> {
   final SubscriptionApi _api;
 
@@ -136,14 +194,14 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
 
   Future<void> previewSubscription(
       PreviewSubscriptionCreationRequest request) async {
-    emit(const SubscriptionLoading('preview'));
-    try {
-      final preview = await _api.previewSubscription(request: request);
-      emit(SubscriptionPreviewReady(preview: preview));
-    } catch (error) {
-      _handleError(error);
-    }
-  }
+        emit(const SubscriptionLoading('preview'));
+        try {
+          final preview = await _api.previewSubscription(request: request);
+          emit(SubscriptionPreviewReady(preview: preview));
+        } catch (error) {
+          _handleError(error);
+        }
+      }
 
   Future<void> createSubscription(CreateSubscriptionRequest request) async {
     emit(const SubscriptionLoading('create'));
@@ -161,10 +219,14 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
       final envelope = await _api.listSubscriptions();
       if (envelope.subscriptions.isNotEmpty) {
         final firstSubscriptionId = envelope.subscriptions.first.id;
-        final detail = await _api.getSubscriptionDetail(
-            subscriptionId: firstSubscriptionId
-        );
-        emit(SubscriptionDetailAndListLoaded(detail: detail, subscriptions: envelope.subscriptions));
+        if(envelope.subscriptions.first.lifecycleState == SubscriptionLifecycleState.active) {
+          final detail = await _api.getSubscriptionDetail(
+              subscriptionId: firstSubscriptionId
+          );
+          emit(SubscriptionDetailAndListLoaded(detail: detail, subscriptions: envelope.subscriptions));
+        }else {
+          emit(SubscriptionListLoaded(subscriptions: []));
+        }
       }else{
         emit(SubscriptionListLoaded(subscriptions: envelope.subscriptions));
       }

@@ -21,6 +21,8 @@ class ProfileLoading extends ProfileState {}
 
 class ProfileUpdateSuccess extends ProfileState {}
 
+class ProfileDeleteSuccess extends ProfileState {}
+
 /// Profile loaded state
 class ProfileLoaded extends ProfileState {
   final Profile profile;
@@ -162,6 +164,25 @@ class ProfileCubit extends Cubit<ProfileState> {
 
       // // Reload profile after update
       // await loadProfile();
+    } catch (e) {
+      if (e is ProfileException) {
+        emit(ProfileError(
+          message: e.userMessage ?? "",
+          code: e.code,
+          fieldErrors: e.fields,
+        ));
+      } else {
+        emit(ProfileError(message: e.toString()));
+      }
+    }
+  }
+
+  /// Delete account
+  Future<void> deleteAccount() async {
+    try {
+      emit(ProfileLoading());
+      await _apiService.deleteAccount();
+      emit(ProfileDeleteSuccess());
     } catch (e) {
       if (e is ProfileException) {
         emit(ProfileError(

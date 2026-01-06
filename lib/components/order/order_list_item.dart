@@ -40,7 +40,7 @@ class OrderListItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  convertDateTimeToString(context, data.pickupAt, format: "dd MMM y | HH:mm"),
+                  convertDateTimeToString(context, data.pickupAt, format: tr("format.date_time")),
                   style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -53,7 +53,7 @@ class OrderListItem extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  data.status.name,
+                  tr("order.status.short.${data.status.name}"),
                   style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,

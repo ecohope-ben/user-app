@@ -32,7 +32,10 @@
     "change_account_info": "Change of Account Information",
     "contact_our_customer_support": "Please contact our customer support\nat",
     "for_assistance": " for assistance during office hour.",
-    "delete_ac": "Delete Account"
+    "delete_ac": "Delete Account",
+    "delete_account_confirm_title": "Delete Account",
+    "delete_account_confirm_message": "Are you sure you want to delete your account? \nThis operation will delete all your data and cancel all your subscriptions.",
+    "delete_account": "Delete"
   },
   "login": {
     "title": " Login ",
@@ -65,6 +68,7 @@
     "manage_subscription": "Manage Subscription",
     "billing_cycle": {
       "monthly": "1 Month",
+      "quarterly": "3 Month",
       "yearly": "1 Year"
     },
     "type": "Type",
@@ -122,6 +126,11 @@
     "address": "Address",
     "pickup_address": "Pick Up Address",
     "schedule_pickup_now": "Recycle Now | Schedule Pick Up",
+    "schedule_recycle_pickup": "Schedule a recycle pick up",
+    "schedule_recycle_pickup_again": "Schedule a recycle pick up again",
+    "recycle_bag_received_successfully": "Recycle bag received successfully",
+    "congratulations": "Congratulations!",
+    "you_may_now_start_scheduling": "You may now start scheduling your first recycle pick up here.",
     "pickup_details": "Pick Up Details",
     "fill_information": "Please fill in the information for smooth pick up.",
     "confirm_pickup_schedule": "Confirm Pick Up Schedule",
@@ -141,7 +150,14 @@
       "processing": "Pick Up Schedule Confirmed",
       "pickedUp": "Picked Up by Courier",
       "completed": "Delivery completed / Delivered Successfully",
-      "failed": "Failed"
+      "failed": "Failed",
+      "short": {
+        "pending": "Confirmed",
+        "processing": "Confirmed",
+        "pickedUp": "Picked",
+        "completed": "Completed",
+        "failed": "Failed"
+      }
     }
   },
   "transaction": {
@@ -161,6 +177,15 @@
   "refresh_page_to_update": "Please refresh this page once you’ve received the bag and tap on the button below to schedule a pick up.",
   "month": "Month",
   "date": "Date",
+  "weekday": {
+    "1": "Mon",
+    "2": "Tue",
+    "3": "Wed",
+    "4": "Thu",
+    "5": "Fri",
+    "6": "Sat",
+    "7": "Sun"
+  },
   "month_to_words": {
     "1": "January",
     "2": "February",
@@ -290,11 +315,12 @@
   "ok": "OK",
   "confirm": "Confirm",
   "cancel": "Cancel",
+  "apply": "Apply",
   "please_contact_at": "Please contact us at ",
   "please": "Please",
   "contact_us": " contact us ",
   "pick_up_on": "Pick Up on {}",
-  "is_something_wrong": "is something is wrong",
+  "if_something_wrong": "if something is wrong",
   "if_need_help": "if you need help with your account",
   "back_to_home": "Back to Home",
   "limited_offer_join_now": "Limited Offer, Join Now",
@@ -304,6 +330,7 @@
   "update_now": "Update Now",
   "remaining_pickups": "Remaining Pickups",
   "expired": "Expired",
+  "expired_date": "Expired",
   "renew": "Renew",
   "total_collection": "Total Collection",
   "maybe_later": "Maybe Later",
@@ -342,11 +369,17 @@
     "transaction_history": "Transaction History",
     "fnq": "FAQ & Feedback"
   },
+  "format": {
+    "date": "dd MMM y",
+    "date_day": "MMM dd",
+    "date_time": "dd MMM y | HH:mm"
+  },
   "error": {
     "home_page_error": "Home page data error",
     "network_error": "Network Error, Please try later",
     "retry": "Retry",
-    "preview_not_load": "Preview data has not loaded yet, please try again"
+    "preview_not_load": "Preview data has not loaded yet, please try again",
+    "pending_account_deletion": "your account is pending deletion"
   },
   "version": "Version"
 }

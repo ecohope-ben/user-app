@@ -134,7 +134,7 @@ class _SliverBarState extends State<SliverBar> {
         value: state.entitlements.isNotEmpty ? state.entitlements.first.quotaRemaining.toString() : "00",
         label: tr("remaining_pickups"),
 
-        label2: state.entitlements.isNotEmpty ? "${tr("Expired")} ${convertDateTimeToString(context, state.entitlements.first.expiresAt, format: "dd/MM/yy")}" : null,
+        label2: state.entitlements.isNotEmpty ? "${tr("expired_date")} ${convertDateTimeToString(context, state.entitlements.first.expiresAt, format: "dd/MM/yy")}" : null,
 
     );
   }

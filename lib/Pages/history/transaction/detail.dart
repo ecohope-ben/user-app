@@ -66,7 +66,7 @@ class TransactionHistoryDetailsPage extends StatelessWidget {
 
             _buildLabel(tr("transaction.date")),
             const SizedBox(height: 6),
-            _buildValue(convertDateTimeToString(context, history.occurredAt, format: "dd MMM y | HH:mm")),
+            _buildValue(convertDateTimeToString(context, history.occurredAt, format: tr("format.date_time"))),
 
             const SizedBox(height: 20),
 
