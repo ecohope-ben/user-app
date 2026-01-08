@@ -1,7 +1,43 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:user_app/components/register/action_button.dart';
 import 'package:user_app/models/discount/index.dart';
+import 'package:user_app/utils/snack.dart';
+
+class PromotionCodeArea extends StatelessWidget {
+  final String promotionCode;
+  const PromotionCodeArea(this.promotionCode, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: (){
+        Clipboard.setData(ClipboardData(text: promotionCode)).then((_) {
+          popSnackBar(context, tr("promotion_code_copied"));
+        });
+      },
+      child: DottedBorder(
+        child: Container(
+          color: Colors.grey.shade300,
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          child: Wrap(
+            // mainAxisSize: MainAxisSize.min,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(child: Text("${tr("promote.code")}: $promotionCode", style: TextStyle(color: Colors.black))),
+              SizedBox(width: 10),
+              Icon(Icons.copy_sharp)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
 class PromotionBanner extends StatelessWidget {
   final VoidCallback onTap;
   const PromotionBanner(this.onTap, {super.key});
@@ -83,7 +119,7 @@ class PromotionBanner extends StatelessWidget {
               ),
             ),
             if(Discount.instance().promotionCode != null) const SizedBox(height: 10),
-            if(Discount.instance().promotionCode != null) Text(Discount.instance().promotionCode!, style: TextStyle(color: Colors.black54),),
+            if(Discount.instance().promotionCode != null) PromotionCodeArea(Discount.instance().promotionCode!),
 
             const SizedBox(height: 10),
             Text(tr("promote.limited_offer_first_come_first_served"), style: TextStyle(color: Colors.black54),),

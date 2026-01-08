@@ -94,7 +94,6 @@ class LoginCubit extends Cubit<LoginState> {
     try {
       emit(LoginLoading());
       final response = await _apiService.startLogin();
-
       if (response.error != null) {
         emit(LoginError(
           login: response.login,
@@ -106,6 +105,7 @@ class LoginCubit extends Cubit<LoginState> {
         return;
       }
 
+      print("--start login step: ${response.login.tokens.step}");
       emit(LoginInProgress(
         login: response.login,
         stepToken: response.login.tokens.step,
@@ -260,7 +260,9 @@ class LoginCubit extends Cubit<LoginState> {
         stepToken: response.login.tokens.step,
         resumeToken: response.login.tokens.resume,
       ));
-    } catch (e) {
+    } catch (e, t) {
+      print("--verify error");
+      print(t);
       _handleException(e);
     }
   }

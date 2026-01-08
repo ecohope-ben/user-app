@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_app/auth/index.dart';
 
 import '../api/index.dart';
+import '../flavor.dart';
 import '../models/discount/index.dart';
 import '../models/onboarding_models.dart';
 import '../models/subscription_models.dart';
@@ -79,7 +80,7 @@ class _LaunchPageState extends State<LaunchPage> {
   Future<void> _fetchDefaultDiscount() async {
     try {
       final dio = Dio();
-      final response = await dio.get('https://assets.eco-hope.org/plan_data/discount-int.json');
+      final response = await dio.get('https://assets.eco-hope.org/plan_data/discount-${FlavorConfig.instance.name}.json');
 
       if (response.statusCode == 200 && response.data != null) {
           _discountData = response.data as Map<String, dynamic>;

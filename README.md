@@ -15,4 +15,11 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+flutter build apk --flavor dev --target=lib/main_dev.dart
+flutter build apk --flavor uat --target=lib/main_uat.dart
+
+
+dart run build_runner build --delete-conflicting-outputs
+
+
 

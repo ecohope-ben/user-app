@@ -118,9 +118,13 @@ class RecycleOrderCubit extends Cubit<RecycleOrderState> {
 
   /// Load recycle order detail
   Future<void> loadOrderDetail(String recycleOrderId) async {
+
+    print("--loadOrderDetail");
     emit(const RecycleOrderLoading('order_detail'));
     try {
       final response = await _api.getOrderDetail(recycleOrderId: recycleOrderId);
+
+      print("response");
       emit(RecycleOrderDetailLoaded(order: response));
     } catch (error, t) {
       print(t);

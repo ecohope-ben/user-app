@@ -30,6 +30,34 @@ android {
         versionName = flutter.versionName
     }
 
+    flavorDimensions += "environment"
+
+    productFlavors {
+        create("production") {
+            dimension = "environment"
+            applicationId = "com.ecohope.user_app" // Production 的 package name
+            resValue("string", "app_name", "EcoHope") // App 名稱
+        }
+        create("staging") {
+            dimension = "environment"
+            applicationId = "com.ecohope.user_app"
+            resValue("string", "app_name", "EcoHope(Stg)")
+            applicationIdSuffix = ".staging" // 可選：自動加後綴
+        }
+        create("uat") {
+            dimension = "environment"
+            applicationId = "com.ecohope.user_app"
+            resValue("string", "app_name", "EcoHope(UAT)")
+            applicationIdSuffix = ".uat"
+        }
+        create("dev") {
+            dimension = "environment"
+            applicationId = "com.ecohope.user_app"
+            resValue("string", "app_name", "EcoHope(Dev)")
+            applicationIdSuffix = ".dev"
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.

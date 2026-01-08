@@ -55,7 +55,7 @@ class TransactionHistoryPage extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.transparent,
           borderRadius: BorderRadius.zero,
         ),
 
@@ -66,7 +66,7 @@ class TransactionHistoryPage extends StatelessWidget {
             child: Text(
               tr("transaction.no_history_found"),
               style: TextStyle(
-                color: Colors.grey,
+                color: Colors.white,
                 fontSize: 16,
               ),
             ),

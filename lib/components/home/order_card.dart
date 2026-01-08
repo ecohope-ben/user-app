@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/blocs/recycle_order_cubit.dart';
@@ -10,6 +11,9 @@ import '../../models/recycle_models.dart';
 import '../../models/subscription_models.dart';
 import '../../utils/snack.dart';
 import '../../utils/time.dart';
+import 'tracking_number.dart';
+
+
 
 class InitialBagDeliveryCard extends StatelessWidget {
   final String? trackingNumber;
@@ -32,6 +36,7 @@ class InitialBagDeliveryCard extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildMessage(String message) {
     return Text(bullet + " " +message, style: TextStyle(fontSize: 16, color: Colors.black));
   }
@@ -87,14 +92,7 @@ class InitialBagDeliveryCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "${tr("tracking")} #${trackingNumber ?? ""}",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+                TrackingNumber(trackingNumber),
                 const SizedBox(height: 12),
                 _buildItemForSF(),
                 _buildMessage(tr("refresh_page_to_update")),
@@ -206,10 +204,16 @@ class ScheduleRecycleOrderCard extends StatelessWidget {
   }
 }
 
-class RecycleOrderCard extends StatelessWidget {
+class RecycleOrderCard extends StatefulWidget {
   final RecycleOrderListItem recycleOrder;
   final SubscriptionDetail subscriptionDetail;
   const RecycleOrderCard(this.recycleOrder, this.subscriptionDetail, {super.key});
+
+  @override
+  State<RecycleOrderCard> createState() => _RecycleOrderCardState();
+}
+
+class _RecycleOrderCardState extends State<RecycleOrderCard> {
 
   Widget _buildCard(BuildContext context, LogisticsOrder? logisticsOrder){
     return Container(
@@ -241,7 +245,7 @@ class RecycleOrderCard extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    tr("order.status.${recycleOrder.status.name}"),
+                    tr("order.status.${widget.recycleOrder.status.name}"),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -267,9 +271,10 @@ class RecycleOrderCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("${tr("tracking")} #${logisticsOrder?.trackingNo ?? ""}", style: TextStyle(fontSize: 18)),
+                          TrackingNumber(logisticsOrder?.trackingNo ?? tr("order.provide_later")),
+                          // Text("${tr("tracking")} #${logisticsOrder?.trackingNo ?? tr("order.provide_later")}", style: TextStyle(fontSize: 18)),
                           const SizedBox(height: 12),
-                          Text(tr("pick_up_on", args: [convertDateTimeToString(context, recycleOrder.pickupAt, format: tr("format.date_time"))]), style: TextStyle(fontSize: 16)),
+                          Text(tr("pick_up_on", args: [convertDateTimeToString(context, widget.recycleOrder.pickupAt, format: tr("format.date_time"))]), style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),
@@ -285,13 +290,13 @@ class RecycleOrderCard extends StatelessWidget {
           ),
 
           // if order complete then show
-          if(recycleOrder.status == RecycleOrderStatus.completed) Padding(
+          if(widget.recycleOrder.status == RecycleOrderStatus.completed) Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
             child: ActionButton(
               tr("order.schedule_recycle_pickup_again"),
               icon: Image.asset("assets/icon/nav_main.png", scale: 3),
               onTap: (){
-                context.push("/order/create", extra: subscriptionDetail);
+                context.push("/order/create", extra: widget.subscriptionDetail);
 
               },
             ),
@@ -300,16 +305,17 @@ class RecycleOrderCard extends StatelessWidget {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
 
     return BlocProvider(
-      create: (context) => RecycleOrderCubit()..loadOrderDetail(recycleOrder.id),
+      create: (context) => RecycleOrderCubit()..loadOrderDetail(widget.recycleOrder.id),
       child: BlocBuilder<RecycleOrderCubit, RecycleOrderState>(
         builder: (context, state) {
           if(state is RecycleOrderDetailLoaded) {
             return InkWell(
-                onTap: () => context.push("/order/details", extra: recycleOrder.id),
+                onTap: () => context.push("/order/details", extra: widget.recycleOrder.id),
                 child: _buildCard(context, state.order.logisticsOrder)
             );
           }else if (state is RecycleOrderError){

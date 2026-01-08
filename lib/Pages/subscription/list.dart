@@ -188,7 +188,8 @@ class _SubscriptionListPageState extends State<SubscriptionListPage> {
             .toList();
       }
       
-      return SubscriptionCard(plan: plan, features: features, hasDiscount: plan.id == Discount.instance().planId);
+      // return SubscriptionCard(plan: plan, features: features, hasDiscount: plan.id == Discount.instance().planId);
+      return SubscriptionCard(plan: plan, features: features);
     }).toList();
   }
 }

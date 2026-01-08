@@ -1,0 +1,60 @@
+{
+  "monthly": {
+    "originalPrice": null,
+    "features": {
+      "en": [
+        "1 welcome gift",
+        "1 Free recycle bag",
+        "1 time pick up",
+        "Flexible pick up time and locations",
+        "Live tracking with recycling progress",
+        "Personalized recycling records"
+      ],
+      "zh-hk": [
+        "1 welcome giftHK",
+        "1 Free recycle bag",
+        "1 time pick up",
+        "Flexible pick up time and locations",
+        "Live tracking with recycling progress",
+        "Personalized recycling records"
+      ]
+    }
+
+  },
+  "quarterly": {
+    "features": {
+      "en": [
+        "Save up to $300",
+        "12 times pick up",
+        "Flexible pick up time and locations",
+        "Live tracking with recycling progress",
+        "Personalized recycling records"
+      ],
+      "zh-hk": [
+        "Save up to $300",
+        "12 times pick up",
+        "Flexible pick up time and locations",
+        "Live tracking with recycling progress",
+        "Personalized recycling records"
+      ]
+    }
+  },
+  "yearly": {
+    "features": {
+      "en": [
+        "Save up to $300",
+        "12 times pick up",
+        "Flexible pick up time and locations",
+        "Live tracking with recycling progress",
+        "Personalized recycling records"
+      ],
+      "zh-hk": [
+        "Save up to $300",
+        "12 times pick up",
+        "Flexible pick up time and locations",
+        "Live tracking with recycling progress",
+        "Personalized recycling records"
+      ]
+    }
+  }
+}

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:user_app/blocs/subscription_cubit.dart';
+import 'package:user_app/flavor.dart';
 import 'package:user_app/style.dart';
 import 'package:user_app/utils/pop_up.dart';
 
@@ -77,7 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text((widget.subscriptionState.subscriptions.isEmpty) ? 'Join Now' : 'Manage', style: TextStyle(color: Colors.grey, fontSize: 14)),
+                          Text((widget.subscriptionState.subscriptions.isEmpty) ? tr("subscription.join_now") : tr("subscription.manage"), style: TextStyle(color: Colors.grey, fontSize: 14)),
                           SizedBox(width: 8),
                           Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
                         ],
@@ -90,6 +91,10 @@ class _SettingsPageState extends State<SettingsPage> {
                         }
                       }
                     ),
+                    _buildDivider(),
+
+                    // Profile
+                    SettingsTile(title: tr("profile.title"), onTap: () => context.push("/profile/edit"),),
                     _buildDivider(),
 
                     // Language
@@ -192,6 +197,14 @@ class _SettingsPageState extends State<SettingsPage> {
               // App version and build number
               Text(
                 '${tr("version")} $_version ($_buildNumber)',
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 12,
+                ),
+              ),
+
+              if(FlavorConfig.instance.isDebug) Text(
+                FlavorConfig.instance.baseUrl,
                 style: const TextStyle(
                   color: Colors.white70,
                   fontSize: 12,

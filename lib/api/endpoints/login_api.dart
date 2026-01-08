@@ -96,7 +96,10 @@ class LoginApi extends ApiEndpoint {
         ),
       );
       return LoginSuccessResponse.fromJson(response.data);
-    } on DioException catch (e) {
+    } on DioException catch (e, t) {
+      print("--verify email error");
+      print(t);
+      print(e);
       throw _handleLoginDioError(e);
     }
   }

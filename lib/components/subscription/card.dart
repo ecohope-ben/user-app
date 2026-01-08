@@ -132,7 +132,7 @@ class SubscriptionCard extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            if(plan.id == Discount.instance().planId) Text(tr("promote.limited_offer"), style: TextStyle(color: Colors.white))
+                            // if(plan.id == Discount.instance().planId) Text(tr("promote.limited_offer"), style: TextStyle(color: Colors.white))
                           ],
                         ),
                       ),
@@ -185,7 +185,7 @@ class SubscriptionCard extends StatelessWidget {
                             ),
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
                           ),
-                          child: Text(_buildButtonText()),
+                          child: Text(_buildButtonText(), textAlign: TextAlign.center),
                         ),
                       ),
                     ],

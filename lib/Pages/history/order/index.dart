@@ -56,7 +56,7 @@ class RecycleOrderHistoryPage extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.transparent,
           borderRadius: BorderRadius.zero,
         ),
 
@@ -67,7 +67,7 @@ class RecycleOrderHistoryPage extends StatelessWidget {
                   child: Text(
                     tr("order.no_orders_found"),
                     style: TextStyle(
-                      color: Colors.grey,
+                      color: Colors.white,
                       fontSize: 16,
                     ),
                   ),

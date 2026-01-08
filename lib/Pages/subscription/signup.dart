@@ -113,8 +113,8 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
 
     try {
       final request = PreviewSubscriptionCreationRequest(
-        planId: Discount.instance().planId ?? "",
-        planVersionId: Discount.instance().versionId ?? "",
+        planId: widget.plan.id,
+        planVersionId: widget.plan.versionId,
         promotionCode: promotionCode,
       );
       print("--preview request");
@@ -154,14 +154,15 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
 
     try {
       final request = PreviewSubscriptionCreationRequest(
-        planId: Discount.instance().planId ?? "",
-        planVersionId: Discount.instance().versionId ?? "",
+        planId: widget.plan.id,
+        planVersionId: widget.plan.versionId,
         promotionCode: promotionCode,
       );
       print("--preview request");
       print(widget.plan.id);
       print(widget.plan.versionId);
       final preview = await _subscriptionApi.previewSubscription(request: request);
+      print("--preview amount: ${preview.amount}");
       setState(() {
         _previewData = preview;
         _isLoadingPreview = false;
@@ -213,9 +214,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   }
 
   String _getBillingCycleText() {
-    return widget.plan.billingCycle == BillingCycle.monthly
-        ? tr("subscription.monthly")
-        : tr("subscription.yearly");
+    return tr("subscription.billing_cycle.${widget.plan.billingCycle.name}.plan");
   }
 
   String _getRenewalText() {
@@ -224,9 +223,11 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   }
 
   String _getAmountText() {
+    print("--preview amount: ${_previewData?.amount}");
     if (_previewData == null) return '';
     if (!_previewData!.requirePayment) {
       if(widget.plan.id == Discount.instance().planId) {
+        print("--getAmount has discount");
         return tr("subscription.amount_text_with_discount", args: [
           _formatAmount(_previewData!.amount, _previewData!.currency),
           convertDateTimeToString(context, _previewData!.periodEnd),
@@ -238,7 +239,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   }
 
   String _getAutoRenewText() {
-    final cycle = tr("subscription.billing_cycle.${widget.plan.billingCycle.name}");
+    final cycle = tr("subscription.billing_cycle.${widget.plan.billingCycle.name}.period");
 
     return tr("subscription.auto_renew_text", args: [cycle]);
   }
@@ -315,12 +316,8 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
       // Based on nextAction, you may need to navigate to payment page
       // For now, show success and navigate back
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(tr("subscription.subscription_created", args: [response.subscriptionId])),
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        popSnackBar(context, tr("subscription.subscription_created", args: [response.subscriptionId]));
+
         try {
           if (response.nextAction == PaymentNextAction.setup) {
             await presentSubscriptionSheet(setupIntentClientSecret: response.clientSecret);
@@ -334,24 +331,15 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
         }on StripeException catch(e){
           print("--StripeException");
           if (e.error.code == FailureCode.Canceled) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(tr("subscription.canceled_payment_by_user"))),
-            );
+            popSnackBar(context, tr("subscription.canceled_payment_by_user"));
+
           }else if(e.error.code == FailureCode.Failed){
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(tr("subscription.payment_failed"))),
-            );
+            popSnackBar(context, tr("subscription.payment_failed"));
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(tr("subscription.payment_failed_with_msg", args: [?e.error.localizedMessage]))),
-            );
+            popSnackBar(context, tr("subscription.payment_failed_with_msg", args: [?e.error.localizedMessage]));
           }
         }catch(e){
-
-          print("--StripeException2");
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(tr("subscription.payment_failed_try_later"))),
-          );
+          popSnackBar(context, tr("subscription.payment_failed_try_later"));
         }
 
 
@@ -582,7 +570,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                         ),
 
                         const SizedBox(height: 15),
-                        Text("優惠代碼（如有）"),
+                        Text("${tr("promote.code")}（${tr("optional")}）"),
 
                         const SizedBox(height: 10),
                         PromotionCodeInput(

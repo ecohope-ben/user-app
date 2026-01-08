@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 void popSnackBar(BuildContext context, String? message){
   final scaffold = ScaffoldMessenger.of(context);
+  scaffold.clearSnackBars();
   scaffold.showSnackBar(
     SnackBar(
       content: Text(message ?? ""),

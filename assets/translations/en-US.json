@@ -26,6 +26,7 @@
     "confirm_and_login": "Confirm and Login"
   },
   "profile": {
+    "title": "Profile",
     "update_success": "Profile updated successfully",
     "edit_profile": "Edit Profile",
     "update_my_profile": "Update My Profile",
@@ -67,9 +68,18 @@
     "manage": "Manage",
     "manage_subscription": "Manage Subscription",
     "billing_cycle": {
-      "monthly": "1 Month",
-      "quarterly": "3 Month",
-      "yearly": "1 Year"
+      "monthly": {
+        "plan": "Monthly Plan",
+        "period": "1 Month"
+      },
+      "quarterly": {
+        "plan": "Quarterly Plan",
+        "period": "3 Month"
+      },
+      "yearly": {
+        "plan": "Yearly Plan",
+        "period": "1 year"
+      }
     },
     "type": "Type",
     "renew_on": "Renewing on",
@@ -284,6 +294,9 @@
   "privacy_policy": "privacy policy",
   "terms_n_pp": "Terms & Privacy Policy",
   "privacy_policy_click": " and have read and acknowledge our ",
+
+  "have_read_terms_n_pp": "I have read and agree to the Terms of Use and Privacy Policy, and consent to start using the service.",
+  "agree_marketing_purpose": "I agree that your company and its partners may use my personal data for marketing and direct marketing purposes.",
   "report_issus": "Report an issue",
   "payment_method": "Payment Method",
   "next_billing_date": "Next billing date",
@@ -356,6 +369,7 @@
     }
   },
   "promote": {
+    "code": "Promotion Code",
     "subscription_to_earn_gift": "SUBSCRIBE NOW TO EARN WELCOME GIFT",
     "join_our_monthly_plan": "Join our monthly plan with",
     "now_to_earn_free_welcome_gift": " now to earn free welcome gift!",
@@ -381,5 +395,9 @@
     "preview_not_load": "Preview data has not loaded yet, please try again",
     "pending_account_deletion": "your account is pending deletion"
   },
-  "version": "Version"
+  "version": "Version",
+  "content_copied": "Content Copied",
+  "promotion_code_copied": "Promotion Code Copied",
+  "tracking_number_copied": "Tracking Number Copied",
+  "optional": "Optional"
 }

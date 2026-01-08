@@ -26,6 +26,7 @@
     "confirm_and_login": "確認並登入"
   },
   "profile": {
+    "title": "個人資料",
     "update_success": "個人資料更新成功",
     "edit_profile": "編輯個人資料",
     "update_my_profile": "更新我的資料",
@@ -68,9 +69,18 @@
     "manage": "管理",
     "manage_subscription": "管理訂閱",
     "billing_cycle": {
-      "monthly": "1個月",
-      "quarterly": "3個月",
-      "yearly": "1年"
+      "monthly": {
+        "plan": "月度計劃",
+        "period": "1個月"
+      },
+      "quarterly": {
+        "plan": "季度計劃",
+        "period": "3個月"
+      },
+      "yearly": {
+        "plan": "年度計劃",
+        "period": "1年"
+      }
     },
     "type": "類型",
     "renew_on": "續訂日期",
@@ -283,6 +293,8 @@
   "privacy_policy": "私隱政策",
   "terms_n_pp": "條款及私隱政策",
   "privacy_policy_click": " 並已閱讀及同意我們的 ",
+  "have_read_terms_n_pp": "我已閱讀並同意使用條款及私隱政策, 並同意開始使用服務。",
+  "agree_marketing_purpose": "我同意貴公司及合作夥伴使用我的個人資料作市場推廣及直接促銷用途",
   "report_issus": "回報問題",
   "payment_method": "付款方式",
   "next_billing_date": "下次收費日期",
@@ -354,6 +366,7 @@
     }
   },
   "promote": {
+    "code": "優惠碼",
     "subscription_to_earn_gift": "立即訂閱賺取歡迎禮物",
     "join_our_monthly_plan": "立即加入我們的月費計劃",
     "now_to_earn_free_welcome_gift": " 即可免費獲贈歡迎禮物！",
@@ -379,5 +392,9 @@
     "preview_not_load": "預覽資料尚未載入，請再試一次",
     "pending_account_deletion": "您的帳戶正在等待刪除"
   },
-  "version": "版本"
+  "version": "版本",
+  "content_copied": "內容已複製",
+  "promotion_code_copied": "優惠碼已複製",
+  "tracking_number_copied": "追從號碼已複製",
+  "optional": "如有"
 }

@@ -321,7 +321,7 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  tr("subscription.${widget.subscriptionDetail.plan.billingCycle.name}"),
+                  tr("subscription.billing_cycle.${widget.subscriptionDetail.plan.billingCycle.name}.plan"),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 15,

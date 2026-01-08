@@ -57,12 +57,8 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
   }
 
   String _buildRenewText(){
-    if(_subscriptionDetail?.plan.billingCycle == BillingCycle.monthly){
-      return tr("auto_renew_text", args: [tr("subscription.billing_cycle.monthly")]);
-    }else if(_subscriptionDetail?.plan.billingCycle == BillingCycle.yearly) {
-      return tr("auto_renew_text", args: [tr("subscription.billing_cycle.yearly")]);
-    }
-    return "";
+    final cycle = tr("subscription.billing_cycle.${widget.plan.billingCycle.name}.period");
+    return tr("subscription.auto_renew_text", args: [cycle]);
   }
 
   Future<void> _loadSubscriptionDetail() async {
@@ -92,9 +88,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
   }
 
   String _getBillingCycleText() {
-    return widget.plan.billingCycle == BillingCycle.monthly
-        ? 'Monthly Plan'
-        : 'Yearly Plan';
+    return tr("subscription.billing_cycle.${widget.plan.billingCycle.name}.plan");
   }
 
   // Check if subscription has scheduled cancellation
@@ -290,7 +284,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                       ),
                       Expanded(
                         child: Text(
-                          _getBillingCycleText(),
+                          widget.plan.name,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Colors.white,
@@ -327,7 +321,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                               border: Border.all(color: const Color(0xFFC7C7C7))
                           ),
                           child: SubscriptionPreviewCard(
-                            billingRecycleType: _subscriptionDetail?.plan.billingCycle.name ?? "",
+                            billingRecycleType: _getBillingCycleText(),
                             renewalText: (_hasScheduledCancellation) ? "--" : convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd),
                             amountText: _buildAmountText(),
                             autoRenewText: _buildRenewText()

@@ -186,7 +186,11 @@ class _HomeViewState extends State<_HomeView> {
 
       print("--ProfileError");
       if(profileState.code == "http_guard.customer_pending_deletion"){
-        return tr("error.pending_account_deletion");
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) context.go("/login/pending_deletion");
+        });
+        return "";
+        // return tr("error.pending_account_deletion");
       }
       return tr("error.home_page_error");
       // return profileState.message;
@@ -232,7 +236,7 @@ class _HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<_HomeContent> {
   final ElTooltipController tooltipController = ElTooltipController();
-
+  int _refreshKey = 0; // Key to force RecycleOrderCard rebuild on refresh
 
   Future<void> _refreshData(BuildContext context) async {
     final profileCubit = context.read<ProfileCubit>();
@@ -248,6 +252,11 @@ class _HomeContentState extends State<_HomeContent> {
       previewSubscriptionCubit.previewSubscription(),
       recycleOrderCubit.listOrders(),
     ]);
+
+    // Increment refresh key to force RecycleOrderCard to rebuild and reload order detail
+    setState(() {
+      _refreshKey++;
+    });
   }
 
   void _showTooltip(){
@@ -325,7 +334,7 @@ class _HomeContentState extends State<_HomeContent> {
                           if(widget.subscriptionState is SubscriptionDetailAndListLoaded &&
                               (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledCancellation == null &&
                               widget.recycleOrderState.orders.isNotEmpty &&
-                              widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed
+                              widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed && widget.entitlementState.entitlements.isEmpty
                           ) FinishedRecycleOrderNotificationCard(widget.subscriptionState as SubscriptionDetailAndListLoaded),
                           // RecycleOrderCard(widget.recycleOrderState.orders.first),
 
@@ -336,11 +345,20 @@ class _HomeContentState extends State<_HomeContent> {
 
                               if (displayState is SubscriptionDetailAndListLoaded && displayState.subscriptions.isNotEmpty) {
                                 if(widget.recycleOrderState.orders.isNotEmpty && !availableOrderStatus.contains(widget.recycleOrderState.orders.first.status)){
-                                  return RecycleOrderCard(widget.recycleOrderState.orders.first, displayState.detail);
+                                  return RecycleOrderCard(
+                                    widget.recycleOrderState.orders.first, 
+                                    displayState.detail,
+                                    key: ValueKey('recycle_order_${widget.recycleOrderState.orders.first.id}_$_refreshKey'),
+                                  );
                                 }
-                                // && widget.entitlementState.entitlements.isNotEmpty
-                                if(widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed ){
-                                  return RecycleOrderCard(widget.recycleOrderState.orders.first, displayState.detail);
+
+                                // if(widget.recycleOrderState.orders.isNotEmpty && widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed ){
+                                if(widget.recycleOrderState.orders.isNotEmpty && widget.entitlementState.entitlements.isNotEmpty ){
+                                  return RecycleOrderCard(
+                                    widget.recycleOrderState.orders.first, 
+                                    displayState.detail,
+                                    key: ValueKey('recycle_order_${widget.recycleOrderState.orders.first.id}_$_refreshKey'),
+                                  );
                                 }
 
                                 if (displayState.detail.recyclingProfile != null && displayState.detail.recyclingProfile?.initialBagStatus == "delivered") {

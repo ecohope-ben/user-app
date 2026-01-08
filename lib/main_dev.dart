@@ -19,12 +19,12 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = SimpleBlocObserver();
   await EasyLocalization.ensureInitialized();
+
   // setup Strip
-  // String stripePublishableKey = "pk_test_51SWuMM1Jfb61gpEIzzpyPQjT6ac4QsV9G0Q1TztigtuLLNOlvrgkhpCGDY8II6GU41N94tzHBwbyGgLVmzYprQSi00wYbyrMjy";
-  String stripePublishableKey = "pk_live_51S3vvt1lC88bC1PzKnSsK0RDwYGxS8Y5jCBb4FrwDSDD5Sg39P3rkxoe1RuZsQM4ZDYf80o7v5mG2Y0h2B7s0xg00091zssxaz";
+  String stripePublishableKey = "pk_test_51SF7RP03YTV8tfWqh3DIh2mEjAb8IMXGAbUkDGIghvcUrGI4xoBCMz2yFaScTbe1FQuNYzftYLtTsQDPsEJF7wzp00YL9o8FMw";
+  String baseUrl = "https://customer-api-dev.eco-hope.org";
   Stripe.publishableKey = stripePublishableKey;
   await Stripe.instance.applySettings();
-  String baseUrl = "https://customer-api.eco-hope.org";
 
   SystemUiOverlayStyle mySystemTheme = SystemUiOverlayStyle.light.copyWith(systemNavigationBarColor: backgroundColor, systemNavigationBarIconBrightness: Brightness.dark);
   SystemChrome.setSystemUIOverlayStyle(mySystemTheme);
@@ -32,16 +32,15 @@ Future<void> main() async {
     DeviceOrientation.portraitUp
   ]); // Only allow portrait modes
   FlavorConfig.initialize(
-    name: 'prod',
+    name: 'dev',
     baseUrl: baseUrl,
+    isDebug: true
   );
   runApp(
     EasyLocalization(
         supportedLocales: [Locale('en', 'US'), Locale('zh', 'HK')],
         path: 'assets/translations',
         fallbackLocale: Locale('en', 'US'),
-
-        // String baseUrl = "https://customer-int.eco-hope.org";
         child: MyApp(baseUrl: baseUrl)
     ),
   );

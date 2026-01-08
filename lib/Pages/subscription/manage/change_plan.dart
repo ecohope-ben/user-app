@@ -84,9 +84,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
   }
 
   String _getBillingCycleText() {
-    return widget.plan.billingCycle == BillingCycle.monthly
-        ? tr("subscription.monthly")
-        : tr("subscription.yearly");
+    return tr("subscription.billing_cycle.${widget.plan.billingCycle.name}.plan");
   }
 
   String _buildAmountText(){
@@ -95,12 +93,9 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
   }
 
   String _buildRenewText(){
-    if(widget.plan.billingCycle == BillingCycle.monthly){
-      return tr("subscription.auto_renew_text", args: [tr("subscription.billing_cycle.monthly")]);
-    }else if(widget.plan.billingCycle == BillingCycle.yearly) {
-      return tr("subscription.auto_renew_text", args: [tr("subscription.billing_cycle.yearly")]);
-    }
-    return "";
+    final cycle = tr("subscription.billing_cycle.${widget.plan.billingCycle.name}.period");
+
+    return tr("subscription.auto_renew_text", args: [cycle]);
   }
 
   // Check if subscription has scheduled plan change
@@ -141,7 +136,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
         printRouteStack(context);
         // Navigate back
         if (mounted) {
-          context.go("/subscription/change_plan/confirmation", extra: tr("subscription.${widget.plan.billingCycle.name}"));
+          context.go("/subscription/change_plan/confirmation", extra: tr("subscription.billing_cycle.${widget.plan.billingCycle.name}.plan"));
         }
       }
     } catch (e) {
@@ -298,7 +293,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
                                 border: Border.all(color: const Color(0xFFC7C7C7))
                             ),
                             child: SubscriptionPreviewCard(
-                                billingRecycleType: widget.plan.billingCycle.name,
+                                billingRecycleType: _getBillingCycleText(),
                                 renewalText: convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd),
                                 amountText: _buildAmountText(),
                                 autoRenewText: _buildRenewText()
@@ -453,7 +448,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
                                             ),
                                           )
                                           : Text(
-                                            _hasScheduledPlanChange ? tr("cancel_plan_change") : "Confirm Plan Change",
+                                            _hasScheduledPlanChange ? tr("cancel_plan_change") : tr("confirm_plan_change"),
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               color: _hasScheduledPlanChange ? Colors.black : Colors.white,

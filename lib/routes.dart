@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/blocs/subscription_cubit.dart';
+import 'package:user_app/pages/common/account_deletion.dart';
 import 'package:user_app/pages/common/confirm_page.dart';
 import 'package:user_app/pages/common/how_it_works.dart';
 import 'package:user_app/pages/common/recycling_guide.dart';
@@ -54,6 +55,7 @@ final router = GoRouter(
               path: '/login', builder: (context, state) => const LoginIndex(),
               routes: [
                 GoRoute(path: 'verify', builder: (context, state) => const LoginEmailVerification()),
+                GoRoute(path: 'pending_deletion', builder: (context, state) => const AccountPendingDeletion()),
               ]
           ),
         ]
@@ -112,7 +114,7 @@ final router = GoRouter(
     GoRoute(path: '/payments/history', builder: (context, state) => TransactionHistoryPage()),
     GoRoute(path: '/payment/details', builder: (context, state) => TransactionHistoryDetailsPage(state.extra as PaymentListItem)),
 
-    GoRoute(path: '/profile/edit', builder: (context, state) => EditProfilePage()),
+    GoRoute(path: '/profile/edit', builder: (context, state) => EditProfilePage())
   ],
 );
 

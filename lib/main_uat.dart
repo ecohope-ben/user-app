@@ -34,6 +34,7 @@ Future<void> main() async {
   FlavorConfig.initialize(
     name: 'prod',
     baseUrl: baseUrl,
+    isDebug: true
   );
   runApp(
     EasyLocalization(

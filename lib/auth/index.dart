@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_app/models/profile_models.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class Auth {
   static final Auth _instance = Auth._internal(FlutterSecureStorage());
@@ -11,8 +12,8 @@ class Auth {
   String? refreshToken;
   String? sessionId;
   Profile? profile;
-
   String? firebaseToken;
+  DateTime? pendingDeletion;
 
   get isLoggedIn => accessToken != null && refreshToken != null;
 
@@ -35,9 +36,19 @@ class Auth {
     }
   }
 
+  void decodeJwt(String accessToken){
+
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
+    String? pendingDeletionStr = decodedToken['deletion_requested_at'];
+    if(pendingDeletionStr != null) pendingDeletion = DateTime.parse(pendingDeletionStr);
+  }
+
   Future saveAccessToken(String? accessToken) async {
     print("--save access token");
     this.accessToken = accessToken;
+    if(accessToken != null){
+      decodeJwt(accessToken);
+    }
     await storage.write(key: "access_token", value: accessToken);
   }
 

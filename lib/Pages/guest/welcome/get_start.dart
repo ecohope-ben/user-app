@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:go_router/go_router.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:user_app/utils/snack.dart';
 import '../../../style.dart';
 
 class GetStartPage extends StatefulWidget {
@@ -13,7 +14,7 @@ class GetStartPage extends StatefulWidget {
 
 class _GetStartPageState extends State<GetStartPage> {
   bool _agreeToTerms = false;
-  bool _agreeToPrivacy = false;
+  bool _agreeToMarketingUse = false;
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +171,13 @@ class _GetStartPageState extends State<GetStartPage> {
                         ),
                       ),
                       child: TextButton(
-                        onPressed:() => context.push("/register"),
+                        onPressed:() {
+                          if (_agreeToTerms) {
+                            context.push("/register");
+                          }else{
+                            popSnackBar(context, tr("validation.agree_terms"));
+                          }
+                        },
                         child: Text(tr("register.register_now"), textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
@@ -232,9 +239,9 @@ class _GetStartPageState extends State<GetStartPage> {
                             });
                           },
                           child: Text(
-                            "I agree to the Terms and Conditions",
+                            tr("have_read_terms_n_pp"),
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 13,
                               color: Colors.white,
                             ),
                           ),
@@ -246,10 +253,10 @@ class _GetStartPageState extends State<GetStartPage> {
                   Row(
                     children: [
                       Checkbox(
-                        value: _agreeToPrivacy,
+                        value: _agreeToMarketingUse,
                         onChanged: (bool? value) {
                           setState(() {
-                            _agreeToPrivacy = value ?? false;
+                            _agreeToMarketingUse = value ?? false;
                           });
                         },
                         activeColor: Colors.white,
@@ -259,13 +266,13 @@ class _GetStartPageState extends State<GetStartPage> {
                         child: GestureDetector(
                           onTap: () {
                             setState(() {
-                              _agreeToPrivacy = !_agreeToPrivacy;
+                              _agreeToMarketingUse = !_agreeToMarketingUse;
                             });
                           },
-                          child: const Text(
-                            "I agree to the Privacy Policy",
+                          child: Text(
+                            tr("agree_marketing_purpose"),
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 13,
                               color: Colors.white,
                             ),
                           ),
