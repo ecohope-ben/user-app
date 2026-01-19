@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_app/blocs/profile_cubit.dart';
 
 import '../../constants.dart';
@@ -27,14 +28,22 @@ class _ProfileInputState extends State<ProfileInput> {
   int? _birthMonth;
   int? _birthDay;
 
-  void submit(){
-    context.read<ProfileCubit>().updateProfileOnboarding(
-      name: _nameController.text,
-      gender: _gender,
-      birthMonth: _birthMonth,
-      birthDay: _birthDay,
-      ageGroup: _selectedAgeGroup
-    );
+  Future<void> submit() async {
+
+    final prefs = await SharedPreferences.getInstance();
+    print("--marketing2: ${prefs.getBool('marketing_opt_in')}");
+    bool isAgreeMarketingUse = prefs.getBool('marketing_opt_in') ?? false;
+    if(mounted) {
+      context.read<ProfileCubit>().updateProfileOnboarding(
+
+          name: _nameController.text,
+          gender: _gender,
+          birthMonth: _birthMonth,
+          birthDay: _birthDay,
+          ageGroup: _selectedAgeGroup,
+          isAgreeMarketingUse: isAgreeMarketingUse
+      );
+    }
   }
 
   @override

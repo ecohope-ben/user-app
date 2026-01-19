@@ -21,7 +21,7 @@ class TransactionHistoryDetailsPage extends StatelessWidget {
         backgroundColor: mainPurple,
         leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
-            onPressed: () => context.pop
+            onPressed: () => context.pop()
         ),
         title: Text(
           tr("transaction.details"),

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:go_router/go_router.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_app/utils/snack.dart';
+import '../../../api/index.dart';
 import '../../../style.dart';
 
 class GetStartPage extends StatefulWidget {
@@ -250,24 +252,31 @@ class _GetStartPageState extends State<GetStartPage> {
                     ],
                   ),
 
+                  SizedBox(height: 8),
+
                   Row(
                     children: [
                       Checkbox(
                         value: _agreeToMarketingUse,
-                        onChanged: (bool? value) {
+                        onChanged: (bool? value) async {
                           setState(() {
                             _agreeToMarketingUse = value ?? false;
                           });
+                          final prefs = await SharedPreferences.getInstance();
+                          prefs.setBool('marketing_opt_in', _agreeToMarketingUse);
+
                         },
                         activeColor: Colors.white,
                         checkColor: Colors.black,
                       ),
                       Expanded(
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             setState(() {
                               _agreeToMarketingUse = !_agreeToMarketingUse;
                             });
+                            final prefs = await SharedPreferences.getInstance();
+                            prefs.setBool('marketing_opt_in', _agreeToMarketingUse);
                           },
                           child: Text(
                             tr("agree_marketing_purpose"),

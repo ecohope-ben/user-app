@@ -86,6 +86,12 @@ class RecycleApi extends ApiEndpoint {
         return 'completed';
       case RecycleOrderStatus.failed:
         return 'failed';
+      case RecycleOrderStatus.cancelled:
+        return 'cancelled';
+      case RecycleOrderStatus.paymentFailed:
+        return 'payment_failed';
+      case RecycleOrderStatus.pendingPayment:
+        return 'pending_payment';
     }
   }
 

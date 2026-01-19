@@ -45,6 +45,7 @@ ProfilePatchRequest _$ProfilePatchRequestFromJson(Map<String, dynamic> json) =>
       birthMonth: (json['birth_month'] as num?)?.toInt(),
       birthDay: (json['birth_day'] as num?)?.toInt(),
       ageGroup: json['age_group'] as String?,
+      marketingOptIn: json['marketing_opt_in'] as bool?,
     );
 
 Map<String, dynamic> _$ProfilePatchRequestToJson(
@@ -55,6 +56,7 @@ Map<String, dynamic> _$ProfilePatchRequestToJson(
   'birth_month': instance.birthMonth,
   'birth_day': instance.birthDay,
   'age_group': instance.ageGroup,
+  'marketing_opt_in': instance.marketingOptIn,
 };
 
 ProfileErrorBody _$ProfileErrorBodyFromJson(Map<String, dynamic> json) =>

@@ -162,12 +162,14 @@
       "pickedUp": "快遞已取件",
       "completed": "送達完成 / 已成功送達",
       "failed": "失敗",
+      "cancelled": "已取消",
       "short": {
         "pending": "已確認",
         "processing": "已確認",
         "pickedUp": "已取件",
         "completed": "已完成",
-        "failed": "失敗"
+        "failed": "失敗",
+        "cancelled": "已取消"
       }
     }
   },
@@ -376,6 +378,7 @@
     "limited_offer": "（限時優惠）"
   },
   "settings": {
+    "title": "設定",
     "order_history": "回收記錄",
     "transaction_history": "交易記錄",
     "fnq": "常見問題及意見反饋"

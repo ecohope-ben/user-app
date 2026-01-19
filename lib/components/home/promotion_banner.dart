@@ -26,7 +26,7 @@ class PromotionCodeArea extends StatelessWidget {
             // mainAxisSize: MainAxisSize.min,
             // crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(child: Text("${tr("promote.code")}: $promotionCode", style: TextStyle(color: Colors.black))),
+              Text("${tr("promote.code")}: $promotionCode", style: TextStyle(color: Colors.black)),
               SizedBox(width: 10),
               Icon(Icons.copy_sharp)
             ],

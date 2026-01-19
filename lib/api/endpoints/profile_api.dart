@@ -35,6 +35,18 @@ class ProfileApi extends ApiEndpoint {
     }
   }
 
+  Future<void> changeLocale(String localString) async {
+    try {
+      print("--changelocale: $localString");
+      await http.put('/profile/locale', data: {
+        "preferred_locale": localString
+      });
+    } on DioException catch (e) {
+      throw _handleProfileDioError(e);
+    }
+  }
+
+
   Future<void> patchProfile({
     // required String accessToken,
     required ProfilePatchRequest request,

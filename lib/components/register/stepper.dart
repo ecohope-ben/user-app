@@ -11,6 +11,7 @@ class RegisterStepper extends StatefulWidget {
 }
 
 class _RegisterStepperState extends State<RegisterStepper> {
+
   @override
   Widget build(BuildContext context) {
     return StepProgress(
@@ -31,7 +32,7 @@ class _RegisterStepperState extends State<RegisterStepper> {
         tr("register.profile"),
       ],
 
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(10),
 
       theme: const StepProgressThemeData(
         shape: StepNodeShape.rectangle,
@@ -48,7 +49,7 @@ class _RegisterStepperState extends State<RegisterStepper> {
           defualtColor: Colors.black,
           titleStyle: TextStyle(fontWeight: FontWeight.bold),
           margin: EdgeInsets.only(top: 6),
-          maxWidth: 60
+          maxWidth: 80,
         ),
         stepNodeStyle: StepNodeStyle(
           activeIcon: null,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:user_app/components/common/choose_language.dart';
 import 'package:user_app/pages/guest/welcome/get_start.dart';
 import 'package:user_app/pages/guest/welcome/page1.dart';
 import 'package:user_app/pages/guest/welcome/page2.dart';
@@ -16,6 +17,22 @@ class IntroPage extends StatefulWidget {
 class _IntroPageState extends State<IntroPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+
+  @override
+  void initState() {
+    changeLocalePopup();
+    super.initState();
+  }
+
+  Future<void> changeLocalePopup() async {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => const ChangeLocalePopup(),
+        );
+      });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class WelcomeGiftPopup extends StatelessWidget {
   const WelcomeGiftPopup({super.key});
@@ -94,8 +95,8 @@ class WelcomeGiftPopup extends StatelessWidget {
                   height: 48,
                   child: ElevatedButton(
                     onPressed: () {
-                      // 點擊事件
                       Navigator.of(context).pop();
+                      context.push("/subscription/list");
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF222222), // 深黑色背景

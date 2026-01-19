@@ -159,7 +159,7 @@ class _SliverBarState extends State<SliverBar> {
   Widget _buildSubscription() {
    final state = widget.subscriptionState;
     return _buildStatItem(
-        value: state.subscriptions.isNotEmpty ? tr("subscription.billing_cycle.${state.subscriptions.first.plan.billingCycle.name}.plan") : tr("no_subscriptions"),
+        value: state.subscriptions.isNotEmpty ? tr("subscription.billing_cycle.${state.subscriptions.first.plan.billingCycle.name}.plan") : "--",
         label: tr("subscriptions"),
         label2: _buildSubscriptionLabel(),
 

@@ -119,6 +119,9 @@ const _$RecycleOrderStatusEnumMap = {
   RecycleOrderStatus.pickedUp: 'picked_up',
   RecycleOrderStatus.completed: 'completed',
   RecycleOrderStatus.failed: 'failed',
+  RecycleOrderStatus.cancelled: 'cancelled',
+  RecycleOrderStatus.paymentFailed: 'payment_failed',
+  RecycleOrderStatus.pendingPayment: 'pending_payment',
 };
 
 SfExpressRoute _$SfExpressRouteFromJson(Map<String, dynamic> json) =>

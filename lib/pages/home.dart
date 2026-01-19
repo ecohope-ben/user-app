@@ -287,7 +287,7 @@ class _HomeContentState extends State<_HomeContent> {
   @override
   void initState() {
     super.initState();
-    popWelcomeGift();
+    // popWelcomeGift();
   }
 
 
@@ -376,6 +376,7 @@ class _HomeContentState extends State<_HomeContent> {
                                   return InitialBagDeliveryCard(displayState.detail.recyclingProfile?.initialBagDeliveryTrackingNo);
                                 }
                               } else {
+
                                 if(widget.previewSubscriptionState is SubscriptionPreviewReady && Discount.instance().promotionCode != null) {
                                   return PromotionBanner(() => context.push("/subscription/list"));
                                 }else{

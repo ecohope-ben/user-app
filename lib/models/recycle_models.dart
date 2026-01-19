@@ -20,6 +20,12 @@ enum RecycleOrderStatus {
   completed,
   @JsonValue('failed')
   failed,
+  @JsonValue('cancelled')
+  cancelled,
+  @JsonValue('payment_failed')
+  paymentFailed,
+  @JsonValue('pending_payment')
+  pendingPayment
 }
 
 /// Available timeslot with display range and value

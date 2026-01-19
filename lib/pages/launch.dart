@@ -41,6 +41,11 @@ class _LaunchPageState extends State<LaunchPage> {
     await auth.initialize();
 
     final prefs = await SharedPreferences.getInstance();
+
+    //set marketing_opt_in to false
+    prefs.setBool('marketing_opt_in', false);
+
+    //check is first run
     bool firstRun = prefs.getBool('first_run') ?? true;
     if (firstRun) {
       auth.removeAllStorage();

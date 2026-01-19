@@ -161,12 +161,14 @@
       "pickedUp": "Picked Up by Courier",
       "completed": "Delivery completed / Delivered Successfully",
       "failed": "Failed",
+      "cancelled": "Cancelled",
       "short": {
         "pending": "Confirmed",
         "processing": "Confirmed",
         "pickedUp": "Picked",
         "completed": "Completed",
-        "failed": "Failed"
+        "failed": "Failed",
+        "cancelled": "Cancelled"
       }
     }
   },
@@ -379,6 +381,7 @@
     "limited_offer": "(Limited Offer)"
   },
   "settings": {
+    "title": "Settings",
     "order_history": "Recycle Pick Up History",
     "transaction_history": "Transaction History",
     "fnq": "FAQ & Feedback"

@@ -7,6 +7,7 @@ import 'package:user_app/flavor.dart';
 import 'package:user_app/style.dart';
 import 'package:user_app/utils/pop_up.dart';
 
+import '../../api/index.dart';
 import '../../auth/index.dart';
 import '../../components/common/explore_banner.dart';
 import '../subscription/manage/list.dart';
@@ -48,8 +49,8 @@ class _SettingsPageState extends State<SettingsPage> {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
           onPressed: () => context.pop(),
         ),
-        title: const Text(
-          'Settings',
+        title: Text(
+          tr("settings.title"),
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
@@ -144,6 +145,16 @@ class _SettingsPageState extends State<SettingsPage> {
                               ],
                               onSelected: (Locale locale) {
                                 context.setLocale(locale);
+                                String acceptLanguage = "";
+                                switch (locale.countryCode) {
+                                  case 'US':
+                                    acceptLanguage = 'en';
+                                    break;
+                                  case 'HK':
+                                    acceptLanguage = 'zh-HK';
+                                    break;
+                                }
+                                Api.instance().profile().changeLocale(acceptLanguage);
                               },
                             ),
                           ),
@@ -202,7 +213,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   fontSize: 12,
                 ),
               ),
-
+              //if debug mode then show base url
               if(FlavorConfig.instance.isDebug) Text(
                 FlavorConfig.instance.baseUrl,
                 style: const TextStyle(
