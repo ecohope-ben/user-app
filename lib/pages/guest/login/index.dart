@@ -42,7 +42,7 @@ class _LoginIndexState extends State<LoginIndex>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text(tr("login.title"), style: TextStyle(color: Colors.black)),
         leading: InkWell(
@@ -65,97 +65,99 @@ class _LoginIndexState extends State<LoginIndex>{
           }
         },
         builder: (context, state) {
-          return Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 25, vertical: 25),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(height: 50),
-                  Image.asset("assets/icon/login_logo.png", width: 120),
-                  TitleText(tr("login.welcome"), fontSize: 40),
-                  SubTitleText(tr("login.email_description")),
-                  TextInput(tr("login.your_email_address"), controller: _emailController, validator: validateEmail),
-                  SizedBox(height: 20),
-                  ActionButton(
-                      tr("login.login_with_otp"),
-                      showLoading: context.read<LoginCubit>().state is LoginLoading || context.read<LoginCubit>().state is LoginInProgressLoading,
-                      onTap: () async {
-                        if (_formKey.currentState!.validate()) {
-                          // If validation passes, get the email and update registration
-                          final email = _emailController.text;
-
-                          final bloc = context.read<LoginCubit>();
-                          final result = await bloc.updateEmail(email: email);
-                          print("--login email result: $result");
-
-                          if(mounted) {
-                            if(result) {
-                              context.push("/login/verify");
-                            }else {
-                              context.read<LoginCubit>().reset();
-                              await context.read<LoginCubit>().startLogin();
-
-                              // retry
-                              final result = await bloc.updateEmail(email: email);
-
-                              print("--login email result2: $result");
+          return SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 25, vertical: 25),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 50),
+                    Image.asset("assets/icon/login_logo.png", width: 120),
+                    TitleText(tr("login.welcome"), fontSize: 40),
+                    SubTitleText(tr("login.email_description")),
+                    TextInput(tr("login.your_email_address"), controller: _emailController, validator: validateEmail),
+                    SizedBox(height: 20),
+                    ActionButton(
+                        tr("login.login_with_otp"),
+                        showLoading: context.read<LoginCubit>().state is LoginLoading || context.read<LoginCubit>().state is LoginInProgressLoading,
+                        onTap: () async {
+                          if (_formKey.currentState!.validate()) {
+                            // If validation passes, get the email and update registration
+                            final email = _emailController.text;
+            
+                            final bloc = context.read<LoginCubit>();
+                            final result = await bloc.updateEmail(email: email);
+                            print("--login email result: $result");
+            
+                            if(mounted) {
                               if(result) {
                                 context.push("/login/verify");
+                              }else {
+                                context.read<LoginCubit>().reset();
+                                await context.read<LoginCubit>().startLogin();
+            
+                                // retry
+                                final result = await bloc.updateEmail(email: email);
+            
+                                print("--login email result2: $result");
+                                if(result) {
+                                  context.push("/login/verify");
+                                }
                               }
                             }
                           }
                         }
-                      }
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () async {
-                            final Uri emailLaunchUri = Uri(
-                              scheme: 'mailto',
-                              path: 'support@ecohopeltd.com',
-                            );
-                            if (await canLaunchUrl(emailLaunchUri)) {
-                              await launchUrl(emailLaunchUri);
-                            }
-                          },
-                          child: Text.rich(
-                            TextSpan(
-                              text: tr("please_contact_at"),
-                              children: [
-                                TextSpan(
-                                  text: "support@ecohopeltd.com",
-                                  style: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    color: Theme
-                                        .of(context)
-                                        .colorScheme
-                                        .primary,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () async {
+                              final Uri emailLaunchUri = Uri(
+                                scheme: 'mailto',
+                                path: 'support@ecohopeltd.com',
+                              );
+                              if (await canLaunchUrl(emailLaunchUri)) {
+                                await launchUrl(emailLaunchUri);
+                              }
+                            },
+                            child: Text.rich(
+                              TextSpan(
+                                text: tr("please_contact_at"),
+                                children: [
+                                  TextSpan(
+                                    text: "support@ecohopeltd.com",
+                                    style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      color: Theme
+                                          .of(context)
+                                          .colorScheme
+                                          .primary,
+                                    ),
                                   ),
-                                ),
-
-                              ],
+            
+                                ],
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                         ),
-                      ),
-
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(tr("if_need_help")),
-                    ],
-                  )
-                ],
+            
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(tr("if_need_help")),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
           );

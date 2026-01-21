@@ -68,10 +68,9 @@ class Auth {
   }
 
   void removeAllStorage(){
-    print("--remove all storage");
-    storage.deleteAll();
     Auth.instance().saveAccessToken(null);
     Auth.instance().saveRefreshToken(null);
+    storage.deleteAll();
   }
 
   Future logout() async {

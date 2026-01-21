@@ -354,14 +354,10 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
         if (e is SubscriptionException) {
           errorMessage = e.message;
         } else {
-          errorMessage = e.toString();
+          print(e.toString());
+          errorMessage = tr('error_text');
         }
-
-        await showForcePopup(
-          context,
-          title: 'error_text',
-          message: errorMessage,
-        );
+        popSnackBar(context, errorMessage);
       }
     }
   }
@@ -590,6 +586,8 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                           setState(() {
                             _showPromotionName = false;
                             hasPreviewError = false;
+
+                            _promotionCode = null;
                             promotionCodeController.clear();
                             _loadPreview();
                           });

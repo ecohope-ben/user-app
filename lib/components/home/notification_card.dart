@@ -41,6 +41,42 @@ class SubscriptionCanceledNotificationCard extends StatelessWidget {
     );
   }
 }
+class SubscriptionChangedNotificationCard extends StatelessWidget {
+  final String? newPlanName;
+  final String expiredDate;
+  const SubscriptionChangedNotificationCard(this.newPlanName, this.expiredDate, {super.key});
+
+  Widget _buildButton(BuildContext context){
+    return Container(
+        width: double.infinity,
+        height: 40,
+        decoration: BoxDecoration(
+            color: Colors.transparent,
+            border: Border.all(color: Colors.white)
+        ),
+        child: TextButton(
+          onPressed:() => context.push("/subscription/manage/list", extra: SubscriptionManageTarget.manage),
+          child: Text(
+            tr("update"),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        )
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NotificationCard(
+      iconData: Icons.info_outline,
+      title: null,
+      description: tr("subscription.your_subscription_will_change", args: [expiredDate, newPlanName ?? ""]),
+      action: _buildButton(context),
+    );
+  }
+}
 
 class PaymentFailedNotificationCard extends StatelessWidget {
   final String subscriptionId;

@@ -102,7 +102,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
       emit(RegistrationLoading());
       print("--start reg");
       final response = await _apiService.startRegistration();
-      print("--reg id: ${response.registration.id}");
+      // print("--reg id: ${response.registration.id}");
 
       if (response.error != null) {
         print(response.error.toString());
@@ -143,10 +143,12 @@ class RegistrationCubit extends Cubit<RegistrationState> {
     }
   }
 
+
   /// update register（email or phone）
   Future<void> updateRegistration({
     String? email,
     String? phone,
+    bool? marketingOptIn
   }) async {
     final currentState = state;
     if (currentState is! RegistrationInProgress) return;
@@ -160,6 +162,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         request: RegistrationUpdateRequest(
           email: email,
           phone: phone,
+          marketingOptIn: marketingOptIn
         ),
       );
 

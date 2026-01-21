@@ -55,7 +55,7 @@ class RefreshTokenInterceptor extends Interceptor {
         final refreshToken = _auth.refreshToken!;
         final sessionId = _auth.sessionId;
 
-        print("--401 error6: ${refreshToken}, ${sessionId}");
+        // print("--401 error6: ${refreshToken}, ${sessionId}");
         final refreshResponse = await dio.post(
           '/auth/session/refresh',
           data: {
@@ -63,7 +63,7 @@ class RefreshTokenInterceptor extends Interceptor {
             "session_id": sessionId,
           }
         );
-        print("--401 error7: ${refreshResponse.toString()}");
+        // print("--401 error7: ${refreshResponse.toString()}");
         // Parse session from response
         final session = Session.fromJson(refreshResponse.data);
 

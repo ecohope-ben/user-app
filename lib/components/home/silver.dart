@@ -121,9 +121,14 @@ class _SliverBarState extends State<SliverBar> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildPickupRemining(),
-        _buildSubscription(),
-        _buildTotalCollection()
+        Expanded(flex: 1, child: _buildPickupRemining()),
+        // _buildPickupRemining(),
+        SizedBox(width: 5),
+        Expanded(flex: 1, child: _buildSubscription()),
+        // _buildSubscription(),
+        SizedBox(width: 5),
+        Expanded(flex: 1, child: _buildTotalCollection())
+        // _buildTotalCollection(),
       ],
     );
   }
@@ -143,7 +148,7 @@ class _SliverBarState extends State<SliverBar> {
     final state = widget.subscriptionState;
     if(state is SubscriptionDetailAndListLoaded){
       if(state.detail.scheduledCancellation != null){
-        return "${tr("Expired")} ${convertDateTimeToString(context, state.detail.currentPeriodEnd, format: "dd/MM/yy")}";
+        return "${tr("expired_date")} ${convertDateTimeToString(context, state.detail.currentPeriodEnd, format: "dd/MM/yy")}";
       }else {
         return "${tr("renew")} ${convertDateTimeToString(context, state.detail.currentPeriodEnd, format: "dd/MM/yy")}";
       }
@@ -180,6 +185,7 @@ class _SliverBarState extends State<SliverBar> {
       onTap: onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+
         children: [
           Text(
             value,
@@ -196,9 +202,13 @@ class _SliverBarState extends State<SliverBar> {
             style: TextStyle(fontSize: 11, color: Colors.white,),
           ),
           if(label2 != null) SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(fontSize: 13, color: Colors.white),
+          Wrap(
+            children: [
+              Text(
+                label,
+                style: TextStyle(fontSize: 13, color: Colors.white),
+              )
+            ]
           ),
         ],
       ),

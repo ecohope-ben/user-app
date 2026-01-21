@@ -5,7 +5,7 @@ String? validateEmail(String? value) {
   if (value == null || value.isEmpty) {
     return tr("validation.email_required"); // Add this translation key
   }
-  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', caseSensitive: false);
   if (!emailRegex.hasMatch(value)) {
     return tr("validation.email_invalid"); // Add this translation key
   }

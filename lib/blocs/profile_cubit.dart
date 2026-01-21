@@ -95,8 +95,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     String? gender,
     int? birthMonth,
     int? birthDay,
-    String? ageGroup,
-    required bool isAgreeMarketingUse
+    String? ageGroup
   }) async {
     try {
       emit(ProfileLoading());
@@ -106,8 +105,7 @@ class ProfileCubit extends Cubit<ProfileState> {
           gender: gender,
           birthMonth: birthMonth,
           birthDay: birthDay,
-          ageGroup: ageGroup,
-          marketingOptIn: isAgreeMarketingUse
+          ageGroup: ageGroup
       );
 
       await _apiService.updateProfile(

@@ -59,36 +59,38 @@ class _PhoneVerificationStepState extends State<PhoneVerificationStep> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Image.asset("assets/icon/register_phone.png", width: 180),
-        TitleText(tr("register.verify_phone_number")),
-        SubTitleText(tr("register.verify_phone_description", args: [phone ?? ""])),
-        OTPInput(validator: _validateOTP, submitOTP: _submitOTP, showLoading: context.read<RegistrationCubit>().state is RegistrationInProgressLoading),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(tr("register.dont_receive_code")),
-            ResendButton(
-              reSendOTP,
-              cubitType: ResendButtonCubitType.registration,
-              channelType: ResendButtonChannelType.phone,
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-                onPressed: () => context.read<RegistrationCubit>().changeStage(RegistrationStage.phoneInput),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Image.asset("assets/icon/register_phone.png", width: 180),
+          TitleText(tr("register.verify_phone_number")),
+          SubTitleText(tr("register.verify_phone_description", args: [phone ?? ""])),
+          OTPInput(validator: _validateOTP, submitOTP: _submitOTP, showLoading: context.read<RegistrationCubit>().state is RegistrationInProgressLoading),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(tr("register.dont_receive_code")),
+              ResendButton(
+                reSendOTP,
+                cubitType: ResendButtonCubitType.registration,
+                channelType: ResendButtonChannelType.phone,
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                  onPressed: () => context.read<RegistrationCubit>().changeStage(RegistrationStage.phoneInput),
 
-                child: Text(tr("register.edit_phone", args: [phone ?? ""]), style: TextStyle(color: blueRegisterText))
-            ),
-          ],
-        ),
-      ],
+                  child: Text(tr("register.edit_phone", args: [phone ?? ""]), style: TextStyle(color: blueRegisterText))
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

@@ -74,36 +74,38 @@ class _EmailVerificationStepState extends State<EmailVerificationStep> {
         }
       },
       builder: (context, state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Image.asset("assets/icon/register_email.png", width: 180),
-            TitleText(tr("register.check_your_email")),
-            SubTitleText(tr("register.check_email_description", args: [email ?? ""])),
-            OTPInput(validator: _validateOTP, submitOTP: _submitOTP, showLoading: context.read<RegistrationCubit>().state is RegistrationInProgressLoading),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(tr("register.dont_receive_code")),
-                ResendButton(
-                  reSendOTP,
-                  cubitType: ResendButtonCubitType.registration,
-                  channelType: ResendButtonChannelType.email,
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                    onPressed: () => context.read<RegistrationCubit>().changeStage(RegistrationStage.emailInput),
-
-                    child: Text(tr("register.edit_email", args: [email ?? ""]), style: TextStyle(color: blueRegisterText))
-                ),
-              ],
-            ),
-          ],
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Image.asset("assets/icon/register_email.png", width: 180),
+              TitleText(tr("register.check_your_email")),
+              SubTitleText(tr("register.check_email_description", args: [email ?? ""])),
+              OTPInput(validator: _validateOTP, submitOTP: _submitOTP, showLoading: context.read<RegistrationCubit>().state is RegistrationInProgressLoading),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(tr("register.dont_receive_code")),
+                  ResendButton(
+                    reSendOTP,
+                    cubitType: ResendButtonCubitType.registration,
+                    channelType: ResendButtonChannelType.email,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                      onPressed: () => context.read<RegistrationCubit>().changeStage(RegistrationStage.emailInput),
+          
+                      child: Text(tr("register.edit_email", args: [email ?? ""]), style: TextStyle(color: blueRegisterText))
+                  ),
+                ],
+              ),
+            ],
+          ),
         );
       },
     );

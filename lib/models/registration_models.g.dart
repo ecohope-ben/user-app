@@ -172,11 +172,16 @@ RegistrationUpdateRequest _$RegistrationUpdateRequestFromJson(
 ) => RegistrationUpdateRequest(
   email: json['email'] as String?,
   phone: json['phone'] as String?,
+  marketingOptIn: json['marketing_opt_in'] as bool?,
 );
 
 Map<String, dynamic> _$RegistrationUpdateRequestToJson(
   RegistrationUpdateRequest instance,
-) => <String, dynamic>{'email': instance.email, 'phone': instance.phone};
+) => <String, dynamic>{
+  'email': instance.email,
+  'phone': instance.phone,
+  'marketing_opt_in': instance.marketingOptIn,
+};
 
 OtpVerifyRequest _$OtpVerifyRequestFromJson(Map<String, dynamic> json) =>
     OtpVerifyRequest(code: json['code'] as String);

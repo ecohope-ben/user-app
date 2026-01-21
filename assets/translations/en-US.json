@@ -107,6 +107,7 @@
     "changing_plan_to": "Your subscription is changing to ",
     "change_plan_confirmation": "You will still be able to recycle with your current monthly plan and you can change your mind anytime before this date.",
     "your_subscription_will_end": "Your subscription will end on {}. You can change your mind anytime before this date.",
+    "your_subscription_will_change": "Your subscription will change to {} on {}. You can change your mind anytime before this date.",
     "cancel": {
       "title": "Cancel Subscription",
       "confirm": "Are you sure you want to cancel your subscription plan?\nThis subscription will be canceled at the end of the current billing period",
@@ -402,5 +403,9 @@
   "content_copied": "Content Copied",
   "promotion_code_copied": "Promotion Code Copied",
   "tracking_number_copied": "Tracking Number Copied",
-  "optional": "Optional"
+  "optional": "Optional",
+  "more_exciting_rewards": "More Exciting Rewards",
+  "coming_soon": "Coming Soon",
+  "we_are_going_to_launch": "We are going to launch the rewards programs very soon. Stay Tuned!"
+
 }

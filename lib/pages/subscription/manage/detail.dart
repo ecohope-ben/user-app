@@ -311,7 +311,9 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                         ),
 
                         if(_hasScheduledCancellation) const SizedBox(height: 15),
-                        if(_hasScheduledCancellation) NoticeBanner(convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd)),
+                        if(_hasScheduledCancellation) CancelPlanNoticeBanner(convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd)),
+                        if(_hasScheduledPlanChange) const SizedBox(height: 15),
+                        if(_hasScheduledPlanChange) ChangePlanNoticeBanner(_subscriptionDetail?.scheduledPlanChange?.plan.name, convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd)),
                         const SizedBox(height: 15),
                         Container(
                           width: double.infinity,

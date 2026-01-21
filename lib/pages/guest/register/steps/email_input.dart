@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../blocs/registration_cubit.dart';
 import '../../../../components/register/action_button.dart';
@@ -44,8 +45,13 @@ class _EmailInputStepState extends State<EmailInputStep> {
                   // If validation passes, get the email and update registration
                   final email = _emailController.text;
 
-                  final bloc = context.read<RegistrationCubit>();
-                  bloc.updateRegistration(email: email);
+                  final prefs = await SharedPreferences.getInstance();
+                  bool isAgreeMarketingUse = prefs.getBool('marketing_opt_in') ?? false;
+
+                  if(mounted) {
+                    final bloc = context.read<RegistrationCubit>();
+                    bloc.updateRegistration(email: email, marketingOptIn: isAgreeMarketingUse);
+                  }
                 }
               })
         ],

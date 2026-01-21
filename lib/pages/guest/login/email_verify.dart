@@ -68,9 +68,8 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
 
   @override
   Widget build(BuildContext context) {
-    print("--find LoginCubit: ${context.read<LoginCubit>()}");
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         leading: InkWell(
           onTap: () => Navigator.pop(context),
@@ -107,42 +106,44 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
 
         },
         builder: (context, state) {
-          return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(height: 50),
-                  Image.asset("assets/icon/login_logo.png", width: 120),
-                  TitleText(tr("login.welcome"), fontSize: 40),
-                  SubTitleText(tr("login.email_description")),
-                  SubTitleText(tr("login.please_enter_otp", args: [email ?? ""])),
-                  OTPInput(validator: validateOTP, submitOTP: _submitOTP, showLoading: context.read<LoginCubit>().state is LoginInProgressLoading),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(tr("register.dont_receive_code")),
-                      ResendButton(
-                        sendOTP,
-                        cubitType: ResendButtonCubitType.login,
-                        channelType: ResendButtonChannelType.email,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
-                          onPressed: () => context.pop(),
-                          child: Text(tr("register.edit_email", args: [email ?? ""]),
-                              style: TextStyle(color: blueRegisterText))
-                      ),
-                    ],
-                  ),
-                ],
+          return SingleChildScrollView(
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 50),
+                    Image.asset("assets/icon/login_logo.png", width: 120),
+                    TitleText(tr("login.welcome"), fontSize: 40),
+                    SubTitleText(tr("login.email_description")),
+                    SubTitleText(tr("login.please_enter_otp", args: [email ?? ""])),
+                    OTPInput(validator: validateOTP, submitOTP: _submitOTP, showLoading: context.read<LoginCubit>().state is LoginInProgressLoading),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(tr("register.dont_receive_code")),
+                        ResendButton(
+                          sendOTP,
+                          cubitType: ResendButtonCubitType.login,
+                          channelType: ResendButtonChannelType.email,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                            onPressed: () => context.pop(),
+                            child: Text(tr("register.edit_email", args: [email ?? ""]),
+                                style: TextStyle(color: blueRegisterText))
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            );
+          );
         },
       ),
     );

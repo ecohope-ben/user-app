@@ -331,6 +331,7 @@ class _HomeContentState extends State<_HomeContent> {
                         children: [
                           if(widget.subscriptionState is SubscriptionDetailAndListLoaded && (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.lifecycleState == SubscriptionLifecycleState.pastDue) PaymentFailedNotificationCard((widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.id),
                           if(widget.subscriptionState is SubscriptionDetailAndListLoaded && (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledCancellation != null) SubscriptionCanceledNotificationCard(convertDateTimeToString(context, (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.currentPeriodEnd)),
+                          if(widget.subscriptionState is SubscriptionDetailAndListLoaded && (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledPlanChange != null) SubscriptionChangedNotificationCard((widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledPlanChange?.plan.name, convertDateTimeToString(context, (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.currentPeriodEnd)),
                           if(widget.subscriptionState is SubscriptionDetailAndListLoaded &&
                               (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledCancellation == null &&
                               widget.recycleOrderState.orders.isNotEmpty &&
@@ -346,23 +347,20 @@ class _HomeContentState extends State<_HomeContent> {
                               if (displayState is SubscriptionDetailAndListLoaded && displayState.subscriptions.isNotEmpty) {
                                 if(widget.recycleOrderState.orders.isNotEmpty && !availableOrderStatus.contains(widget.recycleOrderState.orders.first.status)){
                                   return RecycleOrderCard(
-                                    widget.recycleOrderState.orders.first, 
+                                    widget.recycleOrderState.orders.first,
                                     displayState.detail,
                                     key: ValueKey('recycle_order_${widget.recycleOrderState.orders.first.id}_$_refreshKey'),
                                   );
                                 }
 
-                                // if(widget.recycleOrderState.orders.isNotEmpty && widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed ){
                                 if(widget.recycleOrderState.orders.isNotEmpty && widget.entitlementState.entitlements.isNotEmpty ){
                                   return RecycleOrderCard(
-                                    widget.recycleOrderState.orders.first, 
+                                    widget.recycleOrderState.orders.first,
                                     displayState.detail,
                                     key: ValueKey('recycle_order_${widget.recycleOrderState.orders.first.id}_$_refreshKey'),
                                   );
                                 }
-
                                 if (displayState.detail.recyclingProfile != null && displayState.detail.recyclingProfile?.initialBagStatus == "delivered") {
-                                  print("--show card 3");
 
                                   // check is first time to order
                                   if(widget.recycleOrderState.orders.isEmpty) {
@@ -372,11 +370,9 @@ class _HomeContentState extends State<_HomeContent> {
                                     return Container();
                                   }
                                 } else {
-                                  print("--show card 4");
                                   return InitialBagDeliveryCard(displayState.detail.recyclingProfile?.initialBagDeliveryTrackingNo);
                                 }
                               } else {
-
                                 if(widget.previewSubscriptionState is SubscriptionPreviewReady && Discount.instance().promotionCode != null) {
                                   return PromotionBanner(() => context.push("/subscription/list"));
                                 }else{

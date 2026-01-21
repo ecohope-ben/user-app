@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../models/subscription_models.dart';
 import '../../utils/snack.dart';
 import '../../utils/time.dart';
+import 'redemption_comin_soon.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
 
@@ -85,7 +86,16 @@ class CustomBottomNavBar extends StatelessWidget {
                   const SizedBox(width: 40),
                   IconButton(
                     icon: const Icon(Icons.star_border, color: Colors.black),
-                    onPressed: () {},
+                    onPressed: () {
+                      // popup redemption coming soon
+
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const RedemptionComingSoon(),
+                        );
+                      });
+                    },
                   ),
                 ],
               ),

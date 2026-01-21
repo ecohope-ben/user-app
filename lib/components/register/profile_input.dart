@@ -30,18 +30,14 @@ class _ProfileInputState extends State<ProfileInput> {
 
   Future<void> submit() async {
 
-    final prefs = await SharedPreferences.getInstance();
-    print("--marketing2: ${prefs.getBool('marketing_opt_in')}");
-    bool isAgreeMarketingUse = prefs.getBool('marketing_opt_in') ?? false;
+
     if(mounted) {
       context.read<ProfileCubit>().updateProfileOnboarding(
-
           name: _nameController.text,
           gender: _gender,
           birthMonth: _birthMonth,
           birthDay: _birthDay,
-          ageGroup: _selectedAgeGroup,
-          isAgreeMarketingUse: isAgreeMarketingUse
+          ageGroup: _selectedAgeGroup
       );
     }
   }

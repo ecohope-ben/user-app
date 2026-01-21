@@ -108,6 +108,7 @@
     "changing_plan_to": "您的訂閱即將更改為 ",
     "change_plan_confirmation": "您仍可繼續使用目前的月費計劃，在此日期前您可隨時更改決定。",
     "your_subscription_will_end": "您的訂閱將於{}結束。在此日期前您可隨時更改決定。",
+    "your_subscription_will_change": "您的訂閱將於{}改變為{}。在此日期前您可隨時更改決定。",
     "cancel": {
       "title": "取消訂閱",
       "confirm": "您確定要取消訂閱計劃嗎？\n訂閱將於本計費周期結束時取消",
@@ -399,5 +400,8 @@
   "content_copied": "內容已複製",
   "promotion_code_copied": "優惠碼已複製",
   "tracking_number_copied": "追從號碼已複製",
-  "optional": "如有"
+  "optional": "如有",
+  "more_exciting_rewards": "更多精彩獎勵",
+  "coming_soon": "即將推出",
+  "we_are_going_to_launch": "我們很快就會推出獎勵計劃，敬請期待！"
 }

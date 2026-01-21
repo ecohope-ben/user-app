@@ -196,9 +196,13 @@ class RegistrationUpdateRequest {
   final String? email;
   final String? phone;
 
+  @JsonKey(name: 'marketing_opt_in')
+  final bool? marketingOptIn;
+
   const RegistrationUpdateRequest({
     this.email,
     this.phone,
+    this.marketingOptIn
   });
 
   factory RegistrationUpdateRequest.fromJson(Map<String, dynamic> json) =>

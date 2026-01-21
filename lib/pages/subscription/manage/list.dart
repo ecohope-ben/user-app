@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -77,30 +78,37 @@ class _SubscriptionManageListPageState extends State<SubscriptionManageListPage>
     });
 
     try {
-      final String jsonString = await rootBundle.loadString('assets/data/plans.json');
-      final Map<String, dynamic> jsonData = json.decode(jsonString);
-      
-      // Get current language code
-      final languageCode = _getLanguageCode(context);
-      
-      final Map<String, List<String>> featuresMap = {};
-      jsonData.forEach((billingCycle, planData) {
-        if (planData is Map<String, dynamic> && planData['features'] is Map) {
-          final featuresByLang = planData['features'] as Map<String, dynamic>;
-          // Get features for current language, fallback to 'en' if not found
-          if (featuresByLang.containsKey(languageCode) && featuresByLang[languageCode] is List) {
-            featuresMap[billingCycle] = List<String>.from(featuresByLang[languageCode]);
-          } else if (featuresByLang.containsKey('en') && featuresByLang['en'] is List) {
-            // Fallback to English if current language not found
-            featuresMap[billingCycle] = List<String>.from(featuresByLang['en']);
+      // final String jsonString = await rootBundle.loadString('assets/data/plans.json');
+      final Map<String, dynamic> jsonData;
+
+      final dio = Dio();
+      final response = await dio.get('https://assets.eco-hope.org/plan_data/plans.json');
+      if (response.statusCode == 200 && response.data != null) {
+        jsonData = response.data as Map<String, dynamic>;
+
+        // Get current language code
+        final languageCode = _getLanguageCode(context);
+
+        final Map<String, List<String>> featuresMap = {};
+        jsonData.forEach((billingCycle, planData) {
+          if (planData is Map<String, dynamic> && planData['features'] is Map) {
+            final featuresByLang = planData['features'] as Map<String, dynamic>;
+            // Get features for current language, fallback to 'en' if not found
+            if (featuresByLang.containsKey(languageCode) && featuresByLang[languageCode] is List) {
+              featuresMap[billingCycle] = List<String>.from(featuresByLang[languageCode]);
+            } else if (featuresByLang.containsKey('en') && featuresByLang['en'] is List) {
+              // Fallback to English if current language not found
+              featuresMap[billingCycle] = List<String>.from(featuresByLang['en']);
+            }
           }
-        }
-      });
-      
-      setState(() {
-        _planFeaturesMap = featuresMap;
-        _isLoadingFeatures = false;
-      });
+        });
+
+
+        setState(() {
+          _planFeaturesMap = featuresMap;
+          _isLoadingFeatures = false;
+        });
+      }
     } catch (e) {
       // If loading fails, continue without features map (fallback to description)
       setState(() {
@@ -280,7 +288,10 @@ class _SubscriptionManageListPageState extends State<SubscriptionManageListPage>
           // if(currentSubscription.scheduledCancellation != null){
             list.insert(0, Column(
               children: [
-                if(currentSubscription.scheduledCancellation != null) NoticeBanner(convertDateTimeToString(context, currentSubscription.currentPeriodEnd)),
+
+                if(currentSubscription.scheduledPlanChange != null) ChangePlanNoticeBanner(currentSubscription.scheduledPlanChange?.plan.name, convertDateTimeToString(context, currentSubscription.currentPeriodEnd)),
+                if(currentSubscription.scheduledPlanChange != null) SizedBox(height: 12),
+                if(currentSubscription.scheduledCancellation != null) CancelPlanNoticeBanner(convertDateTimeToString(context, currentSubscription.currentPeriodEnd)),
                 if(currentSubscription.scheduledCancellation != null) SizedBox(height: 12),
                 SubscriptionCard(
                     plan: plan,

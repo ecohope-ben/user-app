@@ -34,7 +34,7 @@ class _ChangeLocalePopupState extends State<ChangeLocalePopup> {
             Text(
               label,
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w400,
                 color: Colors.black,
               ),
@@ -50,42 +50,48 @@ class _ChangeLocalePopupState extends State<ChangeLocalePopup> {
   String selectedLanguage = 'ENGLISH';
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    selectedLanguage = context.locale == const Locale('en', 'US') ? "ENGLISH" : "繁體中文";
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.zero,
       ),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-        // width: 350, // 設定固定寬度
         child: Column(
-          mainAxisSize: MainAxisSize.min, // 根據內容自動高度
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Text(
-              'Choose a language/選擇語言',
+              'Choose a language / 選擇語言',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
                 color: Colors.black87,
               ),
             ),
             const SizedBox(height: 30),
 
-            // 語言選項：英文
             _buildLanguageOption(
               label: 'ENGLISH',
               isSelected: selectedLanguage == 'ENGLISH',
               onTap: () {
+                context.setLocale(Locale('en', 'US'));
                 setState(() => selectedLanguage = 'ENGLISH');
               },
             ),
 
-            // 語言選項：繁體中文
+
             _buildLanguageOption(
               label: '繁體中文',
               isSelected: selectedLanguage == '繁體中文',
               onTap: () {
+                context.setLocale(Locale('zh', 'HK'));
                 setState(() => selectedLanguage = '繁體中文');
               },
             ),
@@ -95,7 +101,7 @@ class _ChangeLocalePopupState extends State<ChangeLocalePopup> {
             // Confirm 按鈕
             SizedBox(
               width: double.infinity,
-              height: 55,
+              // height: 55,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black, // 黑色背景
@@ -110,9 +116,9 @@ class _ChangeLocalePopupState extends State<ChangeLocalePopup> {
                   Navigator.pop(context); // 關閉彈窗
                 },
                 child: Text(
-                  tr("confirm"),
+                  "Confirm / 確認",
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.0,
                   ),
