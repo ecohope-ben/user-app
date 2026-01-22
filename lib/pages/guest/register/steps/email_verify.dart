@@ -36,7 +36,10 @@ class _EmailVerificationStepState extends State<EmailVerificationStep> {
   }
 
   void _submitOTP(String verificationCode){
-    context.read<RegistrationCubit>().verifyEmailOtp(verificationCode);
+    if(context.read<RegistrationCubit>().state is! RegistrationInProgressLoading){
+      context.read<RegistrationCubit>().verifyEmailOtp(verificationCode);
+    }
+
   }
 
   @override

@@ -56,6 +56,16 @@ class _SliverBarState extends State<SliverBar> {
   }
 
   @override
+  void didUpdateWidget(covariant SliverBar oldWidget) {
+    if(oldWidget.profileState.profile.name != widget.profileState.profile.name){
+      setState(() {
+        avatar = setAvatar(widget.profileState.profile.name);
+      });
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 60, 20, 30),

@@ -332,12 +332,12 @@ class _HomeContentState extends State<_HomeContent> {
                           if(widget.subscriptionState is SubscriptionDetailAndListLoaded && (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.lifecycleState == SubscriptionLifecycleState.pastDue) PaymentFailedNotificationCard((widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.id),
                           if(widget.subscriptionState is SubscriptionDetailAndListLoaded && (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledCancellation != null) SubscriptionCanceledNotificationCard(convertDateTimeToString(context, (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.currentPeriodEnd)),
                           if(widget.subscriptionState is SubscriptionDetailAndListLoaded && (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledPlanChange != null) SubscriptionChangedNotificationCard((widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledPlanChange?.plan.name, convertDateTimeToString(context, (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.currentPeriodEnd)),
-                          if(widget.subscriptionState is SubscriptionDetailAndListLoaded &&
-                              (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledCancellation == null &&
-                              widget.recycleOrderState.orders.isNotEmpty &&
-                              widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed && widget.entitlementState.entitlements.isEmpty
-                          ) FinishedRecycleOrderNotificationCard(widget.subscriptionState as SubscriptionDetailAndListLoaded),
-                          // RecycleOrderCard(widget.recycleOrderState.orders.first),
+                          // if(widget.subscriptionState is SubscriptionDetailAndListLoaded &&
+                          //     (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledCancellation == null &&
+                          //     widget.recycleOrderState.orders.isNotEmpty &&
+                          //     widget.recycleOrderState.orders.first.status == RecycleOrderStatus.completed && widget.entitlementState.entitlements.isEmpty
+                          // ) FinishedRecycleOrderNotificationCard(widget.subscriptionState as SubscriptionDetailAndListLoaded),
+
 
                           BlocBuilder<SubscriptionCubit, SubscriptionState>(
                             builder: (context, state) {
@@ -353,7 +353,8 @@ class _HomeContentState extends State<_HomeContent> {
                                   );
                                 }
 
-                                if(widget.recycleOrderState.orders.isNotEmpty && widget.entitlementState.entitlements.isNotEmpty ){
+                                // if(widget.recycleOrderState.orders.isNotEmpty && widget.entitlementState.entitlements.isNotEmpty ){
+                                if(widget.recycleOrderState.orders.isNotEmpty){
                                   return RecycleOrderCard(
                                     widget.recycleOrderState.orders.first,
                                     displayState.detail,

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/api/index.dart';
+import 'package:user_app/components/order/order_payment_section.dart';
 import 'package:user_app/components/register/action_button.dart';
 import 'package:user_app/models/recycle_models.dart';
 import 'package:user_app/models/subscription_models.dart';
@@ -9,6 +10,7 @@ import 'package:user_app/style.dart';
 import 'package:user_app/utils/time.dart';
 
 import '../../api/endpoints/recycle_api.dart';
+import '../../components/common/promotion_code.dart';
 
 class SchedulePickUpOrderPage extends StatefulWidget {
   final bool isExtraOrder;
@@ -30,12 +32,11 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
   bool _isSubmitLoading = false;
   String? _errorMessage;
 
+  final TextEditingController promotionCodeController = TextEditingController(text: "");
+
   @override
   void initState() {
     super.initState();
-    print("--address: ${widget.subscriptionDetail.deliveryAddress.fullAddress}");
-    print("--address: ${widget.subscriptionDetail.deliveryAddress.fullAddress?.isEmpty}");
-    print("--address: ${widget.subscriptionDetail.deliveryAddress.address}");
     if((widget.subscriptionDetail.deliveryAddress.fullAddress?.isEmpty ?? true) || widget.subscriptionDetail.deliveryAddress.fullAddress == null){
       _addressController.text = widget.subscriptionDetail.deliveryAddress.address;
     }else {
@@ -252,14 +253,41 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
                       borderSide: BorderSide(color: Colors.black12),
                       borderRadius: BorderRadius.zero
                     ),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black12),
+                        borderRadius: BorderRadius.zero
+                    ),
                     contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                   ),
                   style: const TextStyle(color: Colors.black54),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 30),
+
+
+              Text(
+                "${tr("promote.code")}（${tr("optional")}）",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+              PromotionCodeInput(
+                onTap: (){
+                  print("--promotion code: ");
+                },
+                isLoading: false,
+                controller: promotionCodeController,
+              ),
+              // if(hasPreviewError) Text(_previewError ?? "promotion code error", style: TextStyle(color: Colors.red)),
 
               const SizedBox(height: 30),
+              OrderPaymentSection(),
+
+              const SizedBox(height: 16),
 
               // 5. 確認按鈕
               ActionButton(tr("order.confirm_pickup_schedule"), onTap: onSubmit, showLoading: _isSubmitLoading),

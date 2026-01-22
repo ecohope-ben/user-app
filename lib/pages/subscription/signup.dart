@@ -252,6 +252,9 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
         // This is a PaymentIntent flow for the first subscription invoice:
         paymentIntentClientSecret: paymentIntentClientSecret,
         setupIntentClientSecret: setupIntentClientSecret,
+        // applePay: PaymentSheetApplePay(
+        //     merchantCountryCode: "HK"
+        // ),
         allowsDelayedPaymentMethods: true, // optional
         style: ThemeMode.light
       ),
@@ -338,7 +341,9 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
           } else {
             popSnackBar(context, tr("subscription.payment_failed_with_msg", args: [?e.error.localizedMessage]));
           }
-        }catch(e){
+        }catch(e,t){
+          print(e.toString());
+          print(t.toString());
           popSnackBar(context, tr("subscription.payment_failed_try_later"));
         }
 

@@ -13,6 +13,7 @@ import 'api/interceptors/refresh_token_interceptor.dart';
 import 'api/endpoints/registration_api.dart';
 import 'app.dart';
 import 'blocs/bloc_observer.dart';
+import 'flavor.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,15 +29,19 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp
   ]); // Only allow portrait modes
-
-
+  String baseUrl = "https://customer-api-int.eco-hope.org";
+  FlavorConfig.initialize(
+      name: 'dev',
+      baseUrl: baseUrl,
+      isDebug: true
+  );
 
   runApp(
     EasyLocalization(
         supportedLocales: [Locale('en', 'US'), Locale('zh', 'HK')],
         path: 'assets/translations',
         fallbackLocale: Locale('en', 'US'),
-        child: MyApp(baseUrl: "https://customer-api-int.eco-hope.org")
+        child: MyApp(baseUrl: baseUrl)
     ),
   );
 }

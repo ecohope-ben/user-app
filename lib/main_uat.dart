@@ -24,18 +24,20 @@ Future<void> main() async {
   String stripePublishableKey = "pk_live_51S3vvt1lC88bC1PzKnSsK0RDwYGxS8Y5jCBb4FrwDSDD5Sg39P3rkxoe1RuZsQM4ZDYf80o7v5mG2Y0h2B7s0xg00091zssxaz";
   Stripe.publishableKey = stripePublishableKey;
   await Stripe.instance.applySettings();
-  String baseUrl = "https://customer-api.eco-hope.org";
+  String baseUrl = "https://customer-api-uat.eco-hope.org";
 
   SystemUiOverlayStyle mySystemTheme = SystemUiOverlayStyle.light.copyWith(systemNavigationBarColor: backgroundColor, systemNavigationBarIconBrightness: Brightness.dark);
   SystemChrome.setSystemUIOverlayStyle(mySystemTheme);
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp
   ]); // Only allow portrait modes
+
   FlavorConfig.initialize(
     name: 'prod',
     baseUrl: baseUrl,
-    isDebug: true
+    isDebug: false
   );
+
   runApp(
     EasyLocalization(
         supportedLocales: [Locale('en', 'US'), Locale('zh', 'HK')],

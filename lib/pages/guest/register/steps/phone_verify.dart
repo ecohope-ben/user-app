@@ -36,7 +36,9 @@ class _PhoneVerificationStepState extends State<PhoneVerificationStep> {
   }
 
   void _submitOTP(String verificationCode){
-    context.read<RegistrationCubit>().verifyPhoneOtp(verificationCode);
+    if(context.read<RegistrationCubit>().state is! RegistrationInProgressLoading) {
+      context.read<RegistrationCubit>().verifyPhoneOtp(verificationCode);
+    }
   }
 
   @override
