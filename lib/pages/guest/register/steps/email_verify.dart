@@ -63,19 +63,7 @@ class _EmailVerificationStepState extends State<EmailVerificationStep> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RegistrationCubit, RegistrationState>(
-      listener: (context2, state) async {
-        if(state is RegistrationCompletedWithExistingAccount){
-          await showPopup(
-            context,
-            message: "You have already registered",
-            isShowNegativeButton: false
-          ).then((v) {
-            if (!context2.mounted) return;
-            context2.go("/home");
-
-          });
-        }
-      },
+      listener: (context, state) async {},
       builder: (context, state) {
         return SingleChildScrollView(
           child: Column(

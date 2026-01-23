@@ -10,6 +10,7 @@ import 'package:user_app/utils/snack.dart';
 import '../../../components/register/stepper.dart';
 import '../../../blocs/registration_cubit.dart';
 import '../../../models/registration_models.dart';
+import '../../../utils/pop_up.dart';
 import 'steps/create_profile.dart';
 import 'steps/email_input.dart';
 import 'steps/phone_input.dart';
@@ -41,15 +42,25 @@ class _RegisterIndexState extends State<RegisterIndex> {
         body: BlocProvider(
           create: (context) => RegistrationCubit()..startRegistration(),
           child: BlocConsumer<RegistrationCubit, RegistrationState>(
-            listener: (context, state){
+            listener: (context, state) {
+              if(state is RegistrationCompletedWithExistingAccount){
+                showPopup(
+                    context,
+                    message: tr("register.already_registered"),
+                    isShowNegativeButton: false,
+                    onConfirm: (){
+                      if (!context.mounted) return;
+                      context.go("/home");
+                    }
+                );
+              }
+
               if(state is RegistrationInProgress && (state.registration.stage == RegistrationStage.phoneInput || state.registration.stage == RegistrationStage.phoneVerification)){
                 stepProgressController.setCurrentStep(1);
               }else if(state is RegistrationCompleted){
                 stepProgressController.setCurrentStep(2);
-              }else if (state is RegistrationError){
-
+              } else if (state is RegistrationError){
                 popSnackBar(context, state.message);
-
                 if(state.registration != null){
                   context.read<RegistrationCubit>().update(RegistrationInProgress(
                     registration: state.registration!,
