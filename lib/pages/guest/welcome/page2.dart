@@ -1,7 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
-import 'package:go_router/go_router.dart';
 import '../../../style.dart';
 
 class WelcomePage2 extends StatelessWidget {

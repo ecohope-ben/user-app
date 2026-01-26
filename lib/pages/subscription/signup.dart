@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +10,8 @@ import 'package:user_app/components/subscription/features.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:user_app/components/subscription/preview.dart';
 import 'package:user_app/models/discount/index.dart';
-import 'package:user_app/routes.dart';
 import '../../api/index.dart';
 import '../../api/endpoints/subscription_api.dart';
-import '../../components/subscription/payment_detail_row.dart';
 import '../../models/logistics_models.dart';
 import '../../models/subscription_models.dart';
 import '../../style.dart';
@@ -359,7 +356,6 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
         if (e is SubscriptionException) {
           errorMessage = e.message;
         } else {
-          print(e.toString());
           errorMessage = tr('error_text');
         }
         popSnackBar(context, errorMessage);

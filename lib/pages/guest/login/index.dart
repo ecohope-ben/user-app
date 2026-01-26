@@ -12,7 +12,6 @@ import '../../../components/register/action_button.dart';
 import '../../../components/register/text_input.dart';
 import '../widgets.dart';
 
-import 'package:user_app/routes.dart';
 
 class LoginIndex extends StatefulWidget {
   const LoginIndex({super.key});

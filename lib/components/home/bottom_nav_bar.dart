@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../models/subscription_models.dart';
 import '../../utils/snack.dart';
 import '../../utils/time.dart';
-import 'redemption_comin_soon.dart';
+import 'redemption_coming_soon.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
 

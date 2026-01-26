@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:el_tooltip/el_tooltip.dart';
 import 'package:flutter/material.dart';
@@ -9,25 +9,19 @@ import 'package:user_app/components/home/promotion_banner.dart';
 import 'package:user_app/components/home/recycle_info_card.dart';
 import 'package:user_app/components/register/action_button.dart';
 import 'package:user_app/models/discount/index.dart';
-import 'package:user_app/routes.dart';
-import 'package:user_app/utils/snack.dart';
 import 'package:user_app/utils/time.dart';
-
 import '../blocs/entitlement_cubit.dart';
-import '../blocs/login_cubit.dart';
 import '../blocs/profile_cubit.dart';
 import '../blocs/recycle_order_cubit.dart';
 import '../blocs/subscription_cubit.dart';
-import '../blocs/subscription_plan_cubit.dart';
 import '../components/home/bottom_nav_bar.dart';
 import '../components/home/home_skeleton.dart';
-import '../components/home/notification_card.dart';
+import '../components/card/notification_card.dart';
 import '../components/home/order_card.dart';
 import '../components/home/silver.dart';
 import '../components/home/welcome_popup.dart';
 import '../models/recycle_models.dart';
 import '../models/subscription_models.dart';
-import '../style.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -259,15 +253,7 @@ class _HomeContentState extends State<_HomeContent> {
     });
   }
 
-  void _showTooltip(){
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(seconds: 1), () {
-        if (mounted) tooltipController.show();
-      });
-      return;
-    });
-  }
-  
+
   Future<void> popWelcomeGift() async {
     final prefs = await SharedPreferences.getInstance();
     bool hasShowedWelcomeGift = prefs.getBool('has_showed_welcome_gift') ?? false;

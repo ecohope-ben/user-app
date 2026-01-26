@@ -9,7 +9,6 @@ import 'package:user_app/routes.dart';
 
 import '../../../../components/register/otp_input.dart';
 import '../../../../components/register/resend_button.dart';
-import '../../../../models/registration_models.dart';
 import '../../../../style.dart';
 import '../../../api/index.dart';
 import '../../../utils/pop_up.dart';

@@ -5,7 +5,6 @@ import 'package:user_app/components/register/action_button.dart';
 import 'package:user_app/pages/subscription/manage/list.dart';
 import 'package:user_app/style.dart';
 
-import '../../routes.dart';
 
 class ChangPlanConfirmationPage extends StatelessWidget {
   final String planName;

@@ -56,6 +56,39 @@ Map<String, dynamic> _$AvailablePickupSlotsEnvelopeToJson(
   AvailablePickupSlotsEnvelope instance,
 ) => <String, dynamic>{'data': instance.data.toJson()};
 
+RecycleOrderPreflightEnvelope _$RecycleOrderPreflightEnvelopeFromJson(
+  Map<String, dynamic> json,
+) => RecycleOrderPreflightEnvelope(
+  availableDates: (json['available_dates'] as List<dynamic>)
+      .map((e) => PickupSlotDate.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  settlementType: $enumDecode(
+    _$RecycleOrderSettlementTypeEnumMap,
+    json['settlement_type'],
+  ),
+  serviceId: json['service_id'] as String,
+  serviceVersionId: json['service_version_id'] as String,
+  amount: (json['amount'] as num).toInt(),
+  currency: json['currency'] as String,
+);
+
+Map<String, dynamic> _$RecycleOrderPreflightEnvelopeToJson(
+  RecycleOrderPreflightEnvelope instance,
+) => <String, dynamic>{
+  'available_dates': instance.availableDates.map((e) => e.toJson()).toList(),
+  'settlement_type':
+      _$RecycleOrderSettlementTypeEnumMap[instance.settlementType]!,
+  'service_id': instance.serviceId,
+  'service_version_id': instance.serviceVersionId,
+  'amount': instance.amount,
+  'currency': instance.currency,
+};
+
+const _$RecycleOrderSettlementTypeEnumMap = {
+  RecycleOrderSettlementType.entitlement: 'entitlement',
+  RecycleOrderSettlementType.oneTimePayment: 'one_time_payment',
+};
+
 RecycleOrderAddress _$RecycleOrderAddressFromJson(Map<String, dynamic> json) =>
     RecycleOrderAddress(
       districtId: json['district_id'] as String,
@@ -85,6 +118,32 @@ Map<String, dynamic> _$RecycleOrderCreateRequestToJson(
   'subscription_id': instance.subscriptionId,
   'pickup_date': instance.pickupDate,
   'pickup_time': instance.pickupTime,
+};
+
+RecycleOrderPreviewRequest _$RecycleOrderPreviewRequestFromJson(
+  Map<String, dynamic> json,
+) => RecycleOrderPreviewRequest(
+  subscriptionId: json['subscription_id'] as String,
+  pickupDate: json['pickup_date'] as String,
+  pickupTime: json['pickup_time'] as String,
+  settlementType: $enumDecode(
+    _$RecycleOrderSettlementTypeEnumMap,
+    json['settlement_type'],
+  ),
+  serviceVersionId: json['service_version_id'] as String,
+  promotionCode: json['promotion_code'] as String,
+);
+
+Map<String, dynamic> _$RecycleOrderPreviewRequestToJson(
+  RecycleOrderPreviewRequest instance,
+) => <String, dynamic>{
+  'subscription_id': instance.subscriptionId,
+  'pickup_date': instance.pickupDate,
+  'pickup_time': instance.pickupTime,
+  'settlement_type':
+      _$RecycleOrderSettlementTypeEnumMap[instance.settlementType]!,
+  'service_version_id': instance.serviceVersionId,
+  'promotion_code': instance.promotionCode,
 };
 
 RecycleOrderListItem _$RecycleOrderListItemFromJson(

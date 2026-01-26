@@ -1,12 +1,5 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 
-import '../../blocs/registration_cubit.dart';
-import '../../components/register/dob_select.dart';
-import '../../components/register/text_input.dart';
-import '../../style.dart';
 
 class TitleText extends StatelessWidget {
   final String title;

@@ -16,6 +16,18 @@ class RecycleApi extends ApiEndpoint {
     }
   }
 
+  Future<RecycleOrderPreflightEnvelope> getRecycleOrderPreflightPickupSlots(String subscriptionId) async {
+    try {
+      final response = await http.get('/recycle/orders/preflight', queryParameters: {
+        "subscription_id": subscriptionId
+      });
+      return RecycleOrderPreflightEnvelope.fromJson(response.data);
+    } on DioException catch (e) {
+      throw _handleRecycleDioError(e);
+    }
+  }
+
+
   /// Create a recycle order
   Future<RecycleOrderDetail> createOrder({
     required RecycleOrderCreateRequest request,
@@ -23,6 +35,18 @@ class RecycleApi extends ApiEndpoint {
     try {
       final response = await http.post(
         '/recycle/orders',
+        data: request.toJson(),
+      );
+      return RecycleOrderDetail.fromJson(response.data);
+    } on DioException catch (e) {
+      throw _handleRecycleDioError(e);
+    }
+  }
+
+  Future<RecycleOrderDetail> previewOrder({required RecycleOrderPreviewRequest request}) async {
+    try {
+      final response = await http.post(
+        '/recycle/orders/preview',
         data: request.toJson(),
       );
       return RecycleOrderDetail.fromJson(response.data);

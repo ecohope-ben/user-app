@@ -3,14 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:user_app/api/endpoints/profile_api.dart';
-import 'package:user_app/routes.dart';
 import 'package:user_app/style.dart';
-import 'api/index.dart';
-import 'api/interceptors/auth.dart';
-import 'api/interceptors/localization.dart';
-import 'api/interceptors/refresh_token_interceptor.dart';
-import 'api/endpoints/registration_api.dart';
 import 'app.dart';
 import 'blocs/bloc_observer.dart';
 

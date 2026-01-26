@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:go_router/go_router.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_app/auth/index.dart';
 import 'package:user_app/utils/snack.dart';
-import '../../../api/index.dart';
 import '../../../style.dart';
 
 class GetStartPage extends StatefulWidget {

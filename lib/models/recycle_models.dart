@@ -28,6 +28,14 @@ enum RecycleOrderStatus {
   pendingPayment
 }
 
+/// Order lifecycle status
+enum RecycleOrderSettlementType {
+  @JsonValue('entitlement')
+  entitlement,
+  @JsonValue('one_time_payment')
+  oneTimePayment
+}
+
 /// Available timeslot with display range and value
 @JsonSerializable()
 class PickupSlotTimeslot {
@@ -92,6 +100,31 @@ class AvailablePickupSlotsEnvelope {
   Map<String, dynamic> toJson() => _$AvailablePickupSlotsEnvelopeToJson(this);
 }
 
+/// Envelope containing available pickup slots
+@JsonSerializable(explicitToJson: true)
+class RecycleOrderPreflightEnvelope {
+  @JsonKey(name: 'available_dates')
+  final List<PickupSlotDate> availableDates;
+
+  @JsonKey(name: 'settlement_type')
+  final RecycleOrderSettlementType settlementType;
+
+  @JsonKey(name: 'service_id')
+  final String serviceId;
+
+  @JsonKey(name: 'service_version_id')
+  final String serviceVersionId;
+
+  final int amount;
+  final String currency;
+
+  const RecycleOrderPreflightEnvelope({required this.availableDates, required this.settlementType, required this.serviceId, required this.serviceVersionId, required this.amount, required this.currency});
+
+  factory RecycleOrderPreflightEnvelope.fromJson(Map<String, dynamic> json) => _$RecycleOrderPreflightEnvelopeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RecycleOrderPreflightEnvelopeToJson(this);
+}
+
 /// Pickup location address
 @JsonSerializable()
 class RecycleOrderAddress {
@@ -133,6 +166,38 @@ class RecycleOrderCreateRequest {
       _$RecycleOrderCreateRequestFromJson(json);
 
   Map<String, dynamic> toJson() => _$RecycleOrderCreateRequestToJson(this);
+}
+
+@JsonSerializable()
+class RecycleOrderPreviewRequest {
+  @JsonKey(name: 'subscription_id')
+  final String subscriptionId;
+  @JsonKey(name: 'pickup_date')
+  final String pickupDate;
+  @JsonKey(name: 'pickup_time')
+  final String pickupTime;
+  @JsonKey(name: 'settlement_type')
+  final RecycleOrderSettlementType settlementType;
+
+  @JsonKey(name: 'service_version_id')
+  final String serviceVersionId;
+
+  @JsonKey(name: 'promotion_code')
+  final String promotionCode;
+
+  const RecycleOrderPreviewRequest({
+    required this.subscriptionId,
+    required this.pickupDate,
+    required this.pickupTime,
+    required this.settlementType,
+    required this.serviceVersionId,
+    required this.promotionCode
+  });
+
+  factory RecycleOrderPreviewRequest.fromJson(Map<String, dynamic> json) =>
+      _$RecycleOrderPreviewRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RecycleOrderPreviewRequestToJson(this);
 }
 
 /// Recycle order summary for list view

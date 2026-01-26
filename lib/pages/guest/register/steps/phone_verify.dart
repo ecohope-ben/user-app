@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/registration_cubit.dart';
-import '../../../../components/register/action_button.dart';
 import '../../../../components/register/otp_input.dart';
 import '../../../../components/register/resend_button.dart';
 import '../../../../models/registration_models.dart';

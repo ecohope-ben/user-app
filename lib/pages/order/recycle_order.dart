@@ -7,10 +7,12 @@ import 'package:user_app/components/register/action_button.dart';
 import 'package:user_app/models/recycle_models.dart';
 import 'package:user_app/models/subscription_models.dart';
 import 'package:user_app/style.dart';
+import 'package:user_app/utils/snack.dart';
 import 'package:user_app/utils/time.dart';
 
 import '../../api/endpoints/recycle_api.dart';
 import '../../components/common/promotion_code.dart';
+import '../../components/order/notice_banner.dart';
 
 class SchedulePickUpOrderPage extends StatefulWidget {
   final bool isExtraOrder;
@@ -30,6 +32,11 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
   String? _selectedTime;
   bool _isLoading = true;
   bool _isSubmitLoading = false;
+  bool isAdditionalOrder = false;
+  late RecycleOrderPreflightEnvelope preflightEnvelope;
+  bool _isLoadingPreviewWithPromotionCode = false;
+
+
   String? _errorMessage;
 
   final TextEditingController promotionCodeController = TextEditingController(text: "");
@@ -42,28 +49,19 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
     }else {
       _addressController.text = widget.subscriptionDetail.deliveryAddress.fullAddress!;
     }
-    _loadPickupSlots();
+    _loadPickupSlotsAndPreflight(widget.subscriptionDetail.id);
   }
 
   Future<void> onSubmit() async {
+
     // Validate required fields
     if (_selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(tr("order.select_date")),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      popSnackBar(context, tr("order.select_date"));
       return;
     }
 
     if (_selectedTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(tr("order.select_time")),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      popSnackBar(context, tr("order.select_time"));
       return;
     }
 
@@ -89,7 +87,6 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
 
       // Show success message
       if (mounted) {
-
         // Navigate back after showing success message
         context.go("/order/confirmation", extra: response.id);
       }
@@ -106,40 +103,97 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
         );
       }
     }catch (e) {
-      print(e);
       setState(() {
         _isSubmitLoading = false;
       });
 
       // Show error message
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(tr("order.create_failed")),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+        popSnackBar(context, tr("order.create_failed"));
       }
     }
   }
 
-  Future<void> _loadPickupSlots() async {
+  Future<void> previewOrder() async {
+
+    // Validate required fields
+    if (_selectedDate == null) {
+      popSnackBar(context, tr("order.select_date"));
+      return;
+    }
+
+    if (_selectedTime == null) {
+      popSnackBar(context, tr("order.select_time"));
+      return;
+    }
+
+    try {
+      setState(() {
+        _isSubmitLoading = true;
+        _errorMessage = null;
+      });
+
+      // Create order request
+      final request = RecycleOrderPreviewRequest(
+        subscriptionId: widget.subscriptionDetail.id,
+        pickupDate: _selectedDate!,
+        pickupTime: _selectedTime!,
+        settlementType: preflightEnvelope.settlementType,
+        serviceVersionId: preflightEnvelope.serviceVersionId,
+        promotionCode: promotionCodeController.text,
+      );
+
+      // Call API to create order
+      final response = await Api.instance().recycle().previewOrder(request: request);
+
+      setState(() {
+        _isSubmitLoading = false;
+      });
+
+      // Show success message
+      if (mounted) {
+        // Navigate back after showing success message
+        context.go("/order/confirmation", extra: response.id);
+      }
+    } on RecycleException catch (e){
+      setState(() {
+        _isSubmitLoading = false;
+      });
+      if (mounted) {
+        popSnackBar(context, e.message);
+      }
+    }catch (e) {
+      setState(() {
+        _isSubmitLoading = false;
+      });
+
+      // Show error message
+      if (mounted) {
+        popSnackBar(context, tr("order.create_failed"));
+      }
+    }
+  }
+
+  Future<void> _loadPickupSlotsAndPreflight(String subscriptionId) async {
     try {
       setState(() {
         _isLoading = true;
         _errorMessage = null;
       });
 
-      final response = await Api.instance().recycle().getPickupSlots();
-      
+      final response = await Api.instance().recycle().getRecycleOrderPreflightPickupSlots(subscriptionId);
+      preflightEnvelope = response;
       setState(() {
-        _availableDates = response.data.availableDates;
+        _availableDates = response.availableDates;
+        isAdditionalOrder = preflightEnvelope.settlementType == RecycleOrderSettlementType.oneTimePayment ? true : false;
         _isLoading = false;
       });
-    } catch (e) {
+    } catch (e, t) {
+      print(e.toString());
+      print(t.toString());
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Failed to load pickup slots. Please try again.';
+        _errorMessage = tr("error.fail_to_load_pickup_slot");
       });
     }
   }
@@ -200,8 +254,10 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
             children: [
               // 2. 訂閱 Banner (Subscription Card)
               _buildSubscriptionBanner(),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
+              AdditionalOrderNoticeBanner(),
 
+              const SizedBox(height: 12),
               // 3. 標題區域
               Row(
                 children: [
@@ -410,7 +466,7 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.red.shade300),
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.zero,
         ),
         child: Row(
           children: [

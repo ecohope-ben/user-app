@@ -1,8 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:user_app/utils/pop_up.dart';
 
 import '../../../../blocs/registration_cubit.dart';
 import '../../../../components/register/otp_input.dart';

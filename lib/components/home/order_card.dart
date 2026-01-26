@@ -9,7 +9,6 @@ import 'package:user_app/components/register/action_button.dart';
 import 'package:flutter/gestures.dart';
 import '../../models/recycle_models.dart';
 import '../../models/subscription_models.dart';
-import '../../utils/snack.dart';
 import '../../utils/time.dart';
 import 'tracking_number.dart';
 

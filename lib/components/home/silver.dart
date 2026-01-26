@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/blocs/entitlement_cubit.dart';
 import 'package:user_app/blocs/profile_cubit.dart';
@@ -10,7 +9,6 @@ import 'package:user_app/pages/subscription/manage/list.dart';
 import 'package:user_app/utils/extension.dart';
 import 'package:user_app/utils/time.dart';
 
-import '../../style.dart';
 
 class SliverBar extends StatefulWidget {
   final ProfileLoaded profileState;

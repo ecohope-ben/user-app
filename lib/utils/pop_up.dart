@@ -1,10 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import '../components/pop_up/button.dart';
-import '../routes.dart';
-import '../style.dart';
 
 Future<void> showPopup(
     BuildContext context,
