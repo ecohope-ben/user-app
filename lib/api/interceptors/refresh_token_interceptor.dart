@@ -76,15 +76,42 @@ class RefreshTokenInterceptor extends Interceptor {
         requestOptions.headers['Authorization'] = 'Bearer ${session.accessToken}';
 
         // Retry the original request
-        final response = await dio.fetch(requestOptions);
-        handler.resolve(response);
-
-        // Process all pending requests
-        if (_pendingRequests.isNotEmpty) {
-          await _processPendingRequests(session.accessToken);
+        // Use the same dio instance but note that if retry fails, we'll get the actual error
+        try {
+          final response = await dio.fetch(requestOptions);
+          handler.resolve(response);
+          
+          // Process all pending requests
+          if (_pendingRequests.isNotEmpty) {
+            await _processPendingRequests(session.accessToken);
+          }
+          return;
+        } catch (retryError) {
+          // If retry still fails after token refresh, propagate the retry error
+          // This ensures the actual error from the retry is shown, not the original token expired error
+          print("--401 retry failed after token refresh");
+          print(retryError.toString());
+          
+          // Refresh failed, reject all pending requests
+          if (_pendingRequests.isNotEmpty) {
+            _rejectPendingRequests(retryError);
+          }
+          
+          // Propagate the retry error (not the original 401)
+          if (retryError is DioException) {
+            handler.reject(retryError);
+          } else {
+            handler.reject(
+              DioException(
+                requestOptions: requestOptions,
+                error: retryError,
+              ),
+            );
+          }
+          return;
         }
       } catch (e) {
-        print("--401 retry error");
+        print("--401 refresh token error");
         print(e.toString());
         
         // If refresh token endpoint returns 401, logout user
@@ -100,7 +127,8 @@ class RefreshTokenInterceptor extends Interceptor {
         if (_pendingRequests.isNotEmpty) {
           _rejectPendingRequests(e);
         }
-        handler.reject(err);
+        // If refresh token failed, propagate the refresh error
+        handler.reject(e is DioException ? e : err);
       } finally {
         _isRefreshing = false;
       }

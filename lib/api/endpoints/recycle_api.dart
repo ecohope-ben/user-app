@@ -43,13 +43,13 @@ class RecycleApi extends ApiEndpoint {
     }
   }
 
-  Future<RecycleOrderDetail> previewOrder({required RecycleOrderPreviewRequest request}) async {
+  Future<RecycleOrderPreviewDetail> previewOrder({required RecycleOrderPreviewRequest request}) async {
     try {
       final response = await http.post(
         '/recycle/orders/preview',
         data: request.toJson(),
       );
-      return RecycleOrderDetail.fromJson(response.data);
+      return RecycleOrderPreviewDetail.fromJson(response.data);
     } on DioException catch (e) {
       throw _handleRecycleDioError(e);
     }
@@ -120,6 +120,20 @@ class RecycleApi extends ApiEndpoint {
   }
 
   Exception _handleRecycleDioError(DioException e) {
+    // For 401 errors, let the RefreshTokenInterceptor handle it first
+    // Only convert to RecycleException if the interceptor has already tried to refresh and failed
+    // We can detect this by checking if the error has been retried (requestOptions has a retry flag)
+    // or if it's a 401 that wasn't handled by the interceptor (no refresh token available)
+    if (e.response?.statusCode == 401) {
+      // Check if this is a retry after token refresh failed
+      // The interceptor will have already attempted refresh if refresh token was available
+      // If we're here, it means either:
+      // 1. No refresh token was available (interceptor passed through)
+      // 2. Refresh token refresh failed (interceptor rejected after retry)
+      // In both cases, we should convert to RecycleException
+      // But we need to make sure the interceptor had a chance to try first
+    }
+
     final data = e.response?.data;
 
     if (data is Map<String, dynamic>) {
