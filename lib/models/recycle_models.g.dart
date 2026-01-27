@@ -110,6 +110,14 @@ RecycleOrderCreateRequest _$RecycleOrderCreateRequestFromJson(
   subscriptionId: json['subscription_id'] as String,
   pickupDate: json['pickup_date'] as String,
   pickupTime: json['pickup_time'] as String,
+  settlementType: $enumDecodeNullable(
+    _$RecycleOrderSettlementTypeEnumMap,
+    json['settlement_type'],
+  ),
+  serviceVersionId: json['service_version_id'] as String?,
+  amount: (json['amount'] as num?)?.toInt(),
+  currency: json['currency'] as String?,
+  promotionCode: json['promotion_code'] as String?,
 );
 
 Map<String, dynamic> _$RecycleOrderCreateRequestToJson(
@@ -118,6 +126,12 @@ Map<String, dynamic> _$RecycleOrderCreateRequestToJson(
   'subscription_id': instance.subscriptionId,
   'pickup_date': instance.pickupDate,
   'pickup_time': instance.pickupTime,
+  'settlement_type':
+      _$RecycleOrderSettlementTypeEnumMap[instance.settlementType],
+  'service_version_id': instance.serviceVersionId,
+  'amount': instance.amount,
+  'currency': instance.currency,
+  'promotion_code': instance.promotionCode,
 };
 
 RecycleOrderPreviewRequest _$RecycleOrderPreviewRequestFromJson(
@@ -131,7 +145,7 @@ RecycleOrderPreviewRequest _$RecycleOrderPreviewRequestFromJson(
     json['settlement_type'],
   ),
   serviceVersionId: json['service_version_id'] as String,
-  promotionCode: json['promotion_code'] as String,
+  promotionCode: json['promotion_code'] as String?,
 );
 
 Map<String, dynamic> _$RecycleOrderPreviewRequestToJson(
@@ -289,6 +303,8 @@ RecycleOrderDetail _$RecycleOrderDetailFromJson(Map<String, dynamic> json) =>
           : LogisticsOrder.fromJson(
               json['logistics_order'] as Map<String, dynamic>,
             ),
+      serviceOrderId: json['service_order_id'] as String?,
+      clientSecret: json['client_secret'] as String?,
     );
 
 Map<String, dynamic> _$RecycleOrderDetailToJson(RecycleOrderDetail instance) =>
@@ -305,7 +321,61 @@ Map<String, dynamic> _$RecycleOrderDetailToJson(RecycleOrderDetail instance) =>
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
       'logistics_order': instance.logisticsOrder?.toJson(),
+      'service_order_id': instance.serviceOrderId,
+      'client_secret': instance.clientSecret,
     };
+
+RecycleOrderPreviewDetail _$RecycleOrderPreviewDetailFromJson(
+  Map<String, dynamic> json,
+) => RecycleOrderPreviewDetail(
+  settlementType: $enumDecode(
+    _$RecycleOrderSettlementTypeEnumMap,
+    json['settlement_type'],
+  ),
+  serviceId: json['service_id'] as String,
+  serviceVersionId: json['service_version_id'] as String,
+  originalAmount: (json['original_amount'] as num).toInt(),
+  discountAmount: (json['discount_amount'] as num).toInt(),
+  finalAmount: (json['final_amount'] as num).toInt(),
+  currency: json['currency'] as String,
+  promotionCodeApplied: json['promotion_code_applied'] as bool,
+  paymentRequired: json['payment_required'] as bool,
+);
+
+Map<String, dynamic> _$RecycleOrderPreviewDetailToJson(
+  RecycleOrderPreviewDetail instance,
+) => <String, dynamic>{
+  'settlement_type':
+      _$RecycleOrderSettlementTypeEnumMap[instance.settlementType]!,
+  'service_id': instance.serviceId,
+  'service_version_id': instance.serviceVersionId,
+  'original_amount': instance.originalAmount,
+  'discount_amount': instance.discountAmount,
+  'final_amount': instance.finalAmount,
+  'currency': instance.currency,
+  'promotion_code_applied': instance.promotionCodeApplied,
+  'payment_required': instance.paymentRequired,
+};
+
+CheckAdditionalOrderResponse _$CheckAdditionalOrderResponseFromJson(
+  Map<String, dynamic> json,
+) => CheckAdditionalOrderResponse(
+  serviceOrderId: json['service_order_id'] as String,
+  result: $enumDecode(_$CheckAdditionalOrderResultEnumMap, json['result']),
+);
+
+Map<String, dynamic> _$CheckAdditionalOrderResponseToJson(
+  CheckAdditionalOrderResponse instance,
+) => <String, dynamic>{
+  'service_order_id': instance.serviceOrderId,
+  'result': _$CheckAdditionalOrderResultEnumMap[instance.result]!,
+};
+
+const _$CheckAdditionalOrderResultEnumMap = {
+  CheckAdditionalOrderResult.completed: 'completed',
+  CheckAdditionalOrderResult.pending: 'pending',
+  CheckAdditionalOrderResult.failed: 'failed',
+};
 
 RecycleOrderCreateEnvelope _$RecycleOrderCreateEnvelopeFromJson(
   Map<String, dynamic> json,

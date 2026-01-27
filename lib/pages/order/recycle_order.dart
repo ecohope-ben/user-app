@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/api/index.dart';
 import 'package:user_app/components/order/order_payment_section.dart';
@@ -13,11 +16,12 @@ import 'package:user_app/utils/time.dart';
 import '../../api/endpoints/recycle_api.dart';
 import '../../components/common/promotion_code.dart';
 import '../../components/order/notice_banner.dart';
+import '../../utils/number.dart';
+import '../../utils/pop_up.dart';
 
 class SchedulePickUpOrderPage extends StatefulWidget {
-  final bool isExtraOrder;
   final SubscriptionDetail subscriptionDetail;
-  const SchedulePickUpOrderPage(this.subscriptionDetail, {this.isExtraOrder = false, super.key});
+  const SchedulePickUpOrderPage(this.subscriptionDetail, {super.key});
 
   @override
   State<SchedulePickUpOrderPage> createState() => _SchedulePickUpOrderPageState();
@@ -25,6 +29,8 @@ class SchedulePickUpOrderPage extends StatefulWidget {
 
 class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
   final TextEditingController _addressController = TextEditingController();
+  Timer? _activationCheckTimer;
+  bool _isCheckingActivation = false;
 
   // Pickup slots data
   List<PickupSlotDate>? _availableDates;
@@ -33,6 +39,13 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
   bool _isLoading = true;
   bool _isSubmitLoading = false;
   bool isAdditionalOrder = false;
+  bool paymentRequired = false;
+  bool hasPreviewError = false;
+  String? _previewError;
+  double amount = 0;
+  double totalAmount = 0;
+  double? discountAmount;
+  String? usedPromotionCode;
   late RecycleOrderPreflightEnvelope preflightEnvelope;
   bool _isLoadingPreviewWithPromotionCode = false;
 
@@ -50,6 +63,130 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
       _addressController.text = widget.subscriptionDetail.deliveryAddress.fullAddress!;
     }
     _loadPickupSlotsAndPreflight(widget.subscriptionDetail.id);
+  }
+
+  void setTotalAmount(){
+    setState(() {
+      if(discountAmount != null){
+        totalAmount = amount - discountAmount!;
+      }else{
+        totalAmount = amount;
+      }
+    });
+  }
+
+  /// Check additional order status by polling checkActivation API every 5 seconds
+  Future<void> _checkAdditionOrderStatus(String serviceOrderId, String orderId) async {
+    // Cancel any existing timer
+    _activationCheckTimer?.cancel();
+
+    setState(() {
+      _isCheckingActivation = true;
+    });
+
+    // Start polling
+    _activationCheckTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+
+      try {
+        final response = await Api.instance().recycle().checkAdditionalOrderStatus(serviceOrderId);
+        print("--check active: ${response.serviceOrderId} | ${response.result}");
+        if (!mounted) return;
+
+        if (response.result == CheckAdditionalOrderResult.completed) {
+          // Success - stop polling and show success message
+          timer.cancel();
+          setState(() {
+            _isCheckingActivation = false;
+          });
+
+          // Navigate back or to home page
+          if (mounted) {
+            // Navigator.pop(context);
+            context.go("/order/confirmation", extra: orderId);
+          }
+        } else if (response.result == CheckAdditionalOrderResult.failed) {
+          // Failed - stop polling and show error message
+          timer.cancel();
+          setState(() {
+            _isCheckingActivation = false;
+          });
+
+          await showForcePopup(
+            context,
+            title: tr("error_text"),
+            message: tr("order.create_failed"),
+          );
+        }
+        // If result is 'pending', continue polling
+      } catch (e) {
+        // On error, continue polling but log the error
+        print('Error checking activation status: $e');
+        // Optionally, you might want to stop after a certain number of retries
+      }
+    });
+
+    // Also check immediately (don't wait for first 5 seconds)
+    try {
+
+      final response = await Api.instance().recycle().checkAdditionalOrderStatus(serviceOrderId);
+
+      print("--check active2: ${response.serviceOrderId} | ${response.result}");
+
+      if (!mounted) return;
+
+      if (response.result == CheckAdditionalOrderResult.completed) {
+        _activationCheckTimer?.cancel();
+        setState(() {
+          _isCheckingActivation = false;
+        });
+
+        if (mounted) {
+          context.go("/order/confirmation", extra: orderId);
+        }
+      } else if (response.result == CheckAdditionalOrderResult.failed) {
+        _activationCheckTimer?.cancel();
+        setState(() {
+          _isCheckingActivation = false;
+        });
+
+        await showForcePopup(
+          context,
+          title: tr("error_text"),
+          message: tr("order.create_failed"),
+        );
+      }
+    } catch (e) {
+      // If immediate check fails, continue with polling
+      print('Error on immediate activation check: $e');
+    }
+  }
+
+  Future<void> processPayment({required String clientSecret, required String serviceOrderId, required String orderId}) async {
+    try {
+      await presentSubscriptionSheet(paymentIntentClientSecret: clientSecret);
+
+      await _checkAdditionOrderStatus(serviceOrderId, orderId);
+
+    }on StripeException catch(e){
+      print("--StripeException");
+      print(e.error.code);
+      if (e.error.code == FailureCode.Canceled) {
+        popSnackBar(context, tr("subscription.canceled_payment_by_user"));
+
+      }else if(e.error.code == FailureCode.Failed){
+        popSnackBar(context, tr("subscription.payment_failed"));
+      } else {
+        popSnackBar(context, tr("subscription.payment_failed_with_msg", args: [?e.error.localizedMessage]));
+      }
+    }catch(e,t){
+      print(e.toString());
+      print(t.toString());
+      popSnackBar(context, tr("subscription.payment_failed_try_later"));
+    }
   }
 
   Future<void> onSubmit() async {
@@ -70,81 +207,28 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
         _isSubmitLoading = true;
         _errorMessage = null;
       });
-
       // Create order request
       final request = RecycleOrderCreateRequest(
         subscriptionId: widget.subscriptionDetail.id,
         pickupDate: _selectedDate!,
         pickupTime: _selectedTime!,
+        settlementType: preflightEnvelope.settlementType,
+        serviceVersionId: preflightEnvelope.serviceVersionId,
+        amount: doubleToIntWithTwoDigit(totalAmount),
+        currency: preflightEnvelope.currency,
+        promotionCode: usedPromotionCode
       );
 
       // Call API to create order
       final response = await Api.instance().recycle().createOrder(request: request);
-
-      setState(() {
-        _isSubmitLoading = false;
-      });
-
-      // Show success message
-      if (mounted) {
-        // Navigate back after showing success message
-        context.go("/order/confirmation", extra: response.id);
-      }
-    } on RecycleException catch (e){
-      setState(() {
-        _isSubmitLoading = false;
-      });
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.message),
-            behavior: SnackBarBehavior.floating,
-          ),
+      if(isAdditionalOrder && paymentRequired){
+        print("--go to payment");
+        await processPayment(
+            clientSecret: response.clientSecret ?? "",
+            serviceOrderId: response.serviceOrderId ?? "",
+            orderId: response.id
         );
       }
-    }catch (e) {
-      setState(() {
-        _isSubmitLoading = false;
-      });
-
-      // Show error message
-      if (mounted) {
-        popSnackBar(context, tr("order.create_failed"));
-      }
-    }
-  }
-
-  Future<void> previewOrder() async {
-
-    // Validate required fields
-    if (_selectedDate == null) {
-      popSnackBar(context, tr("order.select_date"));
-      return;
-    }
-
-    if (_selectedTime == null) {
-      popSnackBar(context, tr("order.select_time"));
-      return;
-    }
-
-    try {
-      setState(() {
-        _isSubmitLoading = true;
-        _errorMessage = null;
-      });
-
-      // Create order request
-      final request = RecycleOrderPreviewRequest(
-        subscriptionId: widget.subscriptionDetail.id,
-        pickupDate: _selectedDate!,
-        pickupTime: _selectedTime!,
-        settlementType: preflightEnvelope.settlementType,
-        serviceVersionId: preflightEnvelope.serviceVersionId,
-        promotionCode: promotionCodeController.text,
-      );
-
-      // Call API to create order
-      final response = await Api.instance().recycle().previewOrder(request: request);
 
       setState(() {
         _isSubmitLoading = false;
@@ -153,8 +237,11 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
       // Show success message
       if (mounted) {
         // Navigate back after showing success message
-        context.go("/order/confirmation", extra: response.id);
+        if(!paymentRequired) {
+          context.go("/order/confirmation", extra: response.id);
+        }
       }
+
     } on RecycleException catch (e){
       setState(() {
         _isSubmitLoading = false;
@@ -174,6 +261,66 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
     }
   }
 
+  Future<void> previewOrder({String? promotionCode}) async {
+
+    // Validate required fields
+    if (_selectedDate == null) {
+      popSnackBar(context, tr("order.select_date"));
+      return;
+    }
+
+    if (_selectedTime == null) {
+      popSnackBar(context, tr("order.select_time"));
+      return;
+    }
+
+    try {
+      setState(() {
+        _isLoadingPreviewWithPromotionCode = true;
+        _previewError = null;
+        usedPromotionCode = null;
+        hasPreviewError = false;
+      });
+
+      // Create order request
+      final request = RecycleOrderPreviewRequest(
+        subscriptionId: widget.subscriptionDetail.id,
+        pickupDate: _selectedDate!,
+        pickupTime: _selectedTime!,
+        settlementType: preflightEnvelope.settlementType,
+        serviceVersionId: preflightEnvelope.serviceVersionId,
+        promotionCode: promotionCode,
+      );
+
+      // Call API to create order
+      final response = await Api.instance().recycle().previewOrder(request: request);
+      amount = response.originalAmount / 100;
+      discountAmount = response.discountAmount / 100;
+      setTotalAmount();
+      setState(() {
+        paymentRequired = response.paymentRequired;
+        print("--paymentrequired: $paymentRequired");
+        _isLoadingPreviewWithPromotionCode = false;
+        usedPromotionCode = promotionCode;
+      });
+
+    } on RecycleException catch (e){
+      setState(() {
+        _isLoadingPreviewWithPromotionCode = false;
+        hasPreviewError = true;
+        _previewError = e.message;
+      });
+
+    }catch (e) {
+      // Set error message
+      setState(() {
+        _isLoadingPreviewWithPromotionCode = false;
+        hasPreviewError = true;
+        _previewError = e.toString();
+      });
+    }
+  }
+
   Future<void> _loadPickupSlotsAndPreflight(String subscriptionId) async {
     try {
       setState(() {
@@ -183,9 +330,13 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
 
       final response = await Api.instance().recycle().getRecycleOrderPreflightPickupSlots(subscriptionId);
       preflightEnvelope = response;
+      amount = preflightEnvelope.amount / 100;
+      setTotalAmount();
       setState(() {
         _availableDates = response.availableDates;
         isAdditionalOrder = preflightEnvelope.settlementType == RecycleOrderSettlementType.oneTimePayment ? true : false;
+        paymentRequired = preflightEnvelope.settlementType == RecycleOrderSettlementType.oneTimePayment ? true : false;
+
         _isLoading = false;
       });
     } catch (e, t) {
@@ -196,6 +347,27 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
         _errorMessage = tr("error.fail_to_load_pickup_slot");
       });
     }
+  }
+
+  Future<void> presentSubscriptionSheet({String? paymentIntentClientSecret, String? setupIntentClientSecret}) async {
+
+    await Stripe.instance.initPaymentSheet(
+      paymentSheetParameters: SetupPaymentSheetParameters(
+          merchantDisplayName: 'ECOHOPE',
+          // This is a PaymentIntent flow for the first subscription invoice:
+          paymentIntentClientSecret: paymentIntentClientSecret,
+          setupIntentClientSecret: setupIntentClientSecret,
+          // applePay: PaymentSheetApplePay(
+          //     merchantCountryCode: "HK"
+          // ),
+          allowsDelayedPaymentMethods: true, // optional
+          style: ThemeMode.light
+      ),
+    );
+
+    // Shows Stripe’s native UI
+    await Stripe.instance.presentPaymentSheet();
+    print("--payment finished");
   }
 
   // Get available timeslots for selected date
@@ -255,9 +427,9 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
               // 2. 訂閱 Banner (Subscription Card)
               _buildSubscriptionBanner(),
               const SizedBox(height: 12),
-              AdditionalOrderNoticeBanner(),
+              if(isAdditionalOrder) AdditionalOrderNoticeBanner(),
 
-              const SizedBox(height: 12),
+              if(isAdditionalOrder) const SizedBox(height: 12),
               // 3. 標題區域
               Row(
                 children: [
@@ -321,7 +493,7 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
               const SizedBox(height: 30),
 
 
-              Text(
+              if(isAdditionalOrder) Text(
                 "${tr("promote.code")}（${tr("optional")}）",
                 style: TextStyle(
                   fontSize: 18,
@@ -330,20 +502,30 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
                 ),
               ),
 
-              const SizedBox(height: 10),
-              PromotionCodeInput(
+              if(isAdditionalOrder) const SizedBox(height: 10),
+              if(isAdditionalOrder) PromotionCodeInput(
                 onTap: (){
-                  print("--promotion code: ");
+                  print("--promotion code: ${promotionCodeController.text}");
+                  if(promotionCodeController.text.isNotEmpty){
+                    previewOrder(promotionCode: promotionCodeController.text);
+                  }
                 },
-                isLoading: false,
+                isLoading: _isLoadingPreviewWithPromotionCode,
                 controller: promotionCodeController,
               ),
-              // if(hasPreviewError) Text(_previewError ?? "promotion code error", style: TextStyle(color: Colors.red)),
 
-              const SizedBox(height: 30),
-              OrderPaymentSection(),
+              if(hasPreviewError && isAdditionalOrder) Text(_previewError ?? tr("promote.error"), style: TextStyle(color: Colors.red)),
 
-              const SizedBox(height: 16),
+              if(isAdditionalOrder) const SizedBox(height: 30),
+
+              // Additional Order Payment
+              if(isAdditionalOrder) OrderPaymentSection(
+                amount: amount,
+                discountAmount: discountAmount,
+                totalAmount: totalAmount
+              ),
+
+              if(isAdditionalOrder) const SizedBox(height: 16),
 
               // 5. 確認按鈕
               ActionButton(tr("order.confirm_pickup_schedule"), onTap: onSubmit, showLoading: _isSubmitLoading),

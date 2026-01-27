@@ -8,6 +8,15 @@ enum RecycleOrderType {
   plasticBottle,
 }
 
+enum CheckAdditionalOrderResult{
+  @JsonValue('completed')
+  completed,
+  @JsonValue('pending')
+  pending,
+  @JsonValue('failed')
+  failed
+}
+
 /// Order lifecycle status
 enum RecycleOrderStatus {
   @JsonValue('pending')
@@ -101,20 +110,12 @@ class AvailablePickupSlotsEnvelope {
 }
 
 /// Envelope containing available pickup slots
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class RecycleOrderPreflightEnvelope {
-  @JsonKey(name: 'available_dates')
   final List<PickupSlotDate> availableDates;
-
-  @JsonKey(name: 'settlement_type')
   final RecycleOrderSettlementType settlementType;
-
-  @JsonKey(name: 'service_id')
   final String serviceId;
-
-  @JsonKey(name: 'service_version_id')
   final String serviceVersionId;
-
   final int amount;
   final String currency;
 
@@ -147,19 +148,26 @@ class RecycleOrderAddress {
 }
 
 /// Request body for creating a recycle order
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class RecycleOrderCreateRequest {
-  @JsonKey(name: 'subscription_id')
   final String subscriptionId;
-  @JsonKey(name: 'pickup_date')
   final String pickupDate;
-  @JsonKey(name: 'pickup_time')
   final String pickupTime;
+  final RecycleOrderSettlementType? settlementType;
+  final String? serviceVersionId;
+  final int? amount;
+  final String? currency;
+  final String? promotionCode;
 
   const RecycleOrderCreateRequest({
     required this.subscriptionId,
     required this.pickupDate,
     required this.pickupTime,
+    this.settlementType,
+    this.serviceVersionId,
+    this.amount,
+    this.currency,
+    this.promotionCode,
   });
 
   factory RecycleOrderCreateRequest.fromJson(Map<String, dynamic> json) =>
@@ -183,7 +191,7 @@ class RecycleOrderPreviewRequest {
   final String serviceVersionId;
 
   @JsonKey(name: 'promotion_code')
-  final String promotionCode;
+  final String? promotionCode;
 
   const RecycleOrderPreviewRequest({
     required this.subscriptionId,
@@ -343,30 +351,22 @@ class LogisticsOrder {
 }
 
 /// Complete recycle order details
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class RecycleOrderDetail {
   final String id;
-  @JsonKey(name: 'recycle_order_no')
   final String recycleOrderNo;
-  @JsonKey(name: 'customer_id')
   final String customerId;
-  @JsonKey(name: 'subscription_id')
   final String subscriptionId;
-  @JsonKey(name: 'recycling_profile_id')
   final String recyclingProfileId;
-  @JsonKey(name: 'order_type')
   final RecycleOrderType orderType;
-  @JsonKey(name: 'delivery_address')
   final RecycleOrderAddress deliveryAddress;
-  @JsonKey(name: 'pickup_at')
   final DateTime pickupAt;
   final RecycleOrderStatus status;
-  @JsonKey(name: 'created_at')
   final DateTime createdAt;
-  @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
-  @JsonKey(name: 'logistics_order')
   final LogisticsOrder? logisticsOrder;
+  final String? serviceOrderId;
+  final String? clientSecret;
 
   const RecycleOrderDetail({
     required this.id,
@@ -381,12 +381,61 @@ class RecycleOrderDetail {
     required this.createdAt,
     required this.updatedAt,
     this.logisticsOrder,
+    this.serviceOrderId,
+    this.clientSecret
   });
 
   factory RecycleOrderDetail.fromJson(Map<String, dynamic> json) =>
       _$RecycleOrderDetailFromJson(json);
 
   Map<String, dynamic> toJson() => _$RecycleOrderDetailToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
+class RecycleOrderPreviewDetail {
+  final RecycleOrderSettlementType settlementType;
+  final String serviceId;
+  final String serviceVersionId;
+  final int originalAmount;
+  final int discountAmount;
+  final int finalAmount;
+  final String currency;
+  final bool promotionCodeApplied;
+  final bool paymentRequired;
+
+  const RecycleOrderPreviewDetail({
+    required this.settlementType,
+    required this.serviceId,
+    required this.serviceVersionId,
+    required this.originalAmount,
+    required this.discountAmount,
+    required this.finalAmount,
+    required this.currency,
+    required this.promotionCodeApplied,
+    required this.paymentRequired
+  });
+
+  factory RecycleOrderPreviewDetail.fromJson(Map<String, dynamic> json) =>
+      _$RecycleOrderPreviewDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RecycleOrderPreviewDetailToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
+class CheckAdditionalOrderResponse {
+  final String serviceOrderId;
+  final CheckAdditionalOrderResult result;
+
+  const CheckAdditionalOrderResponse({
+    required this.serviceOrderId,
+    required this.result,
+  });
+
+  factory CheckAdditionalOrderResponse.fromJson(Map<String, dynamic> json) =>
+      _$CheckAdditionalOrderResponseFromJson(json);
+
+  Map<String, dynamic> toJson() =>
+      _$CheckAdditionalOrderResponseToJson(this);
 }
 
 /// Envelope containing created recycle order details

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../../models/recycle_models.dart';
+import '../../utils/data.dart';
 import '../index.dart';
 
 class RecycleApi extends ApiEndpoint {
@@ -35,7 +36,7 @@ class RecycleApi extends ApiEndpoint {
     try {
       final response = await http.post(
         '/recycle/orders',
-        data: request.toJson(),
+        data: cleanNullValueFromMap(request.toJson()),
       );
       return RecycleOrderDetail.fromJson(response.data);
     } on DioException catch (e) {
@@ -50,6 +51,18 @@ class RecycleApi extends ApiEndpoint {
         data: request.toJson(),
       );
       return RecycleOrderPreviewDetail.fromJson(response.data);
+    } on DioException catch (e) {
+      throw _handleRecycleDioError(e);
+    }
+  }
+
+  /// Check activation result for addition order
+  Future<CheckAdditionalOrderResponse> checkAdditionalOrderStatus(String serviceOrderId) async {
+    try {
+      final response = await http.get(
+          '/service-orders/$serviceOrderId/check'
+      );
+      return CheckAdditionalOrderResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw _handleRecycleDioError(e);
     }

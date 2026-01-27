@@ -1,14 +1,23 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:user_app/models/recycle_models.dart';
 
 class OrderPaymentSection extends StatefulWidget {
-  const OrderPaymentSection({super.key});
+  final double amount;
+  final double? discountAmount;
+  final double totalAmount;
+
+  const OrderPaymentSection({required this.amount, this.discountAmount, required this.totalAmount, super.key});
 
   @override
   State<OrderPaymentSection> createState() => _OrderPaymentSectionState();
 }
 
 class _OrderPaymentSectionState extends State<OrderPaymentSection> {
+  double itemAmount = 0;
+  double totalAmount = 0;
+
+
   Widget _buildTitle(){
     return Row(
       children: [
@@ -21,6 +30,19 @@ class _OrderPaymentSectionState extends State<OrderPaymentSection> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildDiscountItem(double amount){
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("優惠碼", style: TextStyle(color: Colors.red)),
+          Text("-\$$amount", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red))
+        ],
+      ),
     );
   }
 
@@ -54,16 +76,16 @@ class _OrderPaymentSectionState extends State<OrderPaymentSection> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         _buildTitle(),
         SizedBox(height: 10),
-        _buildPaymentItem(50),
+        _buildPaymentItem(widget.amount),
+        if(widget.discountAmount != null) _buildDiscountItem(widget.discountAmount!),
         Divider(),
-        _buildTotal(50)
+        _buildTotal(widget.totalAmount)
       ],
     );
   }

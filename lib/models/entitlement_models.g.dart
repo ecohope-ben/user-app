@@ -20,10 +20,7 @@ EntitlementListItem _$EntitlementListItemFromJson(Map<String, dynamic> json) =>
       expiresAt: json['expires_at'] == null
           ? null
           : DateTime.parse(json['expires_at'] as String),
-      sourceType: $enumDecode(
-        _$EntitlementSourceTypeEnumMap,
-        json['source_type'],
-      ),
+      sourceType: json['source_type'] as String,
       sourceId: json['source_id'] as String,
       status: $enumDecode(_$EntitlementStatusEnumMap, json['status']),
       createdAt: DateTime.parse(json['created_at'] as String),
@@ -40,7 +37,7 @@ Map<String, dynamic> _$EntitlementListItemToJson(
   'quota_remaining': instance.quotaRemaining,
   'active_from': instance.activeFrom.toIso8601String(),
   'expires_at': instance.expiresAt?.toIso8601String(),
-  'source_type': _$EntitlementSourceTypeEnumMap[instance.sourceType]!,
+  'source_type': instance.sourceType,
   'source_id': instance.sourceId,
   'status': _$EntitlementStatusEnumMap[instance.status]!,
   'created_at': instance.createdAt.toIso8601String(),
@@ -49,12 +46,6 @@ Map<String, dynamic> _$EntitlementListItemToJson(
 
 const _$EntitlementTypeEnumMap = {
   EntitlementType.createRecycleOrder: 'create_recycle_order',
-};
-
-const _$EntitlementSourceTypeEnumMap = {
-  EntitlementSourceType.subscriptionOrder: 'subscription_order',
-  EntitlementSourceType.promotion: 'promotion',
-  EntitlementSourceType.manual: 'manual',
 };
 
 const _$EntitlementStatusEnumMap = {

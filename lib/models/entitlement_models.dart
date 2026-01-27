@@ -14,6 +14,8 @@ enum EntitlementSourceType {
   subscriptionOrder,
   @JsonValue('promotion')
   promotion,
+  @JsonValue('admin_user')
+  adminUser,
   @JsonValue('manual')
   manual,
 }
@@ -47,7 +49,8 @@ class EntitlementListItem {
   @JsonKey(name: 'expires_at')
   final DateTime? expiresAt;
   @JsonKey(name: 'source_type')
-  final EntitlementSourceType sourceType;
+  final String sourceType;
+  // final EntitlementSourceType sourceType;
   @JsonKey(name: 'source_id')
   final String sourceId;
   final EntitlementStatus status;
