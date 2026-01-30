@@ -111,7 +111,7 @@
     "change_plan_confirmation": "您仍可繼續使用目前的月費計劃，在此日期前您可隨時更改決定。",
     "your_subscription_will_end": "您的訂閱將於{}結束。在此日期前您可隨時更改決定。",
     "your_subscription_will_change": "您的訂閱將於{}改變為{}。在此日期前您可隨時更改決定。",
-//    "cancel_subscription_change_first": "請先取消改變訂閱",
+    "cancel_subscription_change_first": "請先取消更改計劃",
     "cancel": {
       "title": "取消訂閱",
       "confirm": "您確定要取消訂閱計劃嗎？\n訂閱將於本計費周期結束時取消",

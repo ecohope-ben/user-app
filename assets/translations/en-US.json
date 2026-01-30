@@ -110,6 +110,7 @@
     "change_plan_confirmation": "You will still be able to recycle with your current monthly plan and you can change your mind anytime before this date.",
     "your_subscription_will_end": "Your subscription will end on {}. You can change your mind anytime before this date.",
     "your_subscription_will_change": "Your subscription will change to {} on {}. You can change your mind anytime before this date.",
+    "cancel_subscription_change_first": "Please cancel plan change first",
     "cancel": {
       "title": "Cancel Subscription",
       "confirm": "Are you sure you want to cancel your subscription plan?\nThis subscription will be canceled at the end of the current billing period",

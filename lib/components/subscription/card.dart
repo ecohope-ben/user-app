@@ -165,7 +165,7 @@ class SubscriptionCard extends StatelessWidget {
                                   return;
                                 }
                                 if(isSubscriptionScheduledPlanChange){
-                                  popSnackBar(context, tr("subscription.keep.first"));
+                                  popSnackBar(context, tr("subscription.cancel_subscription_change_first"));
                                   return;
                                 }
                                 if (subscriptionId == null) {
