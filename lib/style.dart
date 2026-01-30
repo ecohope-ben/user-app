@@ -15,6 +15,8 @@ const Color listItemGreen = Color(0xFF198967);
 const Color darkGreenWord = Color(0xFF007800);
 const Color lightGreenBg = Color(0xFFECFFD9);
 
+const double horizontalOuterPadding = 16;
+const double verticalCardGapPadding = 16;
 
 // final primarySwatch = MaterialColor(accentColor.value, getSwatch(accentColor));
 

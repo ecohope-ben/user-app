@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:user_app/components/common/promotion_code.dart';
 import 'package:user_app/components/subscription/address.dart';
 import 'package:user_app/components/subscription/features.dart';
@@ -367,7 +368,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   Future<void> _checkSubscriptionStatus(String subscriptionId) async {
     // Cancel any existing timer
     _activationCheckTimer?.cancel();
-    
+
     setState(() {
       _isCheckingActivation = true;
     });
@@ -475,271 +476,284 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned(
-            top: 0, left: 0, right: 0,
-            height: 200,
-            child: Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        Color(0xFF294F55),
-                        Color(0xFF294F55),
-                        Color(0xFF294F55),
-                        Color(0xFF376752),
-                        Color(0xFF376752),
+    return PopScope(
+      canPop: (_isCreatingSubscription || _isCheckingActivation) ? false : context.canPop(),
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Positioned(
+              top: 0, left: 0, right: 0,
+              height: 200,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [
+                          Color(0xFF294F55),
+                          Color(0xFF294F55),
+                          Color(0xFF294F55),
+                          Color(0xFF376752),
+                          Color(0xFF376752),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // scrollable content
+            SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 10, 8, 0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                          onPressed: () => (_isCreatingSubscription || _isCheckingActivation) ? null : Navigator.pop(context),
+                        ),
+                        Expanded(
+                          child: Text(
+                            widget.plan.name,
+                            // _getBillingCycleText(),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 48), // let title be center
                       ],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
 
-          // scrollable content
-          SafeArea(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 10, 8, 0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                      Expanded(
-                        child: Text(
-                          widget.plan.name,
-                          // _getBillingCycleText(),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 48), // let title be center
-                    ],
-                  ),
-                ),
-
-                // 主要滾動內容
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FeatureCard(
-                          features: widget.features,
-                          themColor: listItemGreen,
-                        ),
-
-                        const SizedBox(height: 15),
-
-                        //  Details Box
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
-                              // color: Color(0xFFfafafa),
-                              border: Border.all(color: const Color(0xFFC7C7C7))
-                          ),
-                          child: _isLoadingPreview
-                              ? const Padding(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Center(child: CircularProgressIndicator()),
-                                )
-                              : SubscriptionPreviewCard(
-                                      billingRecycleType: _getBillingCycleText(),
-                                      renewalText: _getRenewalText(),
-                                      amountText: _getAmountText(),
-                                      autoRenewText: _getAutoRenewText())
-                        ),
-
-                        const SizedBox(height: 15),
-                        Text("${tr("promote.code")}（${tr("optional")}）"),
-
-                        const SizedBox(height: 10),
-                        PromotionCodeInput(
-                          onTap: (){
-                            print("--promotion code: ${promotionCodeController.text}");
-                            if(promotionCodeController.text.isNotEmpty){
-                              _loadPreviewWithPromotionCode(promotionCodeController.text);
-                            }
-                          },
-                          isLoading: _isLoadingPreviewWithPromotionCode,
-                          controller: promotionCodeController,
-                        ),
-                        if(hasPreviewError) Text(_previewError ?? "promotion code error", style: TextStyle(color: Colors.red)),
-
-                        const SizedBox(height: 15),
-                        if(_promotionCode != null && _showPromotionName) PromotionCodeName(_promotionCode!.name, onClose: (){
-                          setState(() {
-                            _showPromotionName = false;
-                            hasPreviewError = false;
-
-                            _promotionCode = null;
-                            promotionCodeController.clear();
-                            _loadPreview();
-                          });
-                        }),
-                        const SizedBox(height: 15),
-
-                        // Address Section
-                        Text(
-                         tr("your_address"),
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          tr("your_address_description"),
-                          style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.w400),
-                        ),
-                        const SizedBox(height: 20),
-
-                        // Dropdowns Row
-                        _isLoadingDistricts
-                            ? const Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: Center(child: CircularProgressIndicator()),
-                              )
-                            : _districtsError != null
-                                ? Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Text(
-                                      '',
-                                      // 'Error loading districts: $_districtsError',
-                                      style: const TextStyle(color: Colors.red),
-                                    ),
-                                  )
-                                : AddressDistrictSelect(
-                                    districts: _districts, 
-                                    selectedDistrict: _selectedDistrict,
-                                    selectedSubDistrict: _selectedSubDistrict,
-                                    onDistrictChanged: _onDistrictChanged,
-                                    onSubDistrictChanged: _onSubDistrictChanged,
-                                  ),
-
-                        const SizedBox(height: 16),
-
-                        // Address Line Input
-                        Column(
+                  // 主要滾動內容
+                  Expanded(
+                    child: Skeletonizer(
+                      enabled: _isLoadingDistricts || _isLoadingDistricts || _isLoadingPreview,
+                      // enabled: true,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(tr("address_line"), style: TextStyle(color: Colors.black54)),
-                            const SizedBox(height: 6),
-                            TextFormField(
-                              onTapOutside: (a){
-                                FocusManager.instance.primaryFocus?.unfocus();
-                              },
-                              maxLines: 3,
-                              decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.zero,
-                                  ),
-                                  contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 8)
-                              ),
-                              controller: addressController,
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        // Bottom Button
-                        Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 0),
-                            decoration: const BoxDecoration(
-                              color: Colors.black,
-                              border: Border(
-                                bottom: BorderSide(color: blueTextUnderline, width: 3.0),
-                              ),
-                            ),
-                            child: TextButton(
-                              onPressed: (_isCreatingSubscription) ? null : () {
-                                _createSubscription();
-                              },
-                              child: (_isCreatingSubscription || _isCheckingActivation)
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                      ),
-                                    )
-                                  : Text(
-                                      tr("confirm_and_proceed"),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                            )
-                        ),
-
-
-                        const SizedBox(height: 16),
-
-                        // T&C
-                        Row(
-                          children: [
-                            Checkbox(
-                              activeColor: Colors.black,
-                              value: _hasAcceptedTerms,
-                              onChanged: (value) {
-                                setState(() {
-                                  _hasAcceptedTerms = value ?? false;
-                                });
-                              },
+                            FeatureCard(
+                              features: widget.features,
+                              themColor: listItemGreen,
                             ),
 
-                            Expanded(
-                              child: RichText(
-                                text: TextSpan(
-                                  style: const TextStyle(color: Colors.black54, fontSize: 14, height: 1.5),
-                                  children: [
-                                    TextSpan(text: tr("tnc_click")),
-                                    TextSpan(
-                                      text: tr("terms"),
-                                      style: const TextStyle(decoration: TextDecoration.underline),
-                                      recognizer: TapGestureRecognizer()..onTap = () {},
-                                    ),
-                                    TextSpan(text: tr("privacy_policy_click")),
-                                    TextSpan(
-                                      text: tr("privacy_policy"),
-                                      style: const TextStyle(decoration: TextDecoration.underline),
-                                      recognizer: TapGestureRecognizer()..onTap = () {},
-                                    ),
-                                  ],
+                            const SizedBox(height: 15),
+
+                            //  Details Box
+                            Skeleton.shade(
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade200,
+                                    // color: Color(0xFFfafafa),
+                                    border: Border.all(color: const Color(0xFFC7C7C7))
                                 ),
+                                child: _isLoadingPreview
+                                    ? Container()
+                                    : SubscriptionPreviewCard(
+                                            billingRecycleType: _getBillingCycleText(),
+                                            renewalText: _getRenewalText(),
+                                            amountText: _getAmountText(),
+                                            autoRenewText: _getAutoRenewText())
                               ),
                             ),
+
+                            const SizedBox(height: 15),
+                            Text("${tr("promote.code")}（${tr("optional")}）"),
+
+                            const SizedBox(height: 10),
+                            Skeleton.shade(
+                              child: PromotionCodeInput(
+                                onTap: (){
+                                  print("--promotion code: ${promotionCodeController.text}");
+                                  if(promotionCodeController.text.isNotEmpty){
+                                    _loadPreviewWithPromotionCode(promotionCodeController.text);
+                                  }
+                                },
+                                isLoading: _isLoadingPreviewWithPromotionCode,
+                                controller: promotionCodeController,
+                              ),
+                            ),
+                            if(hasPreviewError) Text(_previewError ?? tr("promote.error"), style: TextStyle(color: Colors.red)),
+
+                            const SizedBox(height: 15),
+                            if(_promotionCode != null && _showPromotionName) PromotionCodeName(_promotionCode!.name, onClose: (){
+                              setState(() {
+                                _showPromotionName = false;
+                                hasPreviewError = false;
+
+                                _promotionCode = null;
+                                promotionCodeController.clear();
+                                _loadPreview();
+                              });
+                            }),
+                            const SizedBox(height: 15),
+
+                            // Address Section
+                            Text(
+                             tr("your_address"),
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              tr("your_address_description"),
+                              style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.w400),
+                            ),
+                            const SizedBox(height: 20),
+
+                            // Dropdowns Row
+                            _isLoadingDistricts
+                                ? Container()
+                                : _districtsError != null
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Text(
+                                          '',
+                                          // 'Error loading districts: $_districtsError',
+                                          style: const TextStyle(color: Colors.red),
+                                        ),
+                                      )
+                                    : Skeleton.shade(
+                                      child: AddressDistrictSelect(
+                                          districts: _districts,
+                                          selectedDistrict: _selectedDistrict,
+                                          selectedSubDistrict: _selectedSubDistrict,
+                                          onDistrictChanged: _onDistrictChanged,
+                                          onSubDistrictChanged: _onSubDistrictChanged,
+                                        ),
+                                    ),
+
+                            const SizedBox(height: 16),
+
+                            // Address Line Input
+                            Skeleton.shade(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(tr("address_line"), style: TextStyle(color: Colors.black54)),
+                                  const SizedBox(height: 6),
+                                  TextFormField(
+                                    onTapOutside: (a){
+                                      FocusManager.instance.primaryFocus?.unfocus();
+                                    },
+                                    maxLines: 3,
+                                    decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.zero,
+                                        ),
+                                        contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 8)
+                                    ),
+                                    controller: addressController,
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            // Bottom Button
+                            Skeleton.shade(
+                              child: Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(vertical: 0),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.black,
+                                    border: Border(
+                                      bottom: BorderSide(color: blueTextUnderline, width: 3.0),
+                                    ),
+                                  ),
+                                  child: TextButton(
+                                    onPressed: (_isCreatingSubscription) ? null : () {
+                                      _createSubscription();
+                                    },
+                                    child: (_isCreatingSubscription || _isCheckingActivation)
+                                        ? const SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                            ),
+                                          )
+                                        : Text(
+                                            tr("confirm_and_proceed"),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                  )
+                              ),
+                            ),
+
+
+                            const SizedBox(height: 16),
+
+                            // T&C
+                            Row(
+                              children: [
+                                Skeleton.shade(
+                                  child: Checkbox(
+                                    activeColor: Colors.black,
+                                    value: _hasAcceptedTerms,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _hasAcceptedTerms = value ?? false;
+                                      });
+                                    },
+                                  ),
+                                ),
+
+                                Expanded(
+                                  child: RichText(
+                                    text: TextSpan(
+                                      style: const TextStyle(color: Colors.black54, fontSize: 14, height: 1.5),
+                                      children: [
+                                        TextSpan(text: tr("tnc_click")),
+                                        TextSpan(
+                                          text: tr("terms"),
+                                          style: const TextStyle(decoration: TextDecoration.underline),
+                                          recognizer: TapGestureRecognizer()..onTap = () {},
+                                        ),
+                                        TextSpan(text: tr("privacy_policy_click")),
+                                        TextSpan(
+                                          text: tr("privacy_policy"),
+                                          style: const TextStyle(decoration: TextDecoration.underline),
+                                          recognizer: TapGestureRecognizer()..onTap = () {},
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 20),
                           ],
                         ),
-
-                        const SizedBox(height: 20),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

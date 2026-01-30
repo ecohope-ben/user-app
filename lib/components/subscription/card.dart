@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/pages/subscription/manage/list.dart';
+import 'package:user_app/utils/snack.dart';
 
 import '../../models/discount/index.dart';
 import '../../models/subscription_models.dart';
@@ -14,6 +15,7 @@ class SubscriptionCard extends StatelessWidget {
   final bool isCurrentPlan;
   final bool isPaymentFailed;
   final bool isSubscriptionCanceled;
+  final bool isSubscriptionScheduledPlanChange;
   final String? subscriptionId;
   final bool hasDiscount;
   final SubscriptionManageTarget target;
@@ -26,6 +28,7 @@ class SubscriptionCard extends StatelessWidget {
     this.isCurrentPlan = false,
     this.isPaymentFailed = false,
     this.isSubscriptionCanceled = false,
+    this.isSubscriptionScheduledPlanChange = false,
     this.subscriptionId,
   });
 
@@ -157,6 +160,14 @@ class SubscriptionCard extends StatelessWidget {
                               });
                             }else {
                               if(target == SubscriptionManageTarget.change){
+                                if(isSubscriptionCanceled){
+                                  popSnackBar(context, tr("subscription.keep.first"));
+                                  return;
+                                }
+                                if(isSubscriptionScheduledPlanChange){
+                                  popSnackBar(context, tr("subscription.keep.first"));
+                                  return;
+                                }
                                 if (subscriptionId == null) {
                                   // Show error if subscriptionId is missing
                                   ScaffoldMessenger.of(context).showSnackBar(

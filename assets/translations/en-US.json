@@ -23,7 +23,8 @@
     "profile_description": "Please fill in the information.",
     "select_date_of_birth": "Selected Date of Birth",
     "date_of_birth": "Date of Birth",
-    "confirm_and_login": "Confirm and Login"
+    "confirm_and_login": "Confirm and Login",
+    "already_registered": "You have already registered"
   },
   "profile": {
     "title": "Profile",
@@ -31,6 +32,7 @@
     "edit_profile": "Edit Profile",
     "update_my_profile": "Update My Profile",
     "change_account_info": "Change of Account Information",
+    "name_is_required": "Please input your name",
     "contact_our_customer_support": "Please contact our customer support\nat",
     "for_assistance": " for assistance during office hour.",
     "delete_ac": "Delete Account",
@@ -116,18 +118,21 @@
     },
     "keep": {
       "title": "Keep Subscription",
+      "first": "Please Keep Subscription First",
       "success": "Subscription has been successfully kept and will continue to auto-renew.",
       "error": "An error occurred while keeping the subscription.",
       "confirm": "Are you sure you want to keep the subscription?\nYour subscription will continue to auto-renew"
     }
   },
   "order": {
+    "additional_order_notice": "Your monthly subscription plan has 0 remaining pickups. Please arrange an additional pickup here.",
     "pick_after_receive_bag": "You can schedule a pick up once you have received the recycle bag.",
     "pick_up_unavailable": "Pick Up Unavailable\n, Please wait until {} to schedule your next recycle pick up.",
     "provide_later": "Provide Later",
     "select_date": "Please select pickup date",
     "select_time": "Please select pickup time",
     "create_failed": "Create pickup order failed, please try again later",
+    "preview_failed": "Preview order failed, please try again later",
     "pick_up_detail": "Recycle Pick Up Details",
     "order_number": "Order Number",
     "tracking_number": "Tracking Number",
@@ -374,6 +379,7 @@
   },
   "promote": {
     "code": "Promotion Code",
+    "error": "Promotion Code Error",
     "subscription_to_earn_gift": "SUBSCRIBE NOW TO EARN WELCOME GIFT",
     "join_our_monthly_plan": "Join our monthly plan with",
     "now_to_earn_free_welcome_gift": " now to earn free welcome gift!",
@@ -398,7 +404,8 @@
     "network_error": "Network Error, Please try later",
     "retry": "Retry",
     "preview_not_load": "Preview data has not loaded yet, please try again",
-    "pending_account_deletion": "your account is pending deletion"
+    "pending_account_deletion": "your account is pending deletion",
+    "fail_to_load_pickup_slot": "Failed to load pickup slots. Please try again"
   },
   "version": "Version",
   "content_copied": "Content Copied",

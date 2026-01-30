@@ -8,6 +8,7 @@ import '../../../blocs/subscription_cubit.dart';
 import '../../../models/subscription_models.dart';
 import '../../../style.dart';
 import '../../../utils/pop_up.dart';
+import '../../../utils/refresh_notifier.dart';
 
 class SubscriptionChangePaymentMethod extends StatelessWidget {
   final String subscriptionId;
@@ -93,6 +94,8 @@ class _ChangePaymentMethodViewState extends State<_ChangePaymentMethodView> {
             setupIntentId: _setupIntentId!,
           ),
         );
+
+        subscriptionRefreshNotifier.value++;
       }
     } on StripeException catch (e) {
       // Handle Stripe-specific errors

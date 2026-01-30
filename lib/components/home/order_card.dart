@@ -1,14 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:user_app/blocs/recycle_order_cubit.dart';
 import 'package:user_app/components/register/action_button.dart';
 
-import 'package:flutter/gestures.dart';
 import '../../models/recycle_models.dart';
 import '../../models/subscription_models.dart';
+import '../../style.dart';
 import '../../utils/time.dart';
 import 'tracking_number.dart';
 
@@ -187,12 +186,10 @@ class ScheduleRecycleOrderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(tr("order.congratulations"), style: TextStyle(fontSize: 18)),
-
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 Text(tr("order.you_may_now_start_scheduling"), style: TextStyle(fontSize: 16)),
-                const SizedBox(height: 24),
-
-                ActionButton(tr("order.schedule_recycle_pickup"), onTap: () => context.push("/order/create", extra: subscriptionDetail))
+                const SizedBox(height: 12),
+                ActionButton(tr("order.schedule_recycle_pickup"), onTap: () => context.push("/order/create", extra: subscriptionDetail), needPadding: false)
               ],
             ),
           ),
@@ -216,7 +213,7 @@ class _RecycleOrderCardState extends State<RecycleOrderCard> {
 
   Widget _buildCard(BuildContext context, LogisticsOrder? logisticsOrder){
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16),
+      margin: EdgeInsets.symmetric(horizontal: horizontalOuterPadding),
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -288,17 +285,17 @@ class _RecycleOrderCardState extends State<RecycleOrderCard> {
             ],
           ),
 
-          // if order complete then show
-          if(widget.recycleOrder.status == RecycleOrderStatus.completed) Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: ActionButton(
-              tr("order.schedule_recycle_pickup_again"),
-              icon: Image.asset("assets/icon/nav_main.png", scale: 3),
-              onTap: (){
-                context.push("/order/create", extra: widget.subscriptionDetail);
-
-              },
-            ),
+          // if order complete or order is picked up then show
+          if(widget.recycleOrder.status == RecycleOrderStatus.completed || widget.recycleOrder.status == RecycleOrderStatus.pickedUp)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              child: ActionButton(
+                tr("order.schedule_recycle_pickup_again"),
+                icon: Image.asset("assets/icon/nav_main.png", scale: 3),
+                onTap: (){
+                  context.push("/order/create", extra: widget.subscriptionDetail);
+                },
+              ),
           )
         ],
       ),

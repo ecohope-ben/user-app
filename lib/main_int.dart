@@ -24,7 +24,7 @@ Future<void> main() async {
   ]); // Only allow portrait modes
   String baseUrl = "https://customer-api-int.eco-hope.org";
   FlavorConfig.initialize(
-      name: 'dev',
+      name: 'int',
       baseUrl: baseUrl,
       isDebug: true
   );

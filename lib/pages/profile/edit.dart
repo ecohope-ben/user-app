@@ -5,9 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:user_app/auth/index.dart';
 import 'package:user_app/constants.dart';
 import 'package:user_app/style.dart';
+import 'package:user_app/utils/snack.dart';
 import '../../blocs/profile_cubit.dart';
 import '../../components/profile/date_picker.dart';
 import '../../utils/pop_up.dart';
+import '../../utils/refresh_notifier.dart';
 
 class EditProfilePage extends StatelessWidget {
   const EditProfilePage({super.key});
@@ -64,8 +66,6 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
     }
   }
 
-
-
   void _handleDeleteAccount(BuildContext context) {
     showPopup(
       context,
@@ -113,14 +113,14 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
         } else if (state is ProfileLoaded) {
           _loadProfileData(state);
         } else if (state is ProfileUpdateSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(tr("profile.update_success")),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-          // Reload profile after successful update
-          context.read<ProfileCubit>().loadProfile();
+          popSnackBar(context, tr("profile.update_success"));
+
+          // Notify listeners (e.g. Home) to refresh profile
+          profileRefreshNotifier.value++;
+          if(mounted) {
+            context.read<ProfileCubit>().loadProfile();
+          }
+
         } else if (state is ProfileDeleteSuccess) {
           // Logout and navigate to get_start page after successful deletion
           Auth.instance().logout();
@@ -234,7 +234,6 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
 
               // 4. Date Picker
               ProfileDatePicker(
@@ -249,7 +248,6 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                   });
                 },
               ),
-              const SizedBox(height: 16),
 
               // 5. Phone Number (區號 + 號碼)
               BlocBuilder<ProfileCubit, ProfileState>(
@@ -355,13 +353,17 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                         ),
                       ),
                       onPressed: isLoading ? null : () {
-                        profileCubit.updateProfile(
-                          name: _nameController.text,
-                          gender: selectedGender,
-                          birthMonth: selectedMonth,
-                          birthDay: selectedDay,
-                          ageGroup: selectedAge,
-                        );
+                        if(_nameController.text.isEmpty){
+                          popSnackBar(context, tr("profile.name_is_required"));
+                        }else {
+                          profileCubit.updateProfile(
+                            name: _nameController.text,
+                            gender: selectedGender,
+                            birthMonth: selectedMonth,
+                            birthDay: selectedDay,
+                            ageGroup: selectedAge,
+                          );
+                        }
                       },
                       child: isLoading
                           ? const SizedBox(

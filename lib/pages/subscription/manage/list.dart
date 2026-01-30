@@ -13,6 +13,7 @@ import '../../../components/subscription/card.dart';
 import '../../../components/subscription/notice_banner.dart';
 import '../../../models/subscription_models.dart';
 import '../../../routes.dart';
+import '../../../utils/refresh_notifier.dart';
 import '../../common/error_view.dart';
 
 enum SubscriptionManageTarget{
@@ -31,9 +32,16 @@ class _SubscriptionManageListPageState extends State<SubscriptionManageListPage>
   bool _isLoadingFeatures = false;
   Locale? _currentLocale;
 
+  void _onSubscriptionRefresh() {
+    if (mounted) context.read<SubscriptionCubit>().getCurrentSubscription();
+  }
+
   @override
   void initState() {
     super.initState();
+
+    subscriptionRefreshNotifier.addListener(_onSubscriptionRefresh);
+
     // Load features after first frame to get context
     WidgetsBinding.instance.addPostFrameCallback((_) {
       printRouteStack(context);
@@ -298,13 +306,21 @@ class _SubscriptionManageListPageState extends State<SubscriptionManageListPage>
                     isCurrentPlan: true,
                     isPaymentFailed: currentSubscription.lifecycleState == SubscriptionLifecycleState.pastDue,
                     isSubscriptionCanceled: currentSubscription.scheduledCancellation != null,
+                    isSubscriptionScheduledPlanChange: currentSubscription.scheduledPlanChange != null,
                     subscriptionId: currentSubscription.id)
               ],
             ));
         }
 
       }else {
-        list.add(SubscriptionCard(plan: plan, features: features, target: SubscriptionManageTarget.change, subscriptionId: currentSubscription.id));
+        list.add(SubscriptionCard(
+            plan: plan,
+            features: features,
+            isSubscriptionCanceled: currentSubscription.scheduledCancellation != null,
+            isSubscriptionScheduledPlanChange: currentSubscription.scheduledPlanChange != null,
+            target: SubscriptionManageTarget.change,
+            subscriptionId: currentSubscription.id
+        ));
       }
 
     }

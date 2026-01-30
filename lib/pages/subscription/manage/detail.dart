@@ -2,6 +2,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:user_app/utils/time.dart';
 import '../../../api/index.dart';
 import '../../../api/endpoints/subscription_api.dart';
@@ -11,6 +12,7 @@ import '../../../components/subscription/preview.dart';
 import '../../../models/subscription_models.dart';
 import '../../../style.dart';
 import '../../../utils/pop_up.dart';
+import '../../../utils/refresh_notifier.dart';
 import 'list.dart';
 
 class SubscriptionManageDetail extends StatefulWidget {
@@ -113,6 +115,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
         _isSchedulingPlanChange = false;
       });
 
+      subscriptionRefreshNotifier.value++;
       // Reload subscription detail to update UI
       await _loadSubscriptionDetail();
 
@@ -161,6 +164,8 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
         _isProcessing = false;
       });
 
+      subscriptionRefreshNotifier.value++;
+
       if (mounted) {
         await showForcePopup(
           context,
@@ -205,6 +210,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
         _isProcessing = false;
       });
 
+      subscriptionRefreshNotifier.value++;
       if (mounted) {
         await showForcePopup(
           context,
@@ -270,34 +276,37 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
           ),
 
           // scrollable content
-          SafeArea(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 10, 8, 0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                      Expanded(
-                        child: Text(
-                          widget.plan.name,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+        SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 10, 8, 0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    Expanded(
+                      child: Text(
+                        widget.plan.name,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(width: 48), // let title be center
-                    ],
-                  ),
+                    ),
+                    const SizedBox(width: 48), // let title be center
+                  ],
                 ),
+              ),
 
-                Expanded(
+
+              Expanded(
+                  child: Skeletonizer(
+                  enabled: _isLoadingDetail,
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                     child: Column(
@@ -310,9 +319,9 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                         ),
 
                         if(_hasScheduledCancellation) const SizedBox(height: 15),
-                        if(_hasScheduledCancellation) CancelPlanNoticeBanner(convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd)),
+                        if(_hasScheduledCancellation) Skeleton.shade(child: CancelPlanNoticeBanner(convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd))),
                         if(_hasScheduledPlanChange) const SizedBox(height: 15),
-                        if(_hasScheduledPlanChange) ChangePlanNoticeBanner(_subscriptionDetail?.scheduledPlanChange?.plan.name, convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd)),
+                        if(_hasScheduledPlanChange) Skeleton.shade(child: ChangePlanNoticeBanner(_subscriptionDetail?.scheduledPlanChange?.plan.name, convertDateTimeToString(context, _subscriptionDetail?.currentPeriodEnd))),
                         const SizedBox(height: 15),
                         Container(
                           width: double.infinity,
@@ -510,9 +519,10 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
+        ),
         ],
       ),
     );

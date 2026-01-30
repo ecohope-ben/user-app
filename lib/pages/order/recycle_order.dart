@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:go_router/go_router.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:user_app/api/index.dart';
 import 'package:user_app/components/order/order_payment_section.dart';
 import 'package:user_app/components/register/action_button.dart';
@@ -399,159 +400,169 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: mainPurple,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
-          onPressed: () {
-            context.pop();
-          },
-        ),
-        title: Text(
-          tr("order.schedule_pickup_now"),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
+    return PopScope(
+      canPop: (_isSubmitLoading || _isCheckingActivation) ? false : context.canPop(),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: mainPurple,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+            onPressed: () => (_isSubmitLoading || _isCheckingActivation) ? null : context.pop(),
+          ),
+          title: Text(
+            tr("order.schedule_pickup_now"),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 2. 訂閱 Banner (Subscription Card)
-              _buildSubscriptionBanner(),
-              const SizedBox(height: 12),
-              if(isAdditionalOrder) AdditionalOrderNoticeBanner(),
-
-              if(isAdditionalOrder) const SizedBox(height: 12),
-              // 3. 標題區域
-              Row(
+        body: Skeletonizer(
+          enabled: _isLoading,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // 2. 訂閱 Banner (Subscription Card)
+                  _buildSubscriptionBanner(),
+                  const SizedBox(height: 12),
+                  if(isAdditionalOrder) Skeleton.leaf(child: AdditionalOrderNoticeBanner()),
+
+                  if(isAdditionalOrder) const SizedBox(height: 12),
+                  // 3. 標題區域
+                  Row(
+                    children: [
+                      Text(
+                        tr("order.pickup_details"),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Icon(Icons.help_outline, size: 20, color: Colors.black54),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
                   Text(
-                    tr("order.pickup_details"),
+                    tr("order.fill_information"),
+                    style: TextStyle(color: Colors.black54, fontSize: 14),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // 4. 表單區域
+                  // Pick Up Date
+                  _buildLabel("${tr("order.pickup_date")} *"),
+                  _buildDateDropdown(),
+                  const SizedBox(height: 16),
+
+                  // Pick Up Time
+                  _buildLabel("${tr("order.pickup_time")} *"),
+                  _buildTimeDropdown(),
+                  const SizedBox(height: 16),
+
+
+                  // Address
+                  _buildLabel(tr("order.address")),
+                  Skeleton.leaf(
+                    child: Container(
+                      color: Colors.black12,
+                      child: TextField(
+                        readOnly: true,
+                        controller: _addressController,
+                        maxLines: null,
+                        decoration: const InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black12),
+                              borderRadius: BorderRadius.zero
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black12),
+                            borderRadius: BorderRadius.zero
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black12),
+                              borderRadius: BorderRadius.zero
+                          ),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                        ),
+                        style: const TextStyle(color: Colors.black54),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+
+
+                  if(isAdditionalOrder) Text(
+                    "${tr("promote.code")}（${tr("optional")}）",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                   ),
-                  SizedBox(width: 8),
-                  Icon(Icons.help_outline, size: 20, color: Colors.black54),
+
+                  if(isAdditionalOrder) const SizedBox(height: 10),
+                  if(isAdditionalOrder) Skeleton.shade(
+                    child: PromotionCodeInput(
+                      onTap: (){
+                        print("--promotion code: ${promotionCodeController.text}");
+                        if(promotionCodeController.text.isNotEmpty){
+                          previewOrder(promotionCode: promotionCodeController.text);
+                        }
+                      },
+                      isLoading: _isLoadingPreviewWithPromotionCode,
+                      controller: promotionCodeController,
+                    ),
+                  ),
+
+                  if(hasPreviewError && isAdditionalOrder) Text(_previewError ?? tr("promote.error"), style: TextStyle(color: Colors.red)),
+
+                  if(isAdditionalOrder) const SizedBox(height: 30),
+
+                  // Additional Order Payment
+                  if(isAdditionalOrder) Skeleton.shade(
+                    child: OrderPaymentSection(
+                      amount: amount,
+                      discountAmount: discountAmount,
+                      totalAmount: totalAmount
+                    ),
+                  ),
+
+                  if(isAdditionalOrder) const SizedBox(height: 16),
+
+                  // 5. 確認按鈕
+                  Skeleton.shade(child: ActionButton(tr("order.confirm_pickup_schedule"), onTap: onSubmit, showLoading: _isSubmitLoading)),
+                  const SizedBox(height: 16),
+
+                  // 6. 底部條款文字
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                      children: [
+                        TextSpan(text: tr("order.by_clicking_to_agree")),
+                        TextSpan(
+                          text: tr("order.terms"),
+                          style: TextStyle(decoration: TextDecoration.underline),
+                        ),
+                        TextSpan(text: tr("order.have_read_acknowledge")),
+                        TextSpan(
+                          text: tr("order.privacy_policy"),
+                          style: TextStyle(decoration: TextDecoration.underline),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                 ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                tr("order.fill_information"),
-                style: TextStyle(color: Colors.black54, fontSize: 14),
-              ),
-              const SizedBox(height: 20),
-
-              // 4. 表單區域
-              // Pick Up Date
-              _buildLabel("${tr("order.pickup_date")} *"),
-              _buildDateDropdown(),
-              const SizedBox(height: 16),
-
-              // Pick Up Time
-              _buildLabel("${tr("order.pickup_time")} *"),
-              _buildTimeDropdown(),
-              const SizedBox(height: 16),
-
-
-              // Address
-              _buildLabel(tr("order.address")),
-              Container(
-                color: Colors.black12,
-                child: TextField(
-                  readOnly: true,
-                  controller: _addressController,
-                  maxLines: null,
-                  decoration: const InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black12),
-                        borderRadius: BorderRadius.zero
-                    ),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black12),
-                      borderRadius: BorderRadius.zero
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black12),
-                        borderRadius: BorderRadius.zero
-                    ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  ),
-                  style: const TextStyle(color: Colors.black54),
-                ),
-              ),
-              const SizedBox(height: 30),
-
-
-              if(isAdditionalOrder) Text(
-                "${tr("promote.code")}（${tr("optional")}）",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-
-              if(isAdditionalOrder) const SizedBox(height: 10),
-              if(isAdditionalOrder) PromotionCodeInput(
-                onTap: (){
-                  print("--promotion code: ${promotionCodeController.text}");
-                  if(promotionCodeController.text.isNotEmpty){
-                    previewOrder(promotionCode: promotionCodeController.text);
-                  }
-                },
-                isLoading: _isLoadingPreviewWithPromotionCode,
-                controller: promotionCodeController,
-              ),
-
-              if(hasPreviewError && isAdditionalOrder) Text(_previewError ?? tr("promote.error"), style: TextStyle(color: Colors.red)),
-
-              if(isAdditionalOrder) const SizedBox(height: 30),
-
-              // Additional Order Payment
-              if(isAdditionalOrder) OrderPaymentSection(
-                amount: amount,
-                discountAmount: discountAmount,
-                totalAmount: totalAmount
-              ),
-
-              if(isAdditionalOrder) const SizedBox(height: 16),
-
-              // 5. 確認按鈕
-              ActionButton(tr("order.confirm_pickup_schedule"), onTap: onSubmit, showLoading: _isSubmitLoading),
-              const SizedBox(height: 16),
-
-              // 6. 底部條款文字
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
-                  children: [
-                    TextSpan(text: tr("order.by_clicking_to_agree")),
-                    TextSpan(
-                      text: tr("order.terms"),
-                      style: TextStyle(decoration: TextDecoration.underline),
-                    ),
-                    TextSpan(text: tr("order.have_read_acknowledge")),
-                    TextSpan(
-                      text: tr("order.privacy_policy"),
-                      style: TextStyle(decoration: TextDecoration.underline),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-            ],
+            ),
           ),
         ),
       ),
@@ -624,24 +635,24 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
 
   // 輔助方法：構建日期下拉選單
   Widget _buildDateDropdown() {
-    if (_isLoading) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black12),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: const Row(
-          children: [
-            SizedBox(
-              width: 16,
-              height: 16,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          ],
-        ),
-      );
-    }
+    // if (_isLoading) {
+    //   return Container(
+    //     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+    //     decoration: BoxDecoration(
+    //       border: Border.all(color: Colors.black12),
+    //       borderRadius: BorderRadius.zero,
+    //     ),
+    //     child: const Row(
+    //       children: [
+    //         SizedBox(
+    //           width: 16,
+    //           height: 16,
+    //           child: CircularProgressIndicator(strokeWidth: 2),
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // }
 
     if (_errorMessage != null && _availableDates == null) {
       return Container(
@@ -713,24 +724,24 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
 
   // 輔助方法：構建時間下拉選單
   Widget _buildTimeDropdown() {
-    if (_isLoading) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black12),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: const Row(
-          children: [
-            SizedBox(
-              width: 16,
-              height: 16,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          ],
-        ),
-      );
-    }
+    // if (_isLoading) {
+    //   return Container(
+    //     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+    //     decoration: BoxDecoration(
+    //       border: Border.all(color: Colors.black12),
+    //       borderRadius: BorderRadius.zero,
+    //     ),
+    //     child: const Row(
+    //       children: [
+    //         SizedBox(
+    //           width: 16,
+    //           height: 16,
+    //           child: CircularProgressIndicator(strokeWidth: 2),
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // }
 
     final timeslots = _getAvailableTimeslots();
     final timeItems = timeslots?.map((timeslot) {

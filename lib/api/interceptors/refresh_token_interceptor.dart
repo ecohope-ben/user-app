@@ -63,7 +63,8 @@ class RefreshTokenInterceptor extends Interceptor {
             "session_id": sessionId,
           }
         );
-        // print("--401 error7: ${refreshResponse.toString()}");
+
+
         // Parse session from response
         final session = Session.fromJson(refreshResponse.data);
 

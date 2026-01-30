@@ -86,11 +86,10 @@ class LoginError extends LoginState {
 class LoginCubit extends Cubit<LoginState> {
   final LoginApi _apiService;
 
-  LoginCubit({LoginApi? apiService})
-      : _apiService = apiService ?? Api.instance().login(),
-        super(LoginInitial());
+  LoginCubit({LoginApi? apiService}): _apiService = apiService ?? Api.instance().login(), super(LoginInitial());
 
-  Future<void> startLogin() async {
+  Future<void> startLogin(int step) async {
+    print("--start login: $step");
     try {
       emit(LoginLoading());
       final response = await _apiService.startLogin();
@@ -105,7 +104,6 @@ class LoginCubit extends Cubit<LoginState> {
         return;
       }
 
-      // print("--start login step: ${response.login.tokens.step}");
       emit(LoginInProgress(
         login: response.login,
         stepToken: response.login.tokens.step,
@@ -198,8 +196,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> verifyEmailOtp(String code) async {
     final currentState = state;
-    print("--state");
-    print(currentState);
+
     // Allow retry from LoginError state if login info is available
     LoginSnapshot? login;
     String? stepToken;
@@ -308,6 +305,7 @@ class LoginCubit extends Cubit<LoginState> {
 
 
   void reset() {
+    print("--reset");
     emit(LoginInitial());
   }
 

@@ -9,6 +9,7 @@ import '../../../models/subscription_models.dart';
 import '../../../routes.dart';
 import '../../../style.dart';
 import '../../../utils/pop_up.dart';
+import '../../../utils/refresh_notifier.dart';
 import '../../../utils/time.dart';
 
 class SubscriptionPlanChange extends StatefulWidget {
@@ -127,6 +128,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
         _isSchedulingPlanChange = false;
       });
 
+      subscriptionRefreshNotifier.value++;
       // Reload subscription detail to update UI
       await _loadSubscriptionDetail();
 
@@ -177,6 +179,7 @@ class _SubscriptionPlanChangeState extends State<SubscriptionPlanChange> {
       // Reload subscription detail to update UI
       await _loadSubscriptionDetail();
 
+      subscriptionRefreshNotifier.value++;
       if (mounted) {
         await showForcePopup(
           context,

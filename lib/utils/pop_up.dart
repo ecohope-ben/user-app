@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:user_app/style.dart';
 
 import '../components/pop_up/button.dart';
 
@@ -20,6 +21,7 @@ Future<void> showPopup(
       canPop: false,
       child: AlertDialog(
         titlePadding: EdgeInsets.only(top: 10),
+        contentPadding: EdgeInsets.symmetric(horizontal: horizontalOuterPadding, vertical: 10),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
         backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
         title: (title != null) ? Container(

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../blocs/subscription_cubit.dart';
 import '../../pages/subscription/manage/list.dart';
+import '../../style.dart';
 import '../../utils/time.dart';
 
 class SubscriptionCanceledNotificationCard extends StatelessWidget {
@@ -141,7 +142,7 @@ class NotificationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(12),
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: EdgeInsets.symmetric(horizontal: horizontalOuterPadding, vertical: 16),
       width: double.infinity,
       color: Colors.black.withValues(alpha: 0.7),
       child: Row(

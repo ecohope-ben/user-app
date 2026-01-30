@@ -20,7 +20,7 @@ class LoginIndex extends StatefulWidget {
   State<LoginIndex> createState() => _LoginIndexState();
 }
 
-class _LoginIndexState extends State<LoginIndex>{
+class _LoginIndexState extends State<LoginIndex> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
 
@@ -31,10 +31,9 @@ class _LoginIndexState extends State<LoginIndex>{
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Auth.instance().removeAllStorage();
       if (mounted) {
-        context.read<LoginCubit>().startLogin();
+        context.read<LoginCubit>().startLogin(1);
       }
     });
-
   }
 
 
@@ -51,15 +50,15 @@ class _LoginIndexState extends State<LoginIndex>{
       ),
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
-          if(state is LoginInProgress){
-            if(state.login.stage == LoginStage.emailVerification){}
-          }else if(state is LoginError){
+          if (state is LoginInProgress) {
+            if (state.login.stage == LoginStage.emailVerification) {}
+          } else if (state is LoginError) {
             final login = state.login;
-            if(login != null){
+            if (login != null) {
               context.read<LoginCubit>().update(LoginInProgress(login: login, stepToken: login.tokens.step));
-            }else {
+            } else {
               context.read<LoginCubit>().reset();
-              context.read<LoginCubit>().startLogin();
+              context.read<LoginCubit>().startLogin(2);
             }
           }
         },
@@ -87,23 +86,23 @@ class _LoginIndexState extends State<LoginIndex>{
                           if (_formKey.currentState!.validate()) {
                             // If validation passes, get the email and update registration
                             final email = _emailController.text;
-            
+
                             final bloc = context.read<LoginCubit>();
                             final result = await bloc.updateEmail(email: email);
                             print("--login email result: $result");
-            
-                            if(mounted) {
-                              if(result) {
+
+                            if (mounted) {
+                              if (result) {
                                 context.push("/login/verify");
-                              }else {
-                                context.read<LoginCubit>().reset();
-                                await context.read<LoginCubit>().startLogin();
-            
+                              } else {
+                                bloc.reset();
+                                await bloc.startLogin(3);
+
                                 // retry
                                 final result = await bloc.updateEmail(email: email);
-            
+
                                 print("--login email result2: $result");
-                                if(result) {
+                                if (result) {
                                   context.push("/login/verify");
                                 }
                               }
@@ -139,14 +138,14 @@ class _LoginIndexState extends State<LoginIndex>{
                                           .primary,
                                     ),
                                   ),
-            
+
                                 ],
                               ),
                               textAlign: TextAlign.center,
                             ),
                           ),
                         ),
-            
+
                       ],
                     ),
                     Row(

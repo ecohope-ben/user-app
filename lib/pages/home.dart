@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:user_app/components/home/promotion_banner.dart';
 import 'package:user_app/components/home/recycle_info_card.dart';
 import 'package:user_app/components/register/action_button.dart';
@@ -22,6 +23,9 @@ import '../components/home/silver.dart';
 import '../components/home/welcome_popup.dart';
 import '../models/recycle_models.dart';
 import '../models/subscription_models.dart';
+import '../style.dart';
+import '../utils/data.dart';
+import '../utils/refresh_notifier.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -55,6 +59,33 @@ class _HomeViewState extends State<_HomeView> {
   SubscriptionState? _lastSubscriptionState;
   SubscriptionState? _lastPreviewSubscriptionState;
   RecycleOrderState? _lastRecycleOrderState;
+
+  void init() async{
+    // await fetchDefaultDiscount();
+  }
+
+  void _onProfileRefresh() {
+    if (mounted) context.read<ProfileCubit>().loadProfile();
+  }
+
+  void _onSubscriptionRefresh() {
+    if (mounted) context.read<SubscriptionCubit>().getCurrentSubscription();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+    profileRefreshNotifier.addListener(_onProfileRefresh);
+    subscriptionRefreshNotifier.addListener(_onSubscriptionRefresh);
+  }
+
+  @override
+  void dispose() {
+    profileRefreshNotifier.removeListener(_onProfileRefresh);
+    subscriptionRefreshNotifier.removeListener(_onSubscriptionRefresh);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,6 +175,7 @@ class _HomeViewState extends State<_HomeView> {
     print("--ready: $effectiveEntitlementState");
     print("--ready: $effectiveSubscriptionState");
     print("--ready: $effectiveRecycleOrderState");
+
     // Only show skeleton on initial load, not during refresh
     if (!isReady && !_hasInitialData) {
       return const HomeSkeleton();
@@ -318,6 +350,8 @@ class _HomeContentState extends State<_HomeContent> {
                           if(widget.subscriptionState is SubscriptionDetailAndListLoaded && (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.lifecycleState == SubscriptionLifecycleState.pastDue) PaymentFailedNotificationCard((widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.id),
                           if(widget.subscriptionState is SubscriptionDetailAndListLoaded && (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledCancellation != null) SubscriptionCanceledNotificationCard(convertDateTimeToString(context, (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.currentPeriodEnd)),
                           if(widget.subscriptionState is SubscriptionDetailAndListLoaded && (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledPlanChange != null) SubscriptionChangedNotificationCard((widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledPlanChange?.plan.name, convertDateTimeToString(context, (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.currentPeriodEnd)),
+
+
                           // if(widget.subscriptionState is SubscriptionDetailAndListLoaded &&
                           //     (widget.subscriptionState as SubscriptionDetailAndListLoaded).detail.scheduledCancellation == null &&
                           //     widget.recycleOrderState.orders.isNotEmpty &&
@@ -369,9 +403,9 @@ class _HomeContentState extends State<_HomeContent> {
 
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: verticalCardGapPadding),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding: const EdgeInsets.symmetric(horizontal: horizontalOuterPadding),
                             child: Column(
                               children: [
                                 RecycleInfoCard(
@@ -381,7 +415,7 @@ class _HomeContentState extends State<_HomeContent> {
                                   icon: Icons.change_circle_outlined,
                                   onTap: () => context.push("/how_it_works", extra: widget.subscriptionState),
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: verticalCardGapPadding),
                                 RecycleInfoCard(
                                   title: tr("recycling_guide"),
                                   description: tr("recycling_guide_description"),

@@ -5,6 +5,7 @@ import '../api/endpoints/subscription_api.dart';
 import '../api/index.dart';
 import '../models/discount/index.dart';
 import '../models/subscription_models.dart';
+import '../utils/data.dart';
 
 /// Base state for subscription cubit
 abstract class SubscriptionState extends Equatable {
@@ -154,8 +155,12 @@ class PreviewSubscriptionCubit extends Cubit<SubscriptionState> {
   Future<void> previewSubscription() async {
     emit(const SubscriptionLoading('preview'));
 
-
     try {
+      final data = await fetchDefaultDiscount();
+      print("--preview subscription");
+      print(Discount.instance().promotionCode);
+      print( Discount.instance().planId);
+      print(Discount.instance().versionId);
       final preview = await _api.previewSubscription(request: PreviewSubscriptionCreationRequest(
           promotionCode: Discount.instance().promotionCode,
           planId: Discount.instance().planId ?? "",
@@ -219,7 +224,7 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
       final envelope = await _api.listSubscriptions();
       if (envelope.subscriptions.isNotEmpty) {
         final firstSubscriptionId = envelope.subscriptions.first.id;
-        if(envelope.subscriptions.first.lifecycleState == SubscriptionLifecycleState.active) {
+        if(envelope.subscriptions.first.lifecycleState == SubscriptionLifecycleState.active || envelope.subscriptions.first.lifecycleState == SubscriptionLifecycleState.pastDue) {
           final detail = await _api.getSubscriptionDetail(
               subscriptionId: firstSubscriptionId
           );

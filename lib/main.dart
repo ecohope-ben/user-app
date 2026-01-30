@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:user_app/style.dart';
 import 'app.dart';
 import 'blocs/bloc_observer.dart';
@@ -28,6 +29,7 @@ Future<void> main() async {
     name: 'prod',
     baseUrl: baseUrl,
   );
+
   runApp(
     EasyLocalization(
         supportedLocales: [Locale('en', 'US'), Locale('zh', 'HK')],

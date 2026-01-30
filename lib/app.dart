@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:user_app/routes.dart';
 import 'package:user_app/style.dart';
 
@@ -23,6 +24,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
       theme: ThemeData(
+          extensions: [
+            SkeletonizerConfigData(
+              effect: const ShimmerEffect(),
+              justifyMultiLineText: true,
+              textBorderRadius: TextBoneBorderRadius.fromHeightFactor(0),
+              // ignoreContainers: false,
+              // containersColor: Colors.grey,
+            ),
+          ],
           progressIndicatorTheme: ProgressIndicatorThemeData(
               color: Colors.black
           ),

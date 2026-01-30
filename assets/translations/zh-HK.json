@@ -23,7 +23,8 @@
     "profile_description": "請填寫以下資料。",
     "select_date_of_birth": "已選擇出生日期",
     "date_of_birth": "出生日期",
-    "confirm_and_login": "確認並登入"
+    "confirm_and_login": "確認並登入",
+    "already_registered": "你已經註冊，會即時登入"
   },
   "profile": {
     "title": "個人資料",
@@ -31,6 +32,7 @@
     "edit_profile": "編輯個人資料",
     "update_my_profile": "更新我的資料",
     "change_account_info": "更改帳戶資料",
+    "name_is_required": "請輸入姓名",
     "contact_our_customer_support": "請於辦公時間內聯絡我們的客戶服務\n",
     "for_assistance": " 以獲協助。",
     "delete_ac": "刪除帳戶",
@@ -109,6 +111,7 @@
     "change_plan_confirmation": "您仍可繼續使用目前的月費計劃，在此日期前您可隨時更改決定。",
     "your_subscription_will_end": "您的訂閱將於{}結束。在此日期前您可隨時更改決定。",
     "your_subscription_will_change": "您的訂閱將於{}改變為{}。在此日期前您可隨時更改決定。",
+//    "cancel_subscription_change_first": "請先取消改變訂閱",
     "cancel": {
       "title": "取消訂閱",
       "confirm": "您確定要取消訂閱計劃嗎？\n訂閱將於本計費周期結束時取消",
@@ -117,18 +120,21 @@
     },
     "keep": {
       "title": "保留訂閱",
+      "first": "請先保留訂閱",
       "success": "訂閱已成功保留，將繼續自動續訂。",
       "error": "保留訂閱時發生錯誤。",
       "confirm": "您確定要保留訂閱嗎？\n您的訂閱將繼續自動續訂"
     }
   },
   "order": {
+    "additional_order_notice": "你的月費計劃剩餘0次回收次數, 你可在此安排額外單次上門回收",
     "pick_after_receive_bag": "收到回收袋後您就可以安排上門回收。",
     "pick_up_unavailable": "暫不可安排回收\n請等到{}才可安排下一次回收。",
     "provide_later": "稍後提供",
     "select_date": "請選擇回收日期",
     "select_time": "請選擇回收時間",
     "create_failed": "建立回收訂單失敗，請稍後再試",
+    "preview_failed": "預覽訂單失敗，請稍後再試",
     "pick_up_detail": "回收詳情",
     "order_number": "訂單號碼",
     "tracking_number": "追蹤號碼",
@@ -371,6 +377,7 @@
   },
   "promote": {
     "code": "優惠碼",
+    "error": "優惠碼錯誤",
     "subscription_to_earn_gift": "立即訂閱賺取歡迎禮物",
     "join_our_monthly_plan": "立即加入我們的月費計劃",
     "now_to_earn_free_welcome_gift": " 即可免費獲贈歡迎禮物！",
@@ -395,7 +402,8 @@
     "network_error": "網絡錯誤，請稍後再試",
     "retry": "重試",
     "preview_not_load": "預覽資料尚未載入，請再試一次",
-    "pending_account_deletion": "您的帳戶正在等待刪除"
+    "pending_account_deletion": "您的帳戶正在等待刪除",
+    "fail_to_load_pickup_slot": "載入回收日期時出現錯誤，請稍後再試"
   },
   "version": "版本",
   "content_copied": "內容已複製",
