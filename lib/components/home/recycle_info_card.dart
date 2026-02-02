@@ -33,9 +33,9 @@ class RecycleInfoCard extends StatelessWidget {
               flex: 1,
               child: Center(
                 child: FittedBox(
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fitHeight,
                   child: Image.asset(
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fitHeight,
                       imagePath
                   ),
                 ),
@@ -51,6 +51,8 @@ class RecycleInfoCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
+
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

@@ -50,7 +50,7 @@ class SubscriptionCard extends StatelessWidget {
     final String imagePath = "assets/widget/subscription_header.png";
 
     return Container(
-      margin: EdgeInsets.only(bottom: 20),
+      margin: EdgeInsets.only(bottom: verticalCardGapPadding),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [

@@ -77,6 +77,8 @@ class WelcomePage1 extends StatelessWidget {
                                   ),
                                 ),
                               ),
+
+                              TextSpan(text: tr("welcome.page1.title12")),
                             ],
                           ),
                         ),

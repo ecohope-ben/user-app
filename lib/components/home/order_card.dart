@@ -267,7 +267,7 @@ class _RecycleOrderCardState extends State<RecycleOrderCard> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TrackingNumber(logisticsOrder?.trackingNo ?? tr("order.provide_later")),
+                          TrackingNumber(logisticsOrder?.trackingNo),
                           // Text("${tr("tracking")} #${logisticsOrder?.trackingNo ?? tr("order.provide_later")}", style: TextStyle(fontSize: 18)),
                           const SizedBox(height: 12),
                           Text(tr("pick_up_on", args: [convertDateTimeToString(context, widget.recycleOrder.pickupAt, format: tr("format.date_time"))]), style: TextStyle(fontSize: 16)),
@@ -286,7 +286,8 @@ class _RecycleOrderCardState extends State<RecycleOrderCard> {
           ),
 
           // if order complete or order is picked up then show
-          if(widget.recycleOrder.status == RecycleOrderStatus.completed || widget.recycleOrder.status == RecycleOrderStatus.pickedUp)
+          // if(widget.recycleOrder.status == RecycleOrderStatus.completed || widget.recycleOrder.status == RecycleOrderStatus.pickedUp)
+          if(widget.recycleOrder.status == RecycleOrderStatus.completed)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
               child: ActionButton(

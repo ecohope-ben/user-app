@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:user_app/utils/refresh_notifier.dart';
 
 import '../../../blocs/district_cubit.dart';
 import '../../../blocs/subscription_cubit.dart';
@@ -163,6 +164,7 @@ class _ChangeAddressViewState extends State<_ChangeAddressView> {
       widget.subscriptionDetail.id,
       request,
     );
+    subscriptionRefreshNotifier.value++;
   }
 
   @override

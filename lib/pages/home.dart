@@ -373,16 +373,15 @@ class _HomeContentState extends State<_HomeContent> {
                                   );
                                 }
 
-                                // if(widget.recycleOrderState.orders.isNotEmpty && widget.entitlementState.entitlements.isNotEmpty ){
-                                if(widget.recycleOrderState.orders.isNotEmpty){
-                                  return RecycleOrderCard(
-                                    widget.recycleOrderState.orders.first,
-                                    displayState.detail,
-                                    key: ValueKey('recycle_order_${widget.recycleOrderState.orders.first.id}_$_refreshKey'),
-                                  );
-                                }
                                 if (displayState.detail.recyclingProfile != null && displayState.detail.recyclingProfile?.initialBagStatus == "delivered") {
-
+                                  // if(widget.recycleOrderState.orders.isNotEmpty && widget.entitlementState.entitlements.isNotEmpty ){
+                                  if(widget.recycleOrderState.orders.isNotEmpty){
+                                    return RecycleOrderCard(
+                                      widget.recycleOrderState.orders.first,
+                                      displayState.detail,
+                                      key: ValueKey('recycle_order_${widget.recycleOrderState.orders.first.id}_$_refreshKey'),
+                                    );
+                                  }
                                   // check is first time to order
                                   if(widget.recycleOrderState.orders.isEmpty) {
                                     return ScheduleRecycleOrderCard(displayState.detail);

@@ -118,6 +118,8 @@ class PromotionBanner extends StatelessWidget {
                 ],
               ),
             ),
+
+            Text(tr("promote.now_to_earn_free_welcome_gift2")),
             if(Discount.instance().promotionCode != null) const SizedBox(height: 10),
             if(Discount.instance().promotionCode != null) PromotionCodeArea(Discount.instance().promotionCode!),
 

@@ -21,7 +21,7 @@ class _PhoneInputStepState extends State<PhoneInputStep> {
 
   String? hkPhoneValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return tr('register.phone_required'); // or provide your own default message
+      return tr('validation.required'); // or provide your own default message
     }
     final pattern = RegExp(r'^[4-9][0-9]{7}$');
     if (!pattern.hasMatch(value)) {

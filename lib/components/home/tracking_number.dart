@@ -33,7 +33,7 @@ class TrackingNumber extends StatelessWidget {
             ),
             SizedBox(width: 4,),
             Text(
-              "#${trackingNumber ?? ""}",
+              "#${trackingNumber ?? tr("order.provide_later")}",
               style: const TextStyle(
                 fontSize: 18,
                 color: Colors.black87,

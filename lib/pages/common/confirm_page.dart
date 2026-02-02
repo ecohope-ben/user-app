@@ -24,14 +24,15 @@ class ChangPlanConfirmationPage extends StatelessWidget {
 }
 
 class SubscriptionConfirmationPage extends StatelessWidget {
-  const SubscriptionConfirmationPage({super.key});
+  final String planName;
+  const SubscriptionConfirmationPage(this.planName, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return ConfirmationPage(
       iconPath: 'assets/icon/confirmation_subscription.png',
       title: tr("subscription.confirmation_info"),
-      subTitle: tr("subscription.confirmation_info2"),
+      subTitle: tr("subscription.confirmation_info2", args: [planName]),
       // subTitle2: 'Your first recycle bag is on the way, Get Ready!',
       mainButtonTitle: tr("subscription.manage_subscription"),
       mainButtonOnTap: () => context.go("/subscription/manage/list", extra: SubscriptionManageTarget.manage)
@@ -112,7 +113,7 @@ class ConfirmationPage extends StatelessWidget {
                   tr("back_to_home"),
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    // fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

@@ -9,6 +9,8 @@ import 'package:user_app/pages/subscription/manage/list.dart';
 import 'package:user_app/utils/extension.dart';
 import 'package:user_app/utils/time.dart';
 
+import '../../models/entitlement_models.dart';
+
 
 class SliverBar extends StatefulWidget {
   final ProfileLoaded profileState;
@@ -130,21 +132,26 @@ class _SliverBarState extends State<SliverBar> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(flex: 1, child: _buildPickupRemining()),
-        // _buildPickupRemining(),
         SizedBox(width: 5),
         Expanded(flex: 1, child: _buildSubscription()),
-        // _buildSubscription(),
         SizedBox(width: 5),
         Expanded(flex: 1, child: _buildTotalCollection())
-        // _buildTotalCollection(),
       ],
     );
+  }
+
+  int calEntitlementsRemaining(List<EntitlementListItem> list){
+    int total = 0;
+    for (var item in list) {
+      total += item.quotaRemaining;
+    }
+    return total;
   }
 
   Widget _buildPickupRemining() {
     final state = widget.entitlementState;
     return _buildStatItem(
-        value: state.entitlements.isNotEmpty ? state.entitlements.first.quotaRemaining.toString() : "00",
+        value: state.entitlements.isNotEmpty ? calEntitlementsRemaining(state.entitlements).toString() : "00",
         label: tr("remaining_pickups"),
 
         label2: state.entitlements.isNotEmpty ? "${tr("expired_date")} ${convertDateTimeToString(context, state.entitlements.first.expiresAt, format: "dd/MM/yy")}" : null,
@@ -197,19 +204,10 @@ class _SliverBarState extends State<SliverBar> {
         children: [
           Text(
             value,
-            style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white,
-              // decoration: TextDecoration.underline,
-              // decorationColor: Colors.white70,
-
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white,),
           ),
           const SizedBox(height: 4),
-          if(label2 != null) Text(
-            label2,
-            style: TextStyle(fontSize: 11, color: Colors.white,),
-          ),
-          if(label2 != null) SizedBox(height: 4),
+
           Wrap(
             children: [
               Text(
@@ -218,6 +216,11 @@ class _SliverBarState extends State<SliverBar> {
               )
             ]
           ),
+          if(label2 != null) Text(
+            label2,
+            style: TextStyle(fontSize: 11, color: Colors.white,),
+          ),
+          if(label2 != null) SizedBox(height: 4),
         ],
       ),
     );

@@ -105,7 +105,7 @@
     "payment_failed_with_msg": "Payment failed: {}",
     "ending_soon": "Your subscription is ending soon",
     "confirmation_info": "Thank you for subscribing!",
-    "confirmation_info2": "You have successfully subscribed to our monthly plan. The first ECO HOPE recycling bag is ready for dispatch — Courier may notify you via phone once it’s dispatched.",
+    "confirmation_info2": "You have successfully subscribed to our {}. The first ECO HOPE recycling bag is ready for dispatch — Courier may notify you via phone once it’s dispatched.",
     "changing_plan_to": "Your subscription is changing to ",
     "change_plan_confirmation": "You will still be able to recycle with your current monthly plan and you can change your mind anytime before this date.",
     "your_subscription_will_end": "Your subscription will end on {}. You can change your mind anytime before this date.",
@@ -381,13 +381,15 @@
   "promote": {
     "code": "Promotion Code",
     "error": "Promotion Code Error",
+    "limited_offer": "Limited Offer",
+    "card_description": "Use promote code for a first month free on your monthly subscription",
+    "copy_code": "Copy",
     "subscription_to_earn_gift": "SUBSCRIBE NOW TO EARN WELCOME GIFT",
     "join_our_monthly_plan": "Join our monthly plan with",
     "now_to_earn_free_welcome_gift": " now to earn free welcome gift!",
     "limited_offer_first_come_first_served": "Limited Offer, First come first served!",
     "welcome_gift": "Welcome Gifts",
-    "1_month_free_trial": "1 Month Free Trial",
-    "limited_offer": "(Limited Offer)"
+    "1_month_free_trial": "1 Month Free Trial"
   },
   "settings": {
     "title": "Settings",

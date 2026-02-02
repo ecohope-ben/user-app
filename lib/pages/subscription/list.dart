@@ -8,7 +8,9 @@ import 'package:user_app/routes.dart';
 import 'package:user_app/style.dart';
 
 import '../../blocs/subscription_plan_cubit.dart';
+import '../../components/common/promotion_code.dart';
 import '../../components/subscription/card.dart';
+import '../../models/discount/index.dart';
 import '../../models/subscription_models.dart';
 
 
@@ -164,9 +166,9 @@ class _SubscriptionListPageState extends State<SubscriptionListPage> {
                tr("subscription_plan_description2"),
               style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
-            const SizedBox(height: 24),
-
-            // Plan cards
+            const SizedBox(height: verticalCardGapPadding),
+            if(Discount.instance().promotionCode != null) PromotionCodeCard(),
+            if(Discount.instance().promotionCode != null) const SizedBox(height: verticalCardGapPadding),
             ..._buildPlanList(state.plans)
 
           ],

@@ -63,14 +63,11 @@ class _OTPInputState extends State<OTPInput> {
           enabledBorderColor: purpleUnderline,
           alignment: Alignment.bottomLeft,
           showFieldAsBox: false,
-
           borderWidth: 2.0,
           //runs when a code is typed in
           onCodeChanged: (String code) {
             // Get full OTP from all controllers
             final fullOtp = _getFullOtp();
-            print("--onOtpChange: $code");
-            print("--fullOtp: $fullOtp");
             //handle validation or checks here if necessary
             setState(() {
               otp = fullOtp;
@@ -81,7 +78,7 @@ class _OTPInputState extends State<OTPInput> {
             _controllers = controllers;
           },
           //runs when every text field is filled
-          onSubmit: onSubmit,
+          onSubmit: (widget.showLoading) ? null : onSubmit,
         ),
         SizedBox(height: 20),
         (_errorMessage != null) ? Text(_errorMessage ?? "", style: TextStyle(color: Colors.red)) : Container(),

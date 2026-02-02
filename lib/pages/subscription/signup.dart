@@ -36,6 +36,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   final _subscriptionApi = Api.instance().subscription();
 
   // Loading states
+  bool isFirstLoading = true;
   bool _isLoadingDistricts = true;
   bool _isLoadingPreview = true;
   bool _isLoadingPreviewWithPromotionCode = false;
@@ -72,6 +73,9 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
       _loadDistricts(),
       _loadPreview(),
     ]);
+    setState(() {
+      isFirstLoading = false;
+    });
   }
 
   Future<void> _loadDistricts() async {
@@ -401,7 +405,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
           // Navigate back or to home page
           if (mounted) {
             // Navigator.pop(context);
-            context.go("/subscription/confirmation");
+            context.go("/subscription/confirmation", extra: widget.plan.name);
           }
         } else if (response.result == ActivateSubscriptionResult.failed) {
           // Failed - stop polling and show error message
@@ -446,7 +450,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
         );
 
         if (mounted) {
-          context.go("/subscription/confirmation");
+          context.go("/subscription/confirmation", extra: widget.plan.name);
         }
       } else if (response.result == ActivateSubscriptionResult.failed) {
         _activationCheckTimer?.cancel();
@@ -537,7 +541,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                   // 主要滾動內容
                   Expanded(
                     child: Skeletonizer(
-                      enabled: _isLoadingDistricts || _isLoadingDistricts || _isLoadingPreview,
+                      enabled: _isLoadingDistricts || _isLoadingDistricts || (_isLoadingPreview && isFirstLoading),
                       // enabled: true,
                       child: SingleChildScrollView(
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -561,8 +565,8 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                                     // color: Color(0xFFfafafa),
                                     border: Border.all(color: const Color(0xFFC7C7C7))
                                 ),
-                                child: _isLoadingPreview
-                                    ? Container()
+                                child: (_isLoadingPreview && !isFirstLoading)
+                                    ? Center(child: CircularProgressIndicator())
                                     : SubscriptionPreviewCard(
                                             billingRecycleType: _getBillingCycleText(),
                                             renewalText: _getRenewalText(),

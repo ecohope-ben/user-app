@@ -8,8 +8,8 @@
     "email_description": "您下次可以用此電郵登入。",
     "check_your_email": "檢查您的電郵",
     "check_email_description": "我們已將驗證碼發送到 {}。",
-    "edit_email": "更改電郵 {}",
-    "edit_phone": "更改手機號碼 {}",
+    "edit_email": "不是 {}? 更改電郵",
+    "edit_phone": "不是 {}? 更改手機號碼",
     "register_now": "立即註冊",
     "dont_receive_code": "沒有收到驗證碼？",
     "resend": "重新發送",
@@ -24,7 +24,8 @@
     "select_date_of_birth": "已選擇出生日期",
     "date_of_birth": "出生日期",
     "confirm_and_login": "確認並登入",
-    "already_registered": "你已經註冊，會即時登入"
+    "already_registered": "此電郵已經註冊。",
+    "login_now": "即時登入"
   },
   "profile": {
     "title": "個人資料",
@@ -59,6 +60,7 @@
   "subscription_plan": "訂閱計劃",
   "subscription_plan_description1": "加入計劃開始回收",
   "subscription_plan_description2": "您可以隨時取消",
+
   "subscribe": "立即訂閱",
   "subscriptions": "訂閱",
   "no_subscriptions": "沒有訂閱",
@@ -106,7 +108,7 @@
     "payment_failed_with_msg": "付款失敗：{}",
     "ending_soon": "您的訂閱即將結束",
     "confirmation_info": "感謝您訂閱！",
-    "confirmation_info2": "您已成功訂閱月費計劃。第一個ECO HOPE回收袋已準備寄出——快遞公司寄出後可能會致電通知您。",
+    "confirmation_info2": "您已成功訂閱{}。第一個ECO HOPE回收袋已準備寄出——快遞公司寄出後可能會致電通知您。",
     "changing_plan_to": "您的訂閱即將更改為 ",
     "change_plan_confirmation": "您仍可繼續使用目前的月費計劃，在此日期前您可隨時更改決定。",
     "your_subscription_will_end": "您的訂閱將於{}結束。在此日期前您可隨時更改決定。",
@@ -127,7 +129,7 @@
     }
   },
   "order": {
-    "additional_order_notice": "你的月費計劃剩餘0次回收次數, 你可在此安排額外單次上門回收",
+    "additional_order_notice": "您的月費計劃上門回收次數已用完，您可在此預約額外單次上門回收服務。",
     "pick_after_receive_bag": "收到回收袋後您就可以安排上門回收。",
     "pick_up_unavailable": "暫不可安排回收\n請等到{}才可安排下一次回收。",
     "provide_later": "稍後提供",
@@ -143,8 +145,8 @@
     "pickup_time": "回收時間",
     "address": "地址",
     "pickup_address": "回收地址",
-    "schedule_pickup_now": "立即回收 | 安排上門回收",
-    "schedule_recycle_pickup": "立即安排上門回收送中",
+    "schedule_pickup_now": "立即安排上門回收",
+    "schedule_recycle_pickup": "立即安排上門回收中",
     "schedule_recycle_pickup_again": "再次安排上門回收",
     "recycle_bag_received_successfully": "回收袋已成功接收！",
     "congratulations": "恭喜!",
@@ -159,7 +161,7 @@
     "privacy_policy": "私隱政策。",
     "pickup_history": "回收記錄",
     "no_orders_found": "沒有找到訂單",
-    "pickup_order_confirmed": "您的下一次回收安排已確認！",
+    "pickup_order_confirmed": "您的回收安排已確認！",
     "pickup_order_confirmed2": "實際回收時間視乎快遞員安排而定，可能會有所變動。快遞員到達前可能會致電您。",
     "view_schedule_detail": "查看安排詳情",
     "thanks_for_recycling": "做得好！感謝您回收",
@@ -259,7 +261,7 @@
     "agree_terms": "請先同意條款及私隱政策"
   },
   "edit_your_address": "編輯您的地址",
-  "update_address_successful": "地址更新成功",
+  "update_address_successful": "成功更新地址",
   "update_address": "更新地址",
   "failed_load_region_data": "載入地區資料失敗",
   "address_line": "詳細地址",
@@ -269,8 +271,8 @@
   "your_address_description": "此地址將用於寄送免費回收袋及上門回收。",
   "confirm_and_proceed": "確認並前往付款",
   "how_it_works": {
-    "title": "運作流程",
-    "description": "上門回收服務 與我們一起循環再造，邁向更綠色明天！",
+    "title": "如何開始 ECOHOPE APP？",
+    "description": "膠樽回收超方便！\n廢塑從生由您開始，\n攜手為綠色未來努力！",
     "items": {
       "join_subscription": "加入訂閱計劃",
       "receive_recycle_bag": "免費獲贈全新Eco Hope回收袋",
@@ -296,8 +298,8 @@
       "dont_attach_item": "請勿在回收袋外附加任何物品"
     }
   },
-  "recycling_guide": "回收指引",
-  "recycling_guide_description": "回收須知 請正確遵循回收指引！",
+  "recycling_guide": "回收膠樽 DOs & DON'Ts",
+  "recycling_guide_description": "回收膠樽 DOs & DON'Ts做到足，小步減廢大改變！",
   "tnc_click": "按此表示您同意我們的 ",
   "terms": "條款",
   "privacy_policy": "私隱政策",
@@ -352,22 +354,24 @@
   "expired": "已過期",
   "expired_date": "到期日",
   "renew": "續訂日",
-  "total_collection": "總回收量",
+  "total_collection": "總回收數",
   "maybe_later": "稍後再說",
   "region": "地區",
   "district": "區域",
   "active": "生效中",
   "welcome": {
     "page1": {
-      "title1": "回收醒目啲, 生活更",
+      "title1": "回收醒目啲, 生活",
       "highlight": "環保",
-      "title2": "上門回收, 零煩惱\n輕鬆做到環保!"
+
+      "title12": "啲",
+      "title2": "上門回收膠樽零煩惱\n輕鬆做回收大師"
     },
     "page2": {
-      "title1": "收件準時, 行程",
+      "title1": "回收準時, 全程",
       "highlight": "即時追蹤",
       "title2": "",
-      "title3": "我們只與最可靠嘅物流夥伴合作\n確保回收物安全送達!"
+      "title3": "與最可靠嘅物流夥伴合作\n確保準時收膠樽"
     },
     "page3": {
       "title1": "每一次回收 = 一個",
@@ -378,13 +382,16 @@
   "promote": {
     "code": "優惠碼",
     "error": "優惠碼錯誤",
-    "subscription_to_earn_gift": "立即訂閱賺取歡迎禮物",
-    "join_our_monthly_plan": "立即加入我們的月費計劃",
-    "now_to_earn_free_welcome_gift": " 即可免費獲贈歡迎禮物！",
+    "limited_offer": "限時優惠",
+    "card_description": "使用優惠碼參加月費計劃，享有一個免費試用",
+    "copy_code": "複製",
+    "subscription_to_earn_gift": "立即訂閱 領取迎新禮物",
+    "join_our_monthly_plan": "立即加入",
+    "now_to_earn_free_welcome_gift": "月費計劃",
+    "now_to_earn_free_welcome_gift2": "並免費獲贈迎新禮物！",
     "limited_offer_first_come_first_served": "限量優惠，先到先得！",
     "welcome_gift": "歡迎禮物",
-    "1_month_free_trial": "1個月免費試用",
-    "limited_offer": "（限時優惠）"
+    "1_month_free_trial": "1個月免費試用"
   },
   "settings": {
     "title": "設定",
