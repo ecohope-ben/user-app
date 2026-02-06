@@ -34,8 +34,6 @@ class SubscriptionCard extends StatelessWidget {
 
   String calCurrentPrice(){
     if(hasDiscount) return Discount.instance().amount.toString();
-    print("--plan price");
-    print(plan.priceDecimal);
     String currentPrice = plan.priceDecimal;
 
     return currentPrice;

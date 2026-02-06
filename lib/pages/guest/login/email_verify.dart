@@ -49,10 +49,7 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
       if (mounted) {
         final state = context.read<LoginCubit>().state;
 
-        print("--state2: ");
-        print(state);
         if(state is LoginInProgress && state.login.email.otpSentAt == null) {
-          print("--state is LoginInProgress");
           email = state.login.email.value;
           sendOTP();
         }
@@ -85,7 +82,6 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
                   message: state.message,
                   confirmText: tr("ok"),
                   onConfirm: (){
-                    print("--login error click");
 
                     printRouteStack(context);
                     context.pop(context);
@@ -97,7 +93,6 @@ class _LoginEmailVerificationState extends State<LoginEmailVerification> {
             popSnackBar(context, state.message);
 
           }else if(state is LoginCompleted){
-            print("--login complete");
             checkOnboarding(context);
             // context.go("/home");
 

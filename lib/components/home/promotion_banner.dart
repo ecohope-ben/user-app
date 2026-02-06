@@ -85,6 +85,7 @@ class PromotionBanner extends StatelessWidget {
             const SizedBox(height: 12),
 
             RichText(
+              textScaler: MediaQuery.of(context).textScaler,
               textAlign: TextAlign.center,
               text: TextSpan(
                 style: const TextStyle(color: Colors.black,

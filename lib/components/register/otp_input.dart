@@ -29,8 +29,6 @@ class _OTPInputState extends State<OTPInput> {
   }
 
   void onSubmit(String verificationCode){
-    print("--otp: $verificationCode");
-    print("--otp: $otp");
     // Validate OTP
     if (widget.validator != null) {
       final error = widget.validator!(verificationCode);
@@ -40,7 +38,6 @@ class _OTPInputState extends State<OTPInput> {
 
       // Only verify if validation passes
       if (error == null) {
-        print("--error is null");
         widget.submitOTP(verificationCode);
       }
     } else {

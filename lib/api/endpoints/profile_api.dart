@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../../models/profile_models.dart';
 import '../index.dart';
 
@@ -37,7 +38,6 @@ class ProfileApi extends ApiEndpoint {
 
   Future<void> changeLocale(String localString) async {
     try {
-      print("--changelocale: $localString");
       await http.put('/profile/locale', data: {
         "preferred_locale": localString
       });
@@ -70,7 +70,9 @@ class ProfileApi extends ApiEndpoint {
           fields: errorBody.fields,
         );
       } catch (parseError) {
-        print('Error parsing response: $parseError');
+        if(kDebugMode) {
+          print('Error parsing response: $parseError');
+        }
       }
     }
 

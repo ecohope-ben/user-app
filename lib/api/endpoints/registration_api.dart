@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import '../../models/registration_models.dart';
 import '../index.dart';
 
@@ -44,8 +45,6 @@ class RegisterApi extends ApiEndpoint {
     required RegistrationUpdateRequest request,
   }) async {
     try {
-      print("--update patch");
-
       Map<String, dynamic> requestMap = request.toJson();
       requestMap.removeWhere((key, value) => value == null);
 
@@ -69,7 +68,6 @@ class RegisterApi extends ApiEndpoint {
     required String registrationId,
     required String stepToken,
   }) async {
-    print("--requestEmailOtp");
     try {
       final response = await http.post(
         '/auth/registration/$registrationId/email/request',
@@ -81,7 +79,9 @@ class RegisterApi extends ApiEndpoint {
       );
       return RegistrationSuccessResponse.fromJson(response.data);
     } on DioException catch (e) {
-      print(e.response);
+      if(kDebugMode) {
+        print(e.response);
+      }
       throw _handleRegistrationDioError(e);
     }
   }
@@ -103,8 +103,6 @@ class RegisterApi extends ApiEndpoint {
         ),
       );
       if(response.data["session"] != null){
-        print("--have session");
-
         return RegistrationExistingAccountResponse.fromJson(response.data);
       }
 
@@ -179,13 +177,19 @@ class RegisterApi extends ApiEndpoint {
 
   /// Handle Dio errors for registration
   Exception _handleRegistrationDioError(DioException e) {
-    print('--Dio Error: ${e.message}');
-    print('--Response: ${e.response?.data}');
-    print('--Response error: ${e.response?.data["error"]}');
+    if(kDebugMode) {
+      print('--Dio Error: ${e.message}');
+      print('--Response: ${e.response?.data}');
+      print('--Response error: ${e.response?.data["error"]}');
+    }
     if(e.response?.statusCode == 401){
-      print("--401 error");
+      if(kDebugMode) {
+        print("--401 error");
+      }
     }else if(e.response?.statusCode == 422){
-      print("--422 error");
+      if(kDebugMode) {
+        print("--422 error");
+      }
     }
     if (e.response?.data != null) {
       try {
@@ -204,9 +208,10 @@ class RegisterApi extends ApiEndpoint {
             registration: registration
         );
       } catch (parseError, t) {
-
-        print('Error parsing response: $parseError');
-        print(t);
+        if(kDebugMode) {
+          print('Error parsing response: $parseError');
+          print(t);
+        }
         return RegistrationException(
             message: tr("error.network_error"), code: '', httpStatus: 500,
         );

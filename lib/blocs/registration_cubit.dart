@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../api/endpoints/registration_api.dart';
@@ -100,12 +101,10 @@ class RegistrationCubit extends Cubit<RegistrationState> {
   Future<void> startRegistration() async {
     try {
       emit(RegistrationLoading());
-      print("--start reg");
       final response = await _apiService.startRegistration();
       // print("--reg id: ${response.registration.id}");
 
       if (response.error != null) {
-        print(response.error.toString());
         emit(RegistrationError(
           registration: response.registration,
           message: response.error!.userMessage ?? "",
@@ -123,9 +122,6 @@ class RegistrationCubit extends Cubit<RegistrationState> {
       ));
     } catch (e, t) {
       if (e is RegistrationException) {
-
-        print("--1");
-        print(e.message);
         emit(RegistrationError(
           registration: e.registration,
           message: e.message,
@@ -133,11 +129,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
           httpCode: e.httpStatus,
           fieldErrors: e.fields,
         ));
-
       } else {
-        print("--2");
-        print(e.toString());
-        print(t.toString());
         emit(RegistrationError(message: e.toString()));
       }
     }
@@ -222,10 +214,6 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         ));
         return;
       }
-      print("--requestEmailOtp response");
-      print(response.registration.email.value);
-      print(response.registration.email.otpSentAt);
-      print(response.registration.tokens.step);
       emit(RegistrationInProgress(
         registration: response.registration,
         stepToken: response.registration.tokens.step,
@@ -284,7 +272,9 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         resumeToken: response.registration.tokens.resume,
       ));
     } catch (e, t) {
-      print(t);
+      if(kDebugMode) {
+        print(t);
+      }
       if (e is RegistrationException) {
         emit(RegistrationError(
           registration: e.registration,

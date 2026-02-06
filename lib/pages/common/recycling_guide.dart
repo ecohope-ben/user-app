@@ -5,221 +5,146 @@ import 'package:go_router/go_router.dart';
 class RecyclingGuidePage extends StatelessWidget {
   const RecyclingGuidePage({super.key});
 
-  final Color checkGreen = const Color(0xFF4CAF50); // tick
-  final Color textDark = const Color(0xFF2B4C55); // word
+  // 定義主題顏色
+  final Color primaryPurple = const Color(0xFF4A248E);
+  final Color textGrey = const Color(0xFF4A4A4A);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [
-                Color(0xFF376752),
-                Color(0xFF294F55),
-                Color(0xFF294F55),
-                Color(0xFF294F55),
-              ],
-            ),
-          ),
-        ),
+        backgroundColor: primaryPurple,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 28),
-          onPressed: () => context.pop(context),
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          tr("recycle_guide.title"),
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+        title: const Text(
+          '回收指南',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 1. "How?" Title
-              Text(
-                tr("recycle_guide.how"),
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 主標題
+            Text(
+              '回收膠樽 DOs & DON\'Ts',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: primaryPurple,
               ),
-              const SizedBox(height: 8),
+            ),
+            const SizedBox(height: 16),
+            // 描述文字
+            Text(
+              '每天有大量膠樽被棄置，若處理不當，不僅浪費資源，還會污染環境。以下是回收膠樽的 DOs & DON\'Ts，讓您的回收更有效。',
+              style: TextStyle(fontSize: 16, color: textGrey, height: 1.5),
+            ),
+            const SizedBox(height: 20),
+            const Divider(thickness: 1, color: Color(0xFFEEEEEE)),
+            const SizedBox(height: 20),
 
-              // 2. Process Title "Empty -> Clean -> Squash"
-              Row(
-                children: [
-                  Text(
-                    tr("recycle_guide.empty"),
-                    style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: textDark),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Icon(Icons.arrow_forward, size: 20, color: textDark),
-                  ),
-                  Text(
-                    tr("recycle_guide.clean"),
-                    style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: textDark),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Icon(Icons.arrow_forward, size: 20, color: textDark),
-                  ),
-                  Text(
-                    tr("recycle_guide.sqush"),
-                    style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: textDark),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
+            // DOs 部分
+            _buildSectionTitle('DOs'),
+            const SizedBox(height: 10),
+            const Text('選擇可回收類型：', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+            const SizedBox(height: 20),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              mainAxisSpacing: 30,
+              crossAxisSpacing: 25,
+              childAspectRatio: 0.75,
+              children: [
+                _buildGridItem('assets/icon/recycle_guide/Dos1.png', '首階段只回收\nPET (1號) 膠樽'),
+                _buildGridItem('assets/icon/recycle_guide/Dos2.png', '清洗乾淨'),
+                _buildGridItem('assets/icon/recycle_guide/Dos3.png', '不用移除瓶蓋及\n標籤'),
+                _buildGridItem('assets/icon/recycle_guide/Dos4.png', '放入專用回收袋\n並封好'),
+              ],
+            ),
 
-              // 3. Bottles Illustration
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: Image.asset("assets/icon/recycling_guide_bottle1.png")
-                  ),
-                  const SizedBox(width: 40),
-                  // 模擬壓扁的瓶子
-                  SizedBox(
-                    height: 60,
-                    child: Image.asset("assets/icon/recycling_guide_bottle2.png")
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
+            const SizedBox(height: 20),
+            const Divider(thickness: 1, color: Color(0xFFEEEEEE)),
+            const SizedBox(height: 20),
 
-              // 4. Green Check List
-              _buildCheckItem(tr("recycle_guide.items.transparent_bottles")),
-              _buildCheckItem(tr("recycle_guide.items.empty_bottles")),
-              _buildCheckItem(tr("recycle_guide.items.squash_bottles")),
-              _buildCheckItem(tr("recycle_guide.items.keep_cap_on")),
-              _buildCheckItem(tr("recycle_guide.items.close_up")),
+            // DON'Ts 部分
+            _buildSectionTitle('DON\'Ts'),
+            const SizedBox(height: 20),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              mainAxisSpacing: 30,
+              crossAxisSpacing: 20,
+              childAspectRatio: 0.75,
+              children: [
+                _buildGridItem('assets/icon/recycle_guide/Dont1.png', '不要留有殘留物'),
+                _buildGridItem('assets/icon/recycle_guide/Dont2.png', '不要放入其他\n類型的塑膠'),
+                _buildGridItem('assets/icon/recycle_guide/Dont3.png', '不要混入其他垃圾'),
+                _buildGridItem('assets/icon/recycle_guide/Dont4.png', '不要過度壓碎'),
+              ],
+            ),
 
-              const SizedBox(height: 30),
-
-              // 5. Bags Illustration
-              Row(
-                children: [
-                  SizedBox(width: 10),
-                  // Correct Bag
-                  Image.asset("assets/icon/recycling_guide_bag1.png", width: 100),
-                  const SizedBox(width: 40),
-                  // Incorrect Bag
-
-                  Image.asset("assets/icon/recycling_guide_bag2.png", width: 100),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // 6. Red Cross List
-              _buildCrossItem(tr("recycle_guide.items.dont_overfill")),
-              _buildCrossItem(tr("recycle_guide.items.dont_attach_item")),
-
-              const SizedBox(height: 30),
-
-              // 7. Bottom Info Box
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFAFAFA), // 極淺灰背景
-                  border: Border.all(color: Colors.black12),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Things to keep in mind',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      '"Leftover products, drinks make high-quality recycling more difficult. So we rely on you to apply the recycling guide properly!"',
-                      style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        fontSize: 14,
-                        height: 1.4,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 30),
-            ],
-          ),
+            const SizedBox(height: 40),
+            // 底部結語
+            Text(
+              '遵循這些 DOs & DON\'Ts，您的膠樽就能順利升級再造，轉為新產品！',
+              style: TextStyle(fontSize: 16, color: textGrey, height: 1.5),
+            ),
+            const SizedBox(height: 40),
+          ],
         ),
       ),
     );
   }
 
-  // Helper Widget: 綠色勾勾列表項
-  Widget _buildCheckItem(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.check, color: checkGreen, size: 22),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(fontSize: 15, color: Colors.black87),
-            ),
-          ),
-        ],
+  // 小標題組件
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 28,
+        fontWeight: FontWeight.bold,
+        color: primaryPurple,
       ),
     );
   }
 
-  // Helper Widget: 紅色叉叉列表項
-  Widget _buildCrossItem(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.close, color: Colors.red, size: 22),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(fontSize: 15, color: Colors.black87),
+  // 網格項目組件
+  Widget _buildGridItem(String imagePath, String label) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Image.asset(imagePath),
+        // Container(
+        //   height: 100,
+        //   width: 100,
+        //   decoration: BoxDecoration(
+        //     color: Colors.grey[50],
+        //     borderRadius: BorderRadius.circular(12),
+        //   ),
+        //   child: Icon(icon, size: 60, color: Colors.black87),
+        // ),
+        const SizedBox(height: 12),
+        Expanded(
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+              height: 1.3,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 
-const _apiUserAgent = "com.epods.epodsDriver/";
+const _apiUserAgent = "com.ecohope.userapp";
 
 class ApiLocalizationInterceptor extends Interceptor {
   final BuildContext context;

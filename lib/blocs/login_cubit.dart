@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../api/endpoints/login_api.dart';
@@ -89,7 +90,6 @@ class LoginCubit extends Cubit<LoginState> {
   LoginCubit({LoginApi? apiService}): _apiService = apiService ?? Api.instance().login(), super(LoginInitial());
 
   Future<void> startLogin(int step) async {
-    print("--start login: $step");
     try {
       emit(LoginLoading());
       final response = await _apiService.startLogin();
@@ -116,7 +116,6 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<bool> updateEmail({required String email}) async {
     final currentState = state;
-    print(currentState);
     if (currentState is! LoginInProgress) return false;
 
     try {
@@ -217,7 +216,6 @@ class LoginCubit extends Cubit<LoginState> {
     }
 
     try {
-      print("--submit otp3");
       emit(LoginInProgressLoading(
         login: login!,
         stepToken: stepToken,
@@ -258,8 +256,10 @@ class LoginCubit extends Cubit<LoginState> {
         resumeToken: response.login.tokens.resume,
       ));
     } catch (e, t) {
-      print("--verify error");
-      print(t);
+      if(kDebugMode) {
+        print("--verify error");
+        print(t);
+      }
       _handleException(e);
     }
   }
@@ -305,7 +305,6 @@ class LoginCubit extends Cubit<LoginState> {
 
 
   void reset() {
-    print("--reset");
     emit(LoginInitial());
   }
 

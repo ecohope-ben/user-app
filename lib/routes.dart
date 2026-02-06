@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -120,13 +121,14 @@ final router = GoRouter(
 void printRouteStack(BuildContext context) {
   final GoRouter goRouter = GoRouter.of(context);
   final matches = goRouter.routerDelegate.currentConfiguration.matches;
-
-  print('--- GoRouter Route Stack ---');
-  for (int i = 0; i < matches.length; i++) {
-    final match = matches[i];
-    print('  ${i + 1}: ${match.matchedLocation}');
+  if(kDebugMode) {
+    print('--- GoRouter Route Stack ---');
+    for (int i = 0; i < matches.length; i++) {
+      final match = matches[i];
+      print('  ${i + 1}: ${match.matchedLocation}');
+    }
+    print('--------------------------');
   }
-  print('--------------------------');
 }
 
 // builder: (context, state) {

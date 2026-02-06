@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../../models/onboarding_models.dart';
 import '../../models/profile_models.dart';
 import '../index.dart';
@@ -38,8 +39,6 @@ class OnboardingApi extends ApiEndpoint {
 
   /// Handle Dio errors for onboarding
   Exception _handleOnboardingDioError(DioException e) {
-    print('Onboarding API Error: ${e.message}');
-    print('Response: ${e.response?.data}');
 
     if (e.response?.data != null) {
       try {
@@ -59,7 +58,9 @@ class OnboardingApi extends ApiEndpoint {
           fields: errorBody.fields,
         );
       } catch (parseError) {
-        print('Error parsing response: $parseError');
+        if(kDebugMode) {
+          print('Error parsing response: $parseError');
+        }
       }
     }
 

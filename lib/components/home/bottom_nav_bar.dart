@@ -22,9 +22,9 @@ class CustomBottomNavBar extends StatelessWidget {
         if(subscriptionDetail == null){
           popSnackBar(context, tr("subscription.subscribe_plan_first"));
         }
-        else if(!hasEntitlement){
-          popSnackBar(context, tr("order.pick_up_unavailable", args: [convertDateTimeToString(context, subscriptionDetail?.currentPeriodEnd)]));
-        }
+        // else if(!hasEntitlement){
+        //   popSnackBar(context, tr("order.pick_up_unavailable", args: [convertDateTimeToString(context, subscriptionDetail?.currentPeriodEnd)]));
+        // }
         else if(subscriptionDetail?.recyclingProfile?.initialBagStatus != "delivered"){
           popSnackBar(context, tr("order.pick_after_receive_bag"));
         }else {

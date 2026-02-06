@@ -352,7 +352,6 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
                         const SizedBox(height: 10),
                         InkWell(
                           onTap: () async {
-                            print("--ontap");
                             final result = await context.push("/subscription/manage/change_address", extra: _subscriptionDetail!);
                             // Reload subscription detail if address was updated successfully
                             if (result == true) {

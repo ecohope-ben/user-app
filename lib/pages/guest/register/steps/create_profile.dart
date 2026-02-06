@@ -17,7 +17,6 @@ class CreateProfileStep extends StatelessWidget {
       child: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
           if(state is ProfileUpdateSuccess){
-            print("--update profile success");
             // Goto login page
             context.go("/home");
           }else if (state is ProfileError){

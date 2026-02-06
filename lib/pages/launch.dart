@@ -60,8 +60,8 @@ class _LaunchPageState extends State<LaunchPage> {
       if(firstRun) {
         context.go('/welcome');
       }else{
-        // context.go('/welcome');
-        context.go("/get_start");
+        context.go('/welcome');
+        // context.go("/get_start");
       }
     }
 

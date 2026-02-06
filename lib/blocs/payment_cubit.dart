@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../api/endpoints/payment_api.dart';
@@ -104,7 +105,9 @@ class PaymentCubit extends Cubit<PaymentState> {
         offset: envelope.offset,
       ));
     } catch (error, t) {
-      print('Payment list error: $t');
+      if(kDebugMode) {
+        print('Payment list error: $t');
+      }
       _handleError(error);
     }
   }
@@ -116,7 +119,9 @@ class PaymentCubit extends Cubit<PaymentState> {
       final envelope = await _api.getPaymentDetail(paymentId: paymentId);
       emit(PaymentDetailLoaded(payment: envelope.data));
     } catch (error, t) {
-      print('Payment detail error: $t');
+      if(kDebugMode) {
+        print('Payment detail error: $t');
+      }
       _handleError(error);
     }
   }

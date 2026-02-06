@@ -15,6 +15,7 @@ Future<void> main() async {
   // setup Strip
   String stripePublishableKey = "pk_test_51SWuMM1Jfb61gpEIzzpyPQjT6ac4QsV9G0Q1TztigtuLLNOlvrgkhpCGDY8II6GU41N94tzHBwbyGgLVmzYprQSi00wYbyrMjy";
   Stripe.publishableKey = stripePublishableKey;
+  Stripe.merchantIdentifier = 'merchant.com.ecohope.user-app';
   await Stripe.instance.applySettings();
 
   SystemUiOverlayStyle mySystemTheme = SystemUiOverlayStyle.light.copyWith(systemNavigationBarColor: backgroundColor, systemNavigationBarIconBrightness: Brightness.dark);

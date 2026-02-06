@@ -9,6 +9,7 @@ import '../../models/recycle_models.dart';
 import '../../models/subscription_models.dart';
 import '../../style.dart';
 import '../../utils/time.dart';
+import '../../utils/url.dart';
 import 'tracking_number.dart';
 
 
@@ -20,8 +21,9 @@ class InitialBagDeliveryCard extends StatelessWidget {
 
   final String bullet = "\u2022";
 
-  Widget _buildItemForSF() {
+  Widget _buildItemForSF(BuildContext context) {
     return RichText(
+      textScaler: MediaQuery.of(context).textScaler,
       text: TextSpan(
         style: TextStyle(fontSize: 16, color: Colors.black),
         children: [
@@ -92,24 +94,29 @@ class InitialBagDeliveryCard extends StatelessWidget {
               children: [
                 TrackingNumber(trackingNumber),
                 const SizedBox(height: 12),
-                _buildItemForSF(),
+                _buildItemForSF(context),
                 _buildMessage(tr("refresh_page_to_update")),
                 _buildMessage(tr("order.pick_after_receive_bag")),
 
                 ActionButton(tr("order.schedule_recycle_pickup"), disable: true),
                 RichText(
+                  textScaler: MediaQuery.of(context).textScaler,
                   text: TextSpan(
                     style: TextStyle(fontSize: 16, color: Colors.black),
                     children: [
                       TextSpan(text: tr("please")),
                       WidgetSpan(
+
+                        style: TextStyle(fontSize: 16, color: Colors.black),
                         alignment: PlaceholderAlignment.middle,
                         child: InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          onTap: () {},
+                          borderRadius: BorderRadius.zero,
+                          onTap: () {
+                            WhatsAppUtils.openWhatsApp(phoneNumber: "+85291795033", message: tr("report_issue_init_bag", args: [trackingNumber ?? ""]));
+                          },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Text(tr("contact_us"), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                            child: Text(tr("contact_us"), style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline), textScaler: MediaQuery.of(context).textScaler),
                           ),
                         ),
                       ),

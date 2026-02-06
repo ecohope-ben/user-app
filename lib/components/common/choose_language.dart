@@ -112,8 +112,7 @@ class _ChangeLocalePopupState extends State<ChangeLocalePopup> {
                   elevation: 0,
                 ),
                 onPressed: () {
-                  print('Selected: $selectedLanguage');
-                  Navigator.pop(context); // 關閉彈窗
+                  Navigator.pop(context);
                 },
                 child: Text(
                   "Confirm / 確認",

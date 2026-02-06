@@ -55,6 +55,7 @@ class WelcomeGiftPopup extends StatelessWidget {
 
                 // 中間描述文字 (包含粗體 $0)
                 RichText(
+
                   textAlign: TextAlign.center,
                   text: TextSpan(
                     style: TextStyle(

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../auth/index.dart';
 import '../../models/login_models.dart';
@@ -85,7 +86,6 @@ class LoginApi extends ApiEndpoint {
     required String code,
   }) async {
     try {
-      print("--verifyEmailOtp");
       final response = await http.post(
         '/auth/login/$loginId/email/verify',
         data: OtpVerifyRequest(code: code).toJson(),
@@ -97,9 +97,11 @@ class LoginApi extends ApiEndpoint {
       );
       return LoginSuccessResponse.fromJson(response.data);
     } on DioException catch (e, t) {
-      print("--verify email error");
-      print(t);
-      print(e);
+      if(kDebugMode) {
+        print("--verify email error");
+        print(t);
+        print(e);
+      }
       throw _handleLoginDioError(e);
     }
   }
@@ -143,8 +145,6 @@ class LoginApi extends ApiEndpoint {
   }
 
   Exception _handleLoginDioError(DioException e) {
-    print('--Login Dio Error: ${e.message}');
-    print('--Login Response: ${e.response?.data}');
     final data = e.response?.data;
     if (data != null) {
       try {
@@ -161,8 +161,10 @@ class LoginApi extends ApiEndpoint {
           fields: errorBody.fields,
         );
       } catch (parseError, stackTrace) {
-        print('Error parsing login response: $parseError');
-        print(stackTrace);
+        if(kDebugMode) {
+          print('Error parsing login response: $parseError');
+          print(stackTrace);
+        }
       }
     }
 

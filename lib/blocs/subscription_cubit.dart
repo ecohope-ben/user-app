@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../api/endpoints/subscription_api.dart';
@@ -157,10 +158,6 @@ class PreviewSubscriptionCubit extends Cubit<SubscriptionState> {
 
     try {
       final data = await fetchDefaultDiscount();
-      print("--preview subscription");
-      print(Discount.instance().promotionCode);
-      print( Discount.instance().planId);
-      print(Discount.instance().versionId);
       final preview = await _api.previewSubscription(request: PreviewSubscriptionCreationRequest(
           promotionCode: Discount.instance().promotionCode,
           planId: Discount.instance().planId ?? "",
@@ -224,6 +221,7 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
       final envelope = await _api.listSubscriptions();
       if (envelope.subscriptions.isNotEmpty) {
         final firstSubscriptionId = envelope.subscriptions.first.id;
+
         if(envelope.subscriptions.first.lifecycleState == SubscriptionLifecycleState.active || envelope.subscriptions.first.lifecycleState == SubscriptionLifecycleState.pastDue) {
           final detail = await _api.getSubscriptionDetail(
               subscriptionId: firstSubscriptionId
@@ -237,7 +235,9 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
       }
 
     } catch (error, t) {
-      print(t);
+      if(kDebugMode) {
+        print(t);
+      }
       _handleError(error);
     }
   }

@@ -45,6 +45,7 @@ class WelcomePage2 extends StatelessWidget {
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         child: RichText(
+                          textScaler: MediaQuery.of(context).textScaler,
                           textAlign: TextAlign.center,
                           text: TextSpan(
                             style: const TextStyle(

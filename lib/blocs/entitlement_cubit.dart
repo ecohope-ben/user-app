@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../api/endpoints/entitlement_api.dart';
@@ -57,7 +58,9 @@ class EntitlementCubit extends Cubit<EntitlementState> {
       final envelope = await _api.listEntitlements();
       emit(EntitlementLoaded(entitlements: envelope.data));
     } catch (error, t) {
-      print(t);
+      if(kDebugMode) {
+        print(t);
+      }
       if (error is EntitlementException) {
         emit(EntitlementError(
           message: error.message,

@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/index.dart';
@@ -19,7 +20,6 @@ Future<Map<String, dynamic>?> fetchDefaultDiscount() async {
   try {
     final dio = Dio();
     final response = await dio.get('https://assets.eco-hope.org/plan_data/discount-${FlavorConfig.instance.name}.json');
-    print("--env: ${FlavorConfig.instance.name}");
     Map<String, dynamic>? discountData;
     if (response.statusCode == 200 && response.data != null) {
       discountData = response.data as Map<String, dynamic>;
@@ -46,10 +46,14 @@ Future<Map<String, dynamic>?> fetchDefaultDiscount() async {
         //   print("--error: $e");
         // }
       }
-      print("--discount: ${discountData}");
+      if(kDebugMode) {
+        print("--discount: ${discountData}");
+      }
     }
   } catch (e) {
-    print('Error fetching discount.json: $e');
+    if(kDebugMode) {
+      print('Error fetching discount.json: $e');
+    }
   }
   return null;
 }

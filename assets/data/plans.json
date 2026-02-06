@@ -7,8 +7,7 @@
         "1 Free recycle bag",
         "1 time pick up",
         "Flexible pick up time and locations",
-        "Live tracking with recycling progress",
-        "Personalized recycling records"
+        "Live tracking with recycling progress"
       ],
       "zh-hk": [
         "1 份迎新禮品",
@@ -18,16 +17,15 @@
         "實時追蹤回收進度"
       ]
     }
-
   },
   "quarterly": {
     "features": {
       "en": [
-        "Save up to $300",
-        "12 times pick up",
+        "1 welcome gift",
+        "1 Free recycle bag",
+        "3 time pick up",
         "Flexible pick up time and locations",
-        "Live tracking with recycling progress",
-        "Personalized recycling records"
+        "Live tracking with recycling progress"
       ],
       "zh-hk": [
         "1 份迎新禮品",
@@ -42,13 +40,15 @@
     "features": {
       "en": [
         "Save up to $300",
+        "1 welcome gift",
         "12 times pick up",
         "Flexible pick up time and locations",
-        "Live tracking with recycling progress",
-        "Personalized recycling records"
+        "Live tracking with recycling progress"
       ],
       "zh-hk": [
         "一年慳高達 $300",
+        "1 份迎新禮品",
+        "免費獲贈 1 個 Eco Hope 回收袋",
         "12 次上門回收",
         "靈活選擇回收時間及地點",
         "實時追蹤回收進度"

@@ -48,9 +48,6 @@ class _ProfileDatePickerState extends State<ProfileDatePicker> {
         _controller.text = "${tr("month_to_words.$month")} $day";
       });
 
-      print(result?['month']);
-      print(result?['day']);
-
     }
   }
 

@@ -22,8 +22,7 @@ class Api {
   Api._internal(this.dio) {
 
     if (kDebugMode) {
-      dio.interceptors
-          .add(LogInterceptor(requestBody: true, responseBody: true));
+      dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
     }
   }
 

@@ -83,15 +83,17 @@ class _EmailVerificationStepState extends State<EmailVerificationStep> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                      onPressed: () => context.read<RegistrationCubit>().changeStage(RegistrationStage.emailInput),
-          
-                      child: Text(tr("register.edit_email", args: [email ?? ""]), style: TextStyle(color: blueRegisterText))
-                  ),
-                ],
+              Center(
+                child: Wrap(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                        onPressed: () => context.read<RegistrationCubit>().changeStage(RegistrationStage.emailInput),
+
+                        child: Text(tr("register.edit_email", args: [email ?? ""]), style: TextStyle(color: blueRegisterText))
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

@@ -24,7 +24,7 @@ class TransactionHistoryDetailsPage extends StatelessWidget {
           tr("transaction.details"),
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
         ),
-        centerTitle: false,
+        centerTitle: true,
       ),
       body: _buildBody(context, history)
     );

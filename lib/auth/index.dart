@@ -43,7 +43,6 @@ class Auth {
   }
 
   Future saveAccessToken(String? accessToken) async {
-    print("--save access token");
     this.accessToken = accessToken;
     if(accessToken != null){
       decodeJwt(accessToken);

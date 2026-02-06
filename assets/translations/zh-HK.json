@@ -167,14 +167,14 @@
     "thanks_for_recycling": "做得好！感謝您回收",
     "wait_for_next_recycling": "請等到{}進行下一次回收。",
     "status": {
-      "pending": "回收安排已確認",
+      "pending": "等待速遞公司確認",
       "processing": "回收安排已確認",
       "pickedUp": "快遞已取件",
       "completed": "送達完成 / 已成功送達",
       "failed": "失敗",
       "cancelled": "已取消",
       "short": {
-        "pending": "已確認",
+        "pending": "待確認",
         "processing": "已確認",
         "pickedUp": "已取件",
         "completed": "已完成",
@@ -258,7 +258,8 @@
     "select_region": "請先選擇地區",
     "select_district": "請先選擇區域",
     "input_address": "請輸入地址",
-    "agree_terms": "請先同意條款及私隱政策"
+    "agree_terms": "請先同意條款及私隱政策",
+    "too_long": "輸入的內容太長"
   },
   "edit_your_address": "編輯您的地址",
   "update_address_successful": "成功更新地址",
@@ -339,8 +340,8 @@
   "cancel": "取消",
   "apply": "使用",
   "please_contact_at": "請聯絡我們：",
-  "please": "請",
-  "contact_us": " 聯絡我們 ",
+  "please": "請 ",
+  "contact_us": "聯絡我們 ",
   "pick_up_on": "回收日期 {}",
   "if_something_wrong": "，如果有問題",
   "if_need_help": "如需帳戶協助",
@@ -419,5 +420,8 @@
   "optional": "如有",
   "more_exciting_rewards": "更多精彩獎勵",
   "coming_soon": "即將推出",
-  "we_are_going_to_launch": "我們很快就會推出獎勵計劃，敬請期待！"
+  "we_are_going_to_launch": "我們很快就會推出獎勵計劃，敬請期待！",
+  "report_issue_order": "你好，我遇到了一些問題關於我的回收訂單，我的訂單號是: {}, 追蹤號碼是: {}",
+  "report_issue_init_bag": "你好，我遇到了一些問題關於我的回收袋運送, 追蹤號碼是: {}",
+  "setup_payment_method_no_payment_now": "*設定付款方式(無需扣款)*"
 }

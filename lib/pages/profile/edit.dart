@@ -146,7 +146,7 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                   fontSize: 20,
                 ),
               ),
-              centerTitle: false,
+              centerTitle: true,
             ),
             body: const Center(
               child: CircularProgressIndicator(),
@@ -159,6 +159,7 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
           appBar: AppBar(
             backgroundColor: mainPurple,
             elevation: 0,
+            centerTitle: true,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
               onPressed: () => Navigator.of(context).pop(),
@@ -171,7 +172,6 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
                 fontSize: 20,
               ),
             ),
-            centerTitle: false,
           ),
           body: SingleChildScrollView(
             child: Padding(
@@ -304,37 +304,37 @@ class _EditProfilePageState extends State<_EditProfilePageContent> {
               const SizedBox(height: 20),
 
               // 7. Info Text
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  tr("profile.change_account_info"),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 6),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text.rich(
-                  TextSpan(
-                    text:  tr("profile.contact_our_customer_support"),
-                    style: TextStyle(color: Colors.grey, height: 1.4),
-                    children: [
-                      TextSpan(
-                        text: "(852) 1234 5678",
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                      TextSpan(text: tr("profile.for_assistance")),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 40),
+              // Align(
+              //   alignment: Alignment.centerLeft,
+              //   child: Text(
+              //     tr("profile.change_account_info"),
+              //     style: TextStyle(
+              //       fontWeight: FontWeight.bold,
+              //       color: Colors.grey,
+              //       fontSize: 14,
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(height: 6),
+              // Align(
+              //   alignment: Alignment.centerLeft,
+              //   child: Text.rich(
+              //     TextSpan(
+              //       text:  tr("profile.contact_our_customer_support"),
+              //       style: TextStyle(color: Colors.grey, height: 1.4),
+              //       children: [
+              //         TextSpan(
+              //           text: "(852) 1234 5678",
+              //           style: TextStyle(
+              //             decoration: TextDecoration.underline,
+              //           ),
+              //         ),
+              //         TextSpan(text: tr("profile.for_assistance")),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(height: 40),
 
               // 8. Update Profile Button (黑色實心)
               BlocBuilder<ProfileCubit, ProfileState>(

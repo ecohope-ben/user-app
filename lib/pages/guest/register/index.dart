@@ -46,7 +46,6 @@ class _RegisterIndexState extends State<RegisterIndex> {
               if(state is RegistrationCompletedWithExistingAccount){
                 showPopup(
                     context,
-                    // title: tr("register."),
                     title: tr("register.already_registered"),
                     isShowNegativeButton: false,
                     confirmText: tr("register.login_now"),

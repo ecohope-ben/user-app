@@ -34,9 +34,6 @@ class _DatePickerState extends State<DatePicker> {
         }
       });
 
-      print(result?['month']);
-      print(result?['day']);
-
     }
   }
 

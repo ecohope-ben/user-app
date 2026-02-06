@@ -102,7 +102,6 @@ class _ChangePaymentMethodViewState extends State<_ChangePaymentMethodView> {
       if (mounted) {
         // Check if user cancelled (StripeException with specific error code)
         final errorCode = e.error.code;
-        print("--error code: ${errorCode}");
         if (errorCode == FailureCode.Canceled) {
           // User cancelled, just go back silently
           context.pop();
@@ -219,7 +218,7 @@ class _ChangePaymentMethodViewState extends State<_ChangePaymentMethodView> {
                     onPressed: () {
                       context.read<SubscriptionCubit>().requestPaymentMethodUpdate(widget.subscriptionId);
                     },
-                    child: Text(tr("retry")),
+                    child: Text(tr("error.retry")),
                   ),
                 ],
               ),

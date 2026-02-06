@@ -89,8 +89,6 @@ class _LoginIndexState extends State<LoginIndex> {
 
                             final bloc = context.read<LoginCubit>();
                             final result = await bloc.updateEmail(email: email);
-                            print("--login email result: $result");
-
                             if (mounted) {
                               if (result) {
                                 context.push("/login/verify");
@@ -101,7 +99,6 @@ class _LoginIndexState extends State<LoginIndex> {
                                 // retry
                                 final result = await bloc.updateEmail(email: email);
 
-                                print("--login email result2: $result");
                                 if (result) {
                                   context.push("/login/verify");
                                 }

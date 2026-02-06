@@ -44,6 +44,13 @@ android {
             resValue("string", "app_name", "EcoHope(Stg)")
             applicationIdSuffix = ".staging" // 可選：自動加後綴
         }
+
+        create("int") {
+            dimension = "environment"
+            applicationId = "com.ecohope.user_app"
+            resValue("string", "app_name", "EcoHope(int)")
+            applicationIdSuffix = ".int"
+        }
         create("uat") {
             dimension = "environment"
             applicationId = "com.ecohope.user_app"

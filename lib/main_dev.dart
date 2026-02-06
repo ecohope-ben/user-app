@@ -16,6 +16,7 @@ Future<void> main() async {
   // setup Strip
   String stripePublishableKey = "pk_test_51SF7RP03YTV8tfWqh3DIh2mEjAb8IMXGAbUkDGIghvcUrGI4xoBCMz2yFaScTbe1FQuNYzftYLtTsQDPsEJF7wzp00YL9o8FMw";
   String baseUrl = "https://customer-api-dev.eco-hope.org";
+  Stripe.merchantIdentifier = 'merchant.com.ecohope.user-app';
   Stripe.publishableKey = stripePublishableKey;
   await Stripe.instance.applySettings();
 

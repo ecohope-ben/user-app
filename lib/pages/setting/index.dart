@@ -53,7 +53,7 @@ class _SettingsPageState extends State<SettingsPage> {
           tr("settings.title"),
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        centerTitle: false,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(

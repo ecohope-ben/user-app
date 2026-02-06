@@ -14,13 +14,9 @@ class RefreshTokenInterceptor extends Interceptor {
     ErrorInterceptorHandler handler,
   ) async {
 
-    print("--401 RefreshTokenInterceptor");
     // Only handle 401 errors
     if (err.response?.statusCode == 401) {
-      print("--401 error");
-
       final requestOptions = err.requestOptions;
-
       // Skip refresh for the refresh endpoint itself to avoid infinite loop
       if (requestOptions.path == '/auth/session/refresh') {
         return super.onError(err, handler);
@@ -28,25 +24,17 @@ class RefreshTokenInterceptor extends Interceptor {
 
       // Skip if no refresh token available
       if (_auth.refreshToken == null || _auth.refreshToken!.isEmpty) {
-
-        print("--401 error2");
         return super.onError(err, handler);
       }
 
       // If already refreshing, queue this request
       if (_isRefreshing) {
-
-        print("--401 error3");
         return _queueRequest(requestOptions, handler);
       }
-
-      print("--401 error4");
       // Start refreshing token
       _isRefreshing = true;
 
       try {
-
-        print("--401 error5");
         // Create a new Dio instance without interceptors to avoid recursion
         final dio = Dio(BaseOptions(baseUrl: requestOptions.baseUrl))
           ..interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
@@ -90,9 +78,6 @@ class RefreshTokenInterceptor extends Interceptor {
         } catch (retryError) {
           // If retry still fails after token refresh, propagate the retry error
           // This ensures the actual error from the retry is shown, not the original token expired error
-          print("--401 retry failed after token refresh");
-          print(retryError.toString());
-          
           // Refresh failed, reject all pending requests
           if (_pendingRequests.isNotEmpty) {
             _rejectPendingRequests(retryError);
@@ -112,14 +97,12 @@ class RefreshTokenInterceptor extends Interceptor {
           return;
         }
       } catch (e) {
-        print("--401 refresh token error");
-        print(e.toString());
+
         
         // If refresh token endpoint returns 401, logout user
         if (e is DioException && 
             e.response?.statusCode == 401 && 
             e.requestOptions.path == '/auth/session/refresh') {
-          print("--Refresh token expired, logging out");
           await _auth.logout();
           router.go("/get_start");
         }

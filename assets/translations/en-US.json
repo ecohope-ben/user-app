@@ -24,7 +24,8 @@
     "select_date_of_birth": "Selected Date of Birth",
     "date_of_birth": "Date of Birth",
     "confirm_and_login": "Confirm and Login",
-    "already_registered": "You have already registered"
+    "already_registered": "You have already registered",
+    "login_now": "Login Now"
   },
   "profile": {
     "title": "Profile",
@@ -164,14 +165,14 @@
     "thanks_for_recycling": "Great Job! Thanks for recycling",
     "wait_for_next_recycling": "Wait until {} for you next recycle.",
     "status": {
-      "pending": "Pick Up Schedule Confirmed",
+      "pending": "Waiting for courier confirmation",
       "processing": "Pick Up Schedule Confirmed",
       "pickedUp": "Picked Up by Courier",
       "completed": "Delivery completed / Delivered Successfully",
       "failed": "Failed",
       "cancelled": "Cancelled",
       "short": {
-        "pending": "Confirmed",
+        "pending": "Pending",
         "processing": "Confirmed",
         "pickedUp": "Picked",
         "completed": "Completed",
@@ -255,8 +256,8 @@
     "select_region": "Please select region first",
     "select_district": "Please select district first",
     "input_address": "Please input address",
-    "agree_terms": "Please agree to the terms and privacy policy first."
-
+    "agree_terms": "Please agree to the terms and privacy policy first.",
+    "too_long": "The content is too long"
   },
   "edit_your_address": "Edit Your Address",
   "update_address_successful": "Update address successfully",
@@ -364,6 +365,8 @@
     "page1": {
       "title1": "Recycle Smarter, Live ",
       "highlight": "Greener",
+
+      "title12": "",
       "title2": "We collect from your door — no bins, no hassle, just impact."
     },
     "page2": {
@@ -387,6 +390,8 @@
     "subscription_to_earn_gift": "SUBSCRIBE NOW TO EARN WELCOME GIFT",
     "join_our_monthly_plan": "Join our monthly plan with",
     "now_to_earn_free_welcome_gift": " now to earn free welcome gift!",
+
+    "now_to_earn_free_welcome_gift2": "",
     "limited_offer_first_come_first_served": "Limited Offer, First come first served!",
     "welcome_gift": "Welcome Gifts",
     "1_month_free_trial": "1 Month Free Trial"
@@ -417,6 +422,9 @@
   "optional": "Optional",
   "more_exciting_rewards": "More Exciting Rewards",
   "coming_soon": "Coming Soon",
-  "we_are_going_to_launch": "We are going to launch the rewards programs very soon. Stay Tuned!"
+  "we_are_going_to_launch": "We are going to launch the rewards programs very soon. Stay Tuned!",
 
+  "report_issue_order": "Hello, I'm having some issues with my recycling order. My order number is: {}, and the tracking number is: {}",
+  "report_issue_init_bag": "Hello, I'm having some issues with my recycle bag, my tracking number is: {}",
+  "setup_payment_method_no_payment_now": "*Set up payment method (no payment now)*"
 }

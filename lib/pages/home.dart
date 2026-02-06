@@ -1,6 +1,7 @@
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:el_tooltip/el_tooltip.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -170,11 +171,13 @@ class _HomeViewState extends State<_HomeView> {
         effectiveSubscriptionState is SubscriptionListLoaded &&
         (effectivePreviewSubscriptionState is SubscriptionPreviewReady || effectivePreviewSubscriptionState is SubscriptionPreviewUnavailable) &&
         effectiveRecycleOrderState is RecycleOrderListLoaded;
-    print("--ready: $isReady | $_hasInitialData");
-    print("--ready: $effectiveProfileState");
-    print("--ready: $effectiveEntitlementState");
-    print("--ready: $effectiveSubscriptionState");
-    print("--ready: $effectiveRecycleOrderState");
+    if(kDebugMode) {
+      print("--ready: $isReady | $_hasInitialData");
+      print("--ready: $effectiveProfileState");
+      print("--ready: $effectiveEntitlementState");
+      print("--ready: $effectiveSubscriptionState");
+      print("--ready: $effectiveRecycleOrderState");
+    }
 
     // Only show skeleton on initial load, not during refresh
     if (!isReady && !_hasInitialData) {
@@ -209,8 +212,9 @@ class _HomeViewState extends State<_HomeView> {
   ) {
 
     if (profileState is ProfileError) {
-
-      print("--ProfileError");
+      if(kDebugMode) {
+        print("--ProfileError");
+      }
       if(profileState.code == "http_guard.customer_pending_deletion"){
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) context.go("/login/pending_deletion");
@@ -222,17 +226,23 @@ class _HomeViewState extends State<_HomeView> {
       // return profileState.message;
     }
     if (entitlementState is EntitlementError) {
-      print("--EntitlementError");
+      if(kDebugMode) {
+        print("--EntitlementError");
+      }
       return tr("error.home_page_error");
       // return entitlementState.message;
     }
     if (subscriptionState is SubscriptionError) {
-      print("--SubscriptionError");
+      if(kDebugMode) {
+        print("--SubscriptionError");
+      }
       return tr("error.home_page_error");
       // return subscriptionState.message;
     }
     if (recycleOrderState is RecycleOrderError) {
-      print("--RecycleOrderError");
+      if(kDebugMode) {
+        print("--RecycleOrderError");
+      }
       return tr("error.home_page_error");
       // return recycleOrderState.message;
     }

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../api/endpoints/recycle_api.dart';
@@ -118,16 +119,14 @@ class RecycleOrderCubit extends Cubit<RecycleOrderState> {
 
   /// Load recycle order detail
   Future<void> loadOrderDetail(String recycleOrderId) async {
-
-    print("--loadOrderDetail");
     emit(const RecycleOrderLoading('order_detail'));
     try {
       final response = await _api.getOrderDetail(recycleOrderId: recycleOrderId);
-
-      print("response");
       emit(RecycleOrderDetailLoaded(order: response));
     } catch (error, t) {
-      print(t);
+      if(kDebugMode) {
+        print(t);
+      }
       _handleError(error);
     }
   }
@@ -140,22 +139,16 @@ class RecycleOrderCubit extends Cubit<RecycleOrderState> {
   }) async {
     emit(const RecycleOrderLoading('list_orders'));
     try {
-
-      print("--RecycleOrder 1");
       final envelope = await _api.listOrders(
         status: status,
         limit: limit,
         offset: offset,
       );
-
-      print("--RecycleOrder 2");
       emit(RecycleOrderListLoaded(orders: envelope.data));
-
-      print("--RecycleOrder 3");
     } catch (error, t) {
-
-      print("--RecycleOrder error");
-      print(t);
+      if(kDebugMode) {
+        print(t);
+      }
       _handleError(error);
     }
   }

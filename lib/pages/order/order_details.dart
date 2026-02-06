@@ -2,7 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:user_app/style.dart';
+import 'package:user_app/utils/url.dart';
 
 import '../../blocs/recycle_order_cubit.dart';
 import '../../models/recycle_models.dart';
@@ -41,7 +43,7 @@ class PickUpOrderDetailsPage extends StatelessWidget {
             tr("order.pick_up_detail"),
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
           ),
-          centerTitle: false,
+          centerTitle: true,
         ),
         body: BlocProvider(
           create: (context) =>
@@ -191,7 +193,15 @@ class PickUpOrderDetailsPage extends StatelessWidget {
             const SizedBox(height: 16),
             Center(
               child: TextButton(
-                onPressed: () {},
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero
+                  ),
+                ),
+                onPressed: () {
+                  WhatsAppUtils.openWhatsApp(phoneNumber: "+85291795033", message: tr("report_issue_order", args: [order.recycleOrderNo, order.logisticsOrder?.trackingNo ?? ""]));
+                },
                 child: Text(
                   tr("report_issus"),
                   style: TextStyle(
