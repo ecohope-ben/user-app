@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:go_router/go_router.dart';
@@ -94,7 +95,6 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
 
       try {
         final response = await Api.instance().recycle().checkAdditionalOrderStatus(serviceOrderId);
-        print("--check active: ${response.serviceOrderId} | ${response.result}");
         if (!mounted) return;
 
         if (response.result == CheckAdditionalOrderResult.completed) {
@@ -124,9 +124,9 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
         }
         // If result is 'pending', continue polling
       } catch (e) {
-        // On error, continue polling but log the error
-        print('Error checking activation status: $e');
-        // Optionally, you might want to stop after a certain number of retries
+        if(kDebugMode) {
+          print('Error checking activation status: $e');
+        }
       }
     });
 
@@ -134,9 +134,6 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
     try {
 
       final response = await Api.instance().recycle().checkAdditionalOrderStatus(serviceOrderId);
-
-      print("--check active2: ${response.serviceOrderId} | ${response.result}");
-
       if (!mounted) return;
 
       if (response.result == CheckAdditionalOrderResult.completed) {
@@ -162,7 +159,9 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
       }
     } catch (e) {
       // If immediate check fails, continue with polling
-      print('Error on immediate activation check: $e');
+      if(kDebugMode) {
+        print('Error on immediate activation check: $e');
+      }
     }
   }
 
@@ -173,8 +172,10 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
       await _checkAdditionOrderStatus(serviceOrderId, orderId);
 
     }on StripeException catch(e){
-      print("--StripeException");
-      print(e.error.code);
+      if(kDebugMode) {
+        print("--StripeException");
+        print(e.error.code);
+      }
       if (e.error.code == FailureCode.Canceled) {
         popSnackBar(context, tr("subscription.canceled_payment_by_user"));
 
@@ -184,8 +185,10 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
         popSnackBar(context, tr("subscription.payment_failed_with_msg", args: [?e.error.localizedMessage]));
       }
     }catch(e,t){
-      print(e.toString());
-      print(t.toString());
+      if(kDebugMode) {
+        print(e.toString());
+        print(t.toString());
+      }
       popSnackBar(context, tr("subscription.payment_failed_try_later"));
     }
   }
@@ -223,7 +226,6 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
       // Call API to create order
       final response = await Api.instance().recycle().createOrder(request: request);
       if(isAdditionalOrder && paymentRequired){
-        print("--go to payment");
         await processPayment(
             clientSecret: response.clientSecret ?? "",
             serviceOrderId: response.serviceOrderId ?? "",
@@ -300,7 +302,6 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
       setTotalAmount();
       setState(() {
         paymentRequired = response.paymentRequired;
-        print("--paymentrequired: $paymentRequired");
         _isLoadingPreviewWithPromotionCode = false;
         usedPromotionCode = promotionCode;
       });
@@ -341,8 +342,10 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
         _isLoading = false;
       });
     } catch (e, t) {
-      print(e.toString());
-      print(t.toString());
+      if(kDebugMode) {
+        print(e.toString());
+        print(t.toString());
+      }
       setState(() {
         _isLoading = false;
         _errorMessage = tr("error.fail_to_load_pickup_slot");
@@ -354,21 +357,23 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
 
     await Stripe.instance.initPaymentSheet(
       paymentSheetParameters: SetupPaymentSheetParameters(
-          merchantDisplayName: 'ECOHOPE',
-          // This is a PaymentIntent flow for the first subscription invoice:
-          paymentIntentClientSecret: paymentIntentClientSecret,
-          setupIntentClientSecret: setupIntentClientSecret,
-          // applePay: PaymentSheetApplePay(
-          //     merchantCountryCode: "HK"
-          // ),
-          allowsDelayedPaymentMethods: true, // optional
-          style: ThemeMode.light
+        merchantDisplayName: 'ECOHOPE',
+        paymentIntentClientSecret: paymentIntentClientSecret,
+        setupIntentClientSecret: setupIntentClientSecret,
+        style: ThemeMode.light,
+        // Apple Pay requires Stripe.merchantIdentifier to be set (in main.dart) and
+        // Apple Pay enabled in Stripe dashboard. See: https://support.stripe.com/questions/enable-apple-pay-on-your-stripe-account
+        applePay: PaymentSheetApplePay(
+          merchantCountryCode: 'HK',
+            // cartItems: [
+            //   ApplePayCartSummaryItem.immediate(label: 'Item', amount: "100"),
+            // ],
+        ),
       ),
     );
 
     // Shows Stripe’s native UI
     await Stripe.instance.presentPaymentSheet();
-    print("--payment finished");
   }
 
   // Get available timeslots for selected date
@@ -511,7 +516,6 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
                   if(isAdditionalOrder) Skeleton.shade(
                     child: PromotionCodeInput(
                       onTap: (){
-                        print("--promotion code: ${promotionCodeController.text}");
                         if(promotionCodeController.text.isNotEmpty){
                           previewOrder(promotionCode: promotionCodeController.text);
                         }

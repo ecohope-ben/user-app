@@ -166,6 +166,8 @@
     "view_schedule_detail": "查看安排詳情",
     "thanks_for_recycling": "做得好！感謝您回收",
     "wait_for_next_recycling": "請等到{}進行下一次回收。",
+    "unable_to_process": "很抱歉通知您，我們未能處理您的上門回收要求 {}，原因是物流合作夥伴出現技術問題。",
+    "credited_free_pickup_entitlement": "我們已自動為您的帳戶新增了一個免費上門回收額度，您可以使用此額度重新下單",
     "status": {
       "pending": "等待速遞公司確認",
       "processing": "回收安排已確認",

@@ -164,6 +164,8 @@
     "view_schedule_detail": "View Schedule Details",
     "thanks_for_recycling": "Great Job! Thanks for recycling",
     "wait_for_next_recycling": "Wait until {} for you next recycle.",
+    "unable_to_process": "We're sorry to inform you that we were unable to process your pickup request {} due to a technical issue with our logistics partner.",
+    "credited_free_pickup_entitlement": "We've automatically credited your account with a free pickup entitlement that you can use to schedule a new order",
     "status": {
       "pending": "Waiting for courier confirmation",
       "processing": "Pick Up Schedule Confirmed",

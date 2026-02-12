@@ -218,7 +218,7 @@ class RecycleOrderCard extends StatefulWidget {
 
 class _RecycleOrderCardState extends State<RecycleOrderCard> {
 
-  Widget _buildCard(BuildContext context, LogisticsOrder? logisticsOrder){
+  Widget _buildCard(BuildContext context, RecycleOrderDetail recycleOrder){
     return Container(
       margin: EdgeInsets.symmetric(horizontal: horizontalOuterPadding),
       width: double.infinity,
@@ -261,40 +261,11 @@ class _RecycleOrderCardState extends State<RecycleOrderCard> {
           ),
 
           // Body
-          Row(
-            children: [
-              Expanded(
-                flex: 8,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 18),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TrackingNumber(logisticsOrder?.trackingNo),
-                          // Text("${tr("tracking")} #${logisticsOrder?.trackingNo ?? tr("order.provide_later")}", style: TextStyle(fontSize: 18)),
-                          const SizedBox(height: 12),
-                          Text(tr("pick_up_on", args: [convertDateTimeToString(context, widget.recycleOrder.pickupAt, format: tr("format.date_time"))]), style: TextStyle(fontSize: 16)),
-                        ],
-                      ),
-                    ),
-
-                  ],
-                ),
-              ),
-              Expanded(
-                  flex: 2,
-                  child: Icon(Icons.chevron_right)
-              )
-            ],
-          ),
+          _buildBody(recycleOrder),
 
           // if order complete or order is picked up then show
           // if(widget.recycleOrder.status == RecycleOrderStatus.completed || widget.recycleOrder.status == RecycleOrderStatus.pickedUp)
-          if(widget.recycleOrder.status == RecycleOrderStatus.completed)
+          if(widget.recycleOrder.status == RecycleOrderStatus.completed || widget.recycleOrder.status == RecycleOrderStatus.cancelled)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
               child: ActionButton(
@@ -304,12 +275,65 @@ class _RecycleOrderCardState extends State<RecycleOrderCard> {
                   context.push("/order/create", extra: widget.subscriptionDetail);
                 },
               ),
-          )
+            )
         ],
       ),
     );
   }
+  Widget _buildBody(RecycleOrderDetail recycleOrder){
+    print("--order id: ${recycleOrder.recycleOrderNo}");
+    if(recycleOrder.status == RecycleOrderStatus.cancelled){
+     return Row(
+       children: [
+         Expanded(
+           child: Padding(
+             padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 18),
+             child: Column(
+               children: [
 
+                 Text(tr("order.unable_to_process", args: [recycleOrder.recycleOrderNo]), softWrap: true),
+                 const SizedBox(height: 12),
+                 Text(tr("order.credited_free_pickup_entitlement"), softWrap: true),
+               ],
+             ),
+           ),
+         ),
+       ],
+     );
+    }else {
+      return Row(
+        children: [
+          Expanded(
+            flex: 8,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TrackingNumber(recycleOrder.logisticsOrder?.trackingNo),
+                      // Text("${tr("tracking")} #${logisticsOrder?.trackingNo ?? tr("order.provide_later")}", style: TextStyle(fontSize: 18)),
+                      const SizedBox(height: 12),
+                      Text(tr("pick_up_on", args: [convertDateTimeToString(context, widget.recycleOrder.pickupAt, format: tr("format.date_time"))]),
+                          style: TextStyle(fontSize: 16)),
+                    ],
+                  ),
+                ),
+
+              ],
+            ),
+          ),
+          Expanded(
+              flex: 2,
+              child: Icon(Icons.chevron_right)
+          )
+        ],
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -320,7 +344,7 @@ class _RecycleOrderCardState extends State<RecycleOrderCard> {
           if(state is RecycleOrderDetailLoaded) {
             return InkWell(
                 onTap: () => context.push("/order/details", extra: widget.recycleOrder.id),
-                child: _buildCard(context, state.order.logisticsOrder)
+                child: _buildCard(context, state.order)
             );
           }else if (state is RecycleOrderError){
             return Container();

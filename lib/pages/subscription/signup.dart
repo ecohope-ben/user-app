@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -119,9 +120,6 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
         planVersionId: widget.plan.versionId,
         promotionCode: promotionCode,
       );
-      print("--preview request");
-      print(widget.plan.id);
-      print(widget.plan.versionId);
       final preview = await _subscriptionApi.previewSubscription(request: request);
       setState(() {
         _previewData = preview;
@@ -160,11 +158,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
         planVersionId: widget.plan.versionId,
         promotionCode: promotionCode,
       );
-      print("--preview request");
-      print(widget.plan.id);
-      print(widget.plan.versionId);
       final preview = await _subscriptionApi.previewSubscription(request: request);
-      print("--preview amount: ${preview.amount}");
       setState(() {
         _previewData = preview;
         _isLoadingPreview = false;
@@ -225,11 +219,9 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
   }
 
   String _getAmountText() {
-    print("--preview amount: ${_previewData?.amount}");
     if (_previewData == null) return '';
     if (!_previewData!.requirePayment) {
       if(widget.plan.id == Discount.instance().planId) {
-        print("--getAmount has discount");
         return tr("subscription.amount_text_with_discount", args: [
           _formatAmount(_previewData!.amount, _previewData!.currency),
           convertDateTimeToString(context, _previewData!.periodEnd),
@@ -251,12 +243,24 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
     await Stripe.instance.initPaymentSheet(
       paymentSheetParameters: SetupPaymentSheetParameters(
         merchantDisplayName: 'ECOHOPE',
+        intentConfiguration: IntentConfiguration(
+            mode: IntentMode.setupMode(
+                setupFutureUsage: IntentFutureUsage.OffSession,
+                currencyCode: "HKD"
+            ),
+        ),
         // This is a PaymentIntent flow for the first subscription invoice:
         paymentIntentClientSecret: paymentIntentClientSecret,
         setupIntentClientSecret: setupIntentClientSecret,
-        // applePay: PaymentSheetApplePay(
-        //     merchantCountryCode: "HK"
-        // ),
+
+        applePay: PaymentSheetApplePay(
+          merchantCountryCode: "HK",
+          cartItems: (setupIntentClientSecret != null) ? [
+            // ApplePayCartSummaryItem.recurring(label: "label", amount: "amount", intervalUnit: intervalUnit, intervalCount: intervalCount)
+            ApplePayCartSummaryItem.immediate(label: "ECOHOPE", amount: "0"),
+          ] : null,
+
+        ),
         allowsDelayedPaymentMethods: true, // optional
         style: ThemeMode.light
       ),
@@ -264,7 +268,9 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
 
     // Shows Stripe’s native UI
     await Stripe.instance.presentPaymentSheet();
-    print("--payment finished");
+    if(kDebugMode) {
+      print("--payment finished");
+    }
   }
 
   Future<void> _createSubscription() async {
@@ -329,12 +335,15 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
           } else if (response.nextAction == PaymentNextAction.pay) {
             await presentSubscriptionSheet(paymentIntentClientSecret: response.clientSecret);
           }
-
-          print("--after payment");
+          if(kDebugMode) {
+            print("--after payment");
+          }
           _checkSubscriptionStatus(response.subscriptionId);
 
         }on StripeException catch(e){
-          print("--StripeException");
+          if(kDebugMode) {
+            print("--StripeException");
+          }
           if (e.error.code == FailureCode.Canceled) {
             popSnackBar(context, tr("subscription.canceled_payment_by_user"));
 
@@ -344,8 +353,10 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
             popSnackBar(context, tr("subscription.payment_failed_with_msg", args: [?e.error.localizedMessage]));
           }
         }catch(e,t){
-          print(e.toString());
-          print(t.toString());
+          if(kDebugMode) {
+            print(e.toString());
+            print(t.toString());
+          }
           popSnackBar(context, tr("subscription.payment_failed_try_later"));
         }
 
@@ -386,7 +397,9 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
 
       try {
         final response = await _subscriptionApi.checkActivation(subscriptionId: subscriptionId);
-        print("--check active: ${response.subscriptionId} | ${response.result}");
+        if(kDebugMode) {
+          print("--check active1: ${response.subscriptionId} | ${response.result}");
+        }
         if (!mounted) return;
 
         if (response.result == ActivateSubscriptionResult.activated) {
@@ -423,7 +436,9 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
         // If result is 'pending', continue polling
       } catch (e) {
         // On error, continue polling but log the error
-        print('Error checking activation status: $e');
+        if(kDebugMode) {
+          print('Error checking activation status: $e');
+        }
         // Optionally, you might want to stop after a certain number of retries
       }
     });
@@ -431,9 +446,9 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
     // Also check immediately (don't wait for first 5 seconds)
     try {
       final response = await _subscriptionApi.checkActivation(subscriptionId: subscriptionId);
-
-      print("--check active2: ${response.subscriptionId} | ${response.result}");
-
+      if(kDebugMode) {
+        print("--check active2: ${response.subscriptionId} | ${response.result}");
+      }
       if (!mounted) return;
 
       if (response.result == ActivateSubscriptionResult.activated) {
@@ -466,7 +481,9 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
       }
     } catch (e) {
       // If immediate check fails, continue with polling
-      print('Error on immediate activation check: $e');
+      if(kDebugMode) {
+        print('Error on immediate activation check: $e');
+      }
     }
   }
 
@@ -582,7 +599,7 @@ class _SubscriptionSignUpState extends State<SubscriptionSignUp> {
                             Skeleton.shade(
                               child: PromotionCodeInput(
                                 onTap: (){
-                                  print("--promotion code: ${promotionCodeController.text}");
+
                                   if(promotionCodeController.text.isNotEmpty){
                                     _loadPreviewWithPromotionCode(promotionCodeController.text);
                                   }
