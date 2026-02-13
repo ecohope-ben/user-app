@@ -135,7 +135,7 @@ class _SliverBarState extends State<SliverBar> {
         SizedBox(width: 5),
         Expanded(flex: 1, child: _buildSubscription()),
         SizedBox(width: 5),
-        Expanded(flex: 1, child: _buildTotalCollection())
+        Expanded(flex: 1, child: _buildTotalCollection()),
       ],
     );
   }
@@ -153,9 +153,8 @@ class _SliverBarState extends State<SliverBar> {
     return _buildStatItem(
         value: state.entitlements.isNotEmpty ? calEntitlementsRemaining(state.entitlements).toString() : "00",
         label: tr("remaining_pickups"),
-
         label2: state.entitlements.isNotEmpty ? "${tr("expired_date")} ${convertDateTimeToString(context, state.entitlements.first.expiresAt, format: "dd/MM/yy")}" : null,
-
+        alignment: CrossAxisAlignment.start
     );
   }
 
@@ -182,7 +181,7 @@ class _SliverBarState extends State<SliverBar> {
         value: state.subscriptions.isNotEmpty ? tr("subscription.billing_cycle.${state.subscriptions.first.plan.billingCycle.name}.plan") : "--",
         label: tr("subscriptions"),
         label2: _buildSubscriptionLabel(),
-
+        alignment: CrossAxisAlignment.center,
         onTap: () => state.subscriptions.isNotEmpty ? context.push("/subscription/manage/list", extra: SubscriptionManageTarget.manage) : context.push("/subscription/list")
     );
   }
@@ -191,36 +190,42 @@ class _SliverBarState extends State<SliverBar> {
     final state = widget.recycleOrderState;
     return _buildStatItem(
         value: state.orders.isNotEmpty ? state.orders.length.toString() : "00",
-        label: tr("total_collection")
+        label: tr("total_collection"),
+        alignment: CrossAxisAlignment.end
     );
   }
 
-  Widget _buildStatItem({required String value, required String label, String? label2, VoidCallback? onTap}) {
+  Widget _buildStatItem({required String value, required String label, String? label2, VoidCallback? onTap, required CrossAxisAlignment alignment}) {
     return InkWell(
       onTap: onTap,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-
+        crossAxisAlignment: alignment,
         children: [
-          Text(
-            value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white,),
-          ),
-          const SizedBox(height: 4),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
 
-          Wrap(
             children: [
               Text(
-                label,
-                style: TextStyle(fontSize: 13, color: Colors.white),
-              )
-            ]
+                value,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white,),
+              ),
+              const SizedBox(height: 4),
+
+              Wrap(
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(fontSize: 13, color: Colors.white),
+                  )
+                ]
+              ),
+              if(label2 != null) Text(
+                label2,
+                style: TextStyle(fontSize: 11, color: Colors.white,),
+              ),
+              if(label2 != null) SizedBox(height: 4),
+            ],
           ),
-          if(label2 != null) Text(
-            label2,
-            style: TextStyle(fontSize: 11, color: Colors.white,),
-          ),
-          if(label2 != null) SizedBox(height: 4),
         ],
       ),
     );

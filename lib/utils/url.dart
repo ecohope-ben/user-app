@@ -15,3 +15,15 @@ class WhatsAppUtils {
     }
   }
 }
+
+class UrlUtils {
+  static Future<void> openSFApp() async {
+    final Uri url = Uri.parse('https://ccsp-egmas.sf-express.com/download/download-hmto.html');
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      throw Exception(' Could not launch SF App');
+    }
+  }
+}

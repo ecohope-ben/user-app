@@ -22,18 +22,15 @@ class InitialBagDeliveryCard extends StatelessWidget {
   final String bullet = "\u2022";
 
   Widget _buildItemForSF(BuildContext context) {
-    return RichText(
-      textScaler: MediaQuery.of(context).textScaler,
-      text: TextSpan(
-        style: TextStyle(fontSize: 16, color: Colors.black),
-        children: [
-          TextSpan(text: "$bullet ${tr("please_use")}"),
-          TextSpan(text: tr("sf_app"), style: TextStyle(fontWeight: FontWeight.bold)),
-          TextSpan(
-            text: tr("for_the_tracking_updates"),
-          ),
-        ],
-      ),
+    return Wrap(
+      children: [
+        Text("$bullet ${tr("please_use")}", style: TextStyle(fontSize: 16)),
+        InkWell(
+            onTap: () => UrlUtils.openSFApp(),
+            child: Text(tr("sf_app"), style: TextStyle(fontSize: 16, decoration: TextDecoration.underline, fontWeight: FontWeight.bold))
+        ),
+        Text(tr("for_the_tracking_updates"), style: TextStyle(fontSize: 16)),
+      ],
     );
   }
 
@@ -99,33 +96,16 @@ class InitialBagDeliveryCard extends StatelessWidget {
                 _buildMessage(tr("order.pick_after_receive_bag")),
 
                 ActionButton(tr("order.schedule_recycle_pickup"), disable: true),
-                RichText(
-                  textScaler: MediaQuery.of(context).textScaler,
-                  text: TextSpan(
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                    children: [
-                      TextSpan(text: tr("please")),
-                      WidgetSpan(
-
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                        alignment: PlaceholderAlignment.middle,
-                        child: InkWell(
-                          borderRadius: BorderRadius.zero,
-                          onTap: () {
-                            WhatsAppUtils.openWhatsApp(phoneNumber: "+85291795033", message: tr("report_issue_init_bag", args: [trackingNumber ?? ""]));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Text(tr("contact_us"), style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline), textScaler: MediaQuery.of(context).textScaler),
-                          ),
-                        ),
-                      ),
-                      TextSpan(
-                        text: tr("if_something_wrong"),
-                      ),
-                    ],
-                  ),
-                )
+                Wrap(
+                  children: [
+                    Text(tr("please"), style: TextStyle(fontSize: 16)),
+                    InkWell(
+                      onTap: () => WhatsAppUtils.openWhatsApp(phoneNumber: "+85291795033", message: tr("report_issue_init_bag", args: [trackingNumber ?? ""])),
+                        child: Text(tr("contact_us"), style: TextStyle(fontSize: 16, decoration: TextDecoration.underline, fontWeight: FontWeight.bold))
+                    ),
+                    Text(tr("if_something_wrong"), style: TextStyle(fontSize: 16))
+                  ],
+                ),
               ],
             ),
           ),
