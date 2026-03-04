@@ -8,6 +8,7 @@ void popSnackBar(BuildContext context, String? message){
     SnackBar(
       content: Text(message ?? ""),
       behavior: SnackBarBehavior.floating,
+      showCloseIcon: true,
     ),
   );
 }

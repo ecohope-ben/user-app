@@ -164,6 +164,8 @@ class PreviewSubscriptionCubit extends Cubit<SubscriptionState> {
           planVersionId: Discount.instance().versionId ?? ""
       ));
       Discount.instance().setAmount(preview.amount);
+      Discount.instance().setRequirePayment(preview.requirePayment);
+
       emit(SubscriptionPreviewReady(preview: preview));
     } catch (error) {
       _handleError(error);

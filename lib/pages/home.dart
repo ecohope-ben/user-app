@@ -406,7 +406,7 @@ class _HomeContentState extends State<_HomeContent> {
                                 if(widget.previewSubscriptionState is SubscriptionPreviewReady && Discount.instance().promotionCode != null) {
                                   return PromotionBanner(() => context.push("/subscription/list"));
                                 }else{
-                                  return Container();
+                                  return NormalSubscriptionCard();
                                 }
                               }
 

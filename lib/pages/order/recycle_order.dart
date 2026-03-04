@@ -64,6 +64,7 @@ class _SchedulePickUpOrderPageState extends State<SchedulePickUpOrderPage> {
     }else {
       _addressController.text = widget.subscriptionDetail.deliveryAddress.fullAddress!;
     }
+
     _loadPickupSlotsAndPreflight(widget.subscriptionDetail.id);
   }
 

@@ -172,14 +172,13 @@ class _SliverBarState extends State<SliverBar> {
     }
     return null;
 
-
   }
 
   Widget _buildSubscription() {
    final state = widget.subscriptionState;
     return _buildStatItem(
         value: state.subscriptions.isNotEmpty ? tr("subscription.billing_cycle.${state.subscriptions.first.plan.billingCycle.name}.plan") : "--",
-        label: tr("subscriptions"),
+        label: tr("subscription.title"),
         label2: _buildSubscriptionLabel(),
         alignment: CrossAxisAlignment.center,
         onTap: () => state.subscriptions.isNotEmpty ? context.push("/subscription/manage/list", extra: SubscriptionManageTarget.manage) : context.push("/subscription/list")
@@ -190,7 +189,7 @@ class _SliverBarState extends State<SliverBar> {
     final state = widget.recycleOrderState;
     return _buildStatItem(
         value: state.orders.isNotEmpty ? state.orders.length.toString() : "00",
-        label: tr("total_collection"),
+        label: tr("total_collection") ,
         alignment: CrossAxisAlignment.end
     );
   }
@@ -207,7 +206,7 @@ class _SliverBarState extends State<SliverBar> {
             children: [
               Text(
                 value,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white,),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               const SizedBox(height: 4),
 

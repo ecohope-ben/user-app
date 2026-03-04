@@ -10,6 +10,7 @@ import 'package:user_app/utils/pop_up.dart';
 import '../../api/index.dart';
 import '../../auth/index.dart';
 import '../../components/common/explore_banner.dart';
+import '../../models/discount/index.dart';
 import '../subscription/manage/list.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -61,7 +62,8 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Column(
             children: [
               const SizedBox(height: 10),
-              ExploreBanner(widget.subscriptionState),
+
+              if(Discount.instance().requirePayment == false) ExploreBanner(widget.subscriptionState),
 
               const SizedBox(height: 20),
 

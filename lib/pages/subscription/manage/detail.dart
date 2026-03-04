@@ -529,7 +529,7 @@ class _SubscriptionManageDetailState extends State<SubscriptionManageDetail> {
 
   Widget _buildFailedPaymentNotice(){
     return Text(
-      "There is an issue with your payment method. Update your payment information to correct the problem and try again.",
+      tr("subscription.payment_renew_failed"),
       style: TextStyle(color: Colors.red),
     );
   }

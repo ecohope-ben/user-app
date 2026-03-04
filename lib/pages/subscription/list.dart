@@ -167,8 +167,8 @@ class _SubscriptionListPageState extends State<SubscriptionListPage> {
               style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
             const SizedBox(height: verticalCardGapPadding),
-            if(Discount.instance().promotionCode != null) PromotionCodeCard(),
-            if(Discount.instance().promotionCode != null) const SizedBox(height: verticalCardGapPadding),
+            if(Discount.instance().requirePayment == false) PromotionCodeCard(),
+            if(Discount.instance().requirePayment == false) const SizedBox(height: verticalCardGapPadding),
             ..._buildPlanList(state.plans)
 
           ],

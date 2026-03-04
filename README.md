@@ -17,6 +17,7 @@ samples, guidance on mobile development, and a full API reference.
 
 flutter build appbundle --release --flavor production --target=lib/main.dart
 flutter build apk --flavor dev --target=lib/main_dev.dart
+flutter build apk --flavor staging --target=lib/main_staging.dart
 flutter build apk --flavor uat --target=lib/main_uat.dart
 
 flutter run --release --target=lib/main_uat.dart

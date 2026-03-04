@@ -336,3 +336,76 @@ class _RecycleOrderCardState extends State<RecycleOrderCard> {
     );
   }
 }
+
+class NormalSubscriptionCard extends StatelessWidget {
+  const NormalSubscriptionCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    BorderSide borderSide = BorderSide(
+      color: Colors.white,
+      width: 2,
+    );
+    return Container(
+      width: double.infinity,
+      // padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.7),
+        border: Border(
+          top: borderSide,
+          bottom: borderSide,
+        ),
+      ),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 16),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.5),
+                blurRadius: 20,
+                // offset: const Offset(10, 12),
+              ),
+            ]
+        ),
+        child: Column(
+          children: [
+            Text(
+              tr("subscribe_now"),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            RichText(
+              textScaler: MediaQuery.of(context).textScaler,
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: const TextStyle(color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400),
+                children: [
+                  TextSpan(text: tr("subscription.join_now_to_on_site_recycle")),
+
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 12),
+            // Subscribe
+            SizedBox(
+                width: 280,
+                child: ActionButton(tr("subscribe"), onTap: () => context.push("/subscription/list"), needPadding: false)
+            ),
+          ],
+        ),
+      ),
+    );
+
+  }
+}
